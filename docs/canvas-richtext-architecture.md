@@ -343,7 +343,7 @@ Input Event -> Command -> Operation[] -> Apply(Model)
 - UI：React（壳层 UI），编辑核心保持框架无关。
 - 渲染：Canvas2D（优先）+ OffscreenCanvas（可用时）。
 - 状态：核心编辑状态使用自研 immutable model + patch。
-- 构建：Vite + pnpm + monorepo（如 Turborepo）。
+- 构建：Vite + pnpm workspace monorepo。
 
 ## 11.2 后端
 
