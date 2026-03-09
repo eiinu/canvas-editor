@@ -1,6 +1,6 @@
 # Canvas Editor
 
-Canvas 富文本编辑器工程化基础仓库（pnpm workspace + Turborepo）。
+Canvas 富文本编辑器工程化基础仓库（pnpm workspace）。
 
 ## Workspace 结构
 
