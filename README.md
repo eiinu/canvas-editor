@@ -47,7 +47,7 @@ pnpm clean       # 清理产物
 
 为避免 Vercel 构建环境中 `pnpm` 通过 `corepack` 拉取时出现 `ERR_INVALID_THIS`，仓库已添加 `vercel.json`：
 
-- 安装阶段直接安装最新可用 `pnpm`（通过 `npm i -g pnpm`）
+- 安装阶段固定使用 `pnpm` 最新 10.x（通过 `npm i -g pnpm@10`）
 - 构建阶段只构建前端应用：`@canvas-editor/editor-web`
 - 输出目录固定为 `apps/editor-web/dist`
 

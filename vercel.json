@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "installCommand": "npm i -g pnpm && pnpm install --no-frozen-lockfile",
+  "installCommand": "npm i -g pnpm@10 && pnpm install --no-frozen-lockfile",
   "buildCommand": "pnpm --filter @canvas-editor/editor-web build",
   "outputDirectory": "apps/editor-web/dist"
 }
