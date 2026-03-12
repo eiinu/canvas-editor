@@ -22,7 +22,7 @@ Canvas 富文本编辑器工程化基础仓库（pnpm workspace）。
 ## 快速开始
 
 ```bash
-pnpm install
+pnpm install --no-frozen-lockfile --prefer-offline
 pnpm dev
 ```
 
