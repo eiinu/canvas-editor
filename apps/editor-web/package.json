@@ -13,7 +13,11 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@codemirror/lang-xml": "^6.1.0",
     "@eiinu/editor-core": "workspace:*",
+    "@eiinu/editor-xml": "workspace:*",
+    "@uiw/react-codemirror": "^4.25.8",
+    "codemirror": "^6.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

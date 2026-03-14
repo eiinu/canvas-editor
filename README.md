@@ -10,6 +10,7 @@ Canvas 富文本编辑器工程化基础仓库（pnpm workspace）。
 │  └─ editor-web/           # @eiinu/editor-web
 ├─ packages/
 │  ├─ editor-core/          # @eiinu/editor-core
+│  ├─ editor-xml/           # @eiinu/editor-xml (XML 转换器)
 │  └─ shared-protocol/      # @eiinu/editor-protocol
 ├─ services/
 │  └─ collab-service/       # @eiinu/editor-collab
