@@ -1,5 +1,5 @@
 {
-  "name": "@eiinu/editor-core",
+  "name": "@eiinu/editor-utils",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,10 +13,6 @@
     "lint": "eslint src --ext .ts",
     "test": "vitest run",
     "clean": "rm -rf dist"
-  },
-  "dependencies": {
-    "@eiinu/editor-protocol": "workspace:*",
-    "@eiinu/editor-utils": "workspace:*"
   },
   "exports": {
     ".": {

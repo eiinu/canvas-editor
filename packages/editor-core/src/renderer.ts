@@ -1,3 +1,4 @@
+import { getDevicePixelRatio } from '@eiinu/editor-utils';
 import { DocumentElement, RenderContext } from './model/base.js';
 
 /**
@@ -11,7 +12,7 @@ export class CanvasRenderer {
 
   constructor(ctx: CanvasRenderingContext2D, options: { dpr?: number; zoom?: number } = {}) {
     this.ctx = ctx;
-    this.dpr = options.dpr || (typeof window !== 'undefined' ? window.devicePixelRatio : 1);
+    this.dpr = options.dpr || getDevicePixelRatio();
     this.zoom = options.zoom || 1;
   }
 

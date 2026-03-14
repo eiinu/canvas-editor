@@ -1,4 +1,5 @@
 import type { Paragraph, TextContent } from '@eiinu/editor-protocol';
+import { UnicodeRange } from '@eiinu/editor-utils';
 import { DocumentElement, RenderContext } from './base.js';
 import { RunElement } from './run.js';
 import { FontManager } from '../fonts/font-manager.js';
@@ -31,19 +32,6 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
   }
 
   /**
-   * 判断字符是否属于东亚字符集 (CJK)
-   */
-  private isEastAsian(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (
-      (code >= 0x4e00 && code <= 0x9fff) || // CJK Unified Ideographs
-      (code >= 0x3400 && code <= 0x4dbf) || // CJK Unified Ideographs Extension A
-      (code >= 0x3000 && code <= 0x303f) || // CJK Symbols and Punctuation
-      (code >= 0xff00 && code <= 0xffef)    // Halfwidth and Fullwidth Forms
-    );
-  }
-
-  /**
    * 获取当前字符应使用的字体名称
    */
   private getFontForChar(run: RunElement, char: string): string {
@@ -52,13 +40,12 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
     
     if (!fonts) return props.fontFamily || 'Arial';
     
-    if (this.isEastAsian(char)) {
+    if (UnicodeRange.isEastAsian(char)) {
       return fonts.eastAsia || props.fontFamily || 'SimSun';
     } else {
-      const code = char.charCodeAt(0);
-      if (code <= 127) {
+      if (UnicodeRange.isASCII(char)) {
         return fonts.ascii || props.fontFamily || 'Arial';
-      } else if (code <= 255) {
+      } else if (UnicodeRange.isHighANSI(char)) {
         return fonts.hAnsi || fonts.ascii || props.fontFamily || 'Arial';
       } else {
         return fonts.cs || fonts.ascii || props.fontFamily || 'Arial';

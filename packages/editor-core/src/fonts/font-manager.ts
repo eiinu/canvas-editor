@@ -1,3 +1,5 @@
+import { detectOS, OSType } from '@eiinu/editor-utils';
+
 /**
  * 字体管理模块
  * 负责 OpenXML 字体到 Web 字体的映射以及跨平台回退逻辑
@@ -12,7 +14,7 @@ export interface FontMapping {
 
 export class FontManager {
   private static instance: FontManager;
-  private currentOS: 'windows' | 'macos' | 'linux' | 'other';
+  private currentOS: OSType;
   private measurementCache: Map<string, number> = new Map();
   private loadingFonts: Set<string> = new Set();
 
@@ -53,7 +55,7 @@ export class FontManager {
   };
 
   private constructor() {
-    this.currentOS = this.detectOS();
+    this.currentOS = detectOS();
   }
 
   public static getInstance(): FontManager {
@@ -61,20 +63,6 @@ export class FontManager {
       FontManager.instance = new FontManager();
     }
     return FontManager.instance;
-  }
-
-  /**
-   * 检测当前操作系统
-   */
-  private detectOS(): 'windows' | 'macos' | 'linux' | 'other' {
-    if (typeof window === 'undefined') return 'other';
-    
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    if (userAgent.indexOf('win') !== -1) return 'windows';
-    if (userAgent.indexOf('mac') !== -1) return 'macos';
-    if (userAgent.indexOf('linux') !== -1) return 'linux';
-    
-    return 'other';
   }
 
   /**
