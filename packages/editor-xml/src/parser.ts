@@ -93,6 +93,9 @@ export class BasicXmlConverter implements XmlConverter {
               }
               if (props.caps) rPr['w:caps'] = {};
               if (props.smallCaps) rPr['w:smallCaps'] = {};
+              if (props.highlight) rPr['w:highlight'] = { 'w:val': props.highlight };
+              if (props.letterSpacing) rPr['w:spacing'] = { 'w:val': props.letterSpacing };
+              if (props.vanish) rPr['w:vanish'] = {};
               if (props.color) rPr['w:color'] = { 'w:val': props.color.replace('#', '') };
 
               return {
@@ -162,6 +165,9 @@ export class BasicXmlConverter implements XmlConverter {
           const vertAlign = getVal(rPr, 'vertAlign');
           const caps = getVal(rPr, 'caps');
           const smallCaps = getVal(rPr, 'smallCaps');
+          const highlight = getVal(rPr, 'highlight');
+          const spacing = getVal(rPr, 'spacing');
+          const vanish = getVal(rPr, 'vanish');
           const color = getVal(rPr, 'color');
 
           const rProps: RunProperties = {
@@ -183,6 +189,9 @@ export class BasicXmlConverter implements XmlConverter {
               vertAlign: vertAlign ? (vertAlign.val || vertAlign['w:val']) : 'baseline',
               caps: caps !== undefined,
               smallCaps: smallCaps !== undefined,
+              highlight: highlight ? (highlight.val || highlight['w:val']) : undefined,
+              letterSpacing: spacing ? parseInt(spacing.val || spacing['w:val']) : undefined,
+              vanish: vanish !== undefined,
               color: color ? `#${color.val || color['w:val']}` : undefined,
           };
 

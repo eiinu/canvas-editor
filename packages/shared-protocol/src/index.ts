@@ -155,6 +155,8 @@ export interface RunProperties {
   smallCaps?: boolean;
   /** 字符间距 - 对应 <w:spacing> */
   letterSpacing?: number;
+  /** 隐藏文字 - 对应 <w:vanish> */
+  vanish?: boolean;
 }
 
 /**

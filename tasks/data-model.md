@@ -47,12 +47,12 @@
 | **strike** | `w:strike` | 删除线 | ✅ 已实现 |
 | **doubleStrike** | `w:dstrike` | 双删除线 | ✅ 已实现 |
 | **color** | `w:color` | 文本颜色 (Hex) | ✅ 已实现 |
-| **highlight** | `w:highlight` | 突出显示颜色 | ⏳ 接口已定义 |
+| **highlight** | `w:highlight` | 突出显示颜色 | ✅ 已实现 |
 | **vertAlign** | `w:vertAlign` | 垂直对齐 (superscript, subscript) | ✅ 已实现 |
 | **caps** | `w:caps` | 全部大写字母 | ✅ 已实现 |
 | **smallCaps** | `w:smallCaps` | 小型大写字母 | ✅ 已实现 |
-| **letterSpacing** | `w:spacing` | 字符间距 | ⏳ 接口已定义 |
-| **vanish** | `w:vanish` | 隐藏文字 | 📅 待处理 |
+| **letterSpacing** | `w:spacing` | 字符间距 | ✅ 已实现 |
+| **vanish** | `w:vanish` | 隐藏文字 | ✅ 已实现 |
 | **shadow** | `w:shd` | 文字阴影 | 📅 待处理 |
 
 ---

@@ -63,7 +63,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
     for (const run of this.runs) {
       const data = run.getData();
-      if (data.content.type !== 'text') continue;
+      if (data.content.type !== 'text' || data.properties.vanish) continue;
       
       let text = (data.content as TextContent).text;
       const props = data.properties;
@@ -81,6 +81,8 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       
       const bold = data.properties.bold ? 'bold' : '';
       const italic = data.properties.italic ? 'italic' : '';
+      
+      const letterSpacing = (props.letterSpacing || 0) * 0.05; // 1 twip = 0.05px
       
       let start = 0;
       while (start < text.length) {
@@ -102,13 +104,14 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         let segmentStart = 0;
         for (let i = 1; i <= segmentText.length; i++) {
           const subtext = segmentText.substring(segmentStart, i);
-          const w = this.fontManager.measureText(ctx, subtext, currentFont);
+          // 测量时加上字符间距
+          const w = this.fontManager.measureText(ctx, subtext, currentFont) + (subtext.length * letterSpacing);
 
           if (currentLine.width + w > maxWidth) {
             // 需要换行
             if (i > segmentStart + 1) {
               const finalSubtext = segmentText.substring(segmentStart, i - 1);
-              const finalW = this.fontManager.measureText(ctx, finalSubtext, currentFont);
+              const finalW = this.fontManager.measureText(ctx, finalSubtext, currentFont) + (finalSubtext.length * letterSpacing);
               currentLine.fragments.push({ run, text: finalSubtext, width: finalW, font: currentFont });
               currentLine.width += finalW;
               currentLine.height = Math.max(currentLine.height, fontSize);
@@ -124,7 +127,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
                 currentLine = { fragments: [], width: 0, height: 0 };
               }
               const singleChar = segmentText.substring(segmentStart, i);
-              const singleW = this.fontManager.measureText(ctx, singleChar, currentFont);
+              const singleW = this.fontManager.measureText(ctx, singleChar, currentFont) + letterSpacing;
               currentLine.width = singleW;
               currentLine.height = fontSize;
               currentLine.fragments.push({ run, text: singleChar, width: singleW, font: currentFont });
@@ -200,6 +203,18 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           drawY += originalFontSize * 0.15; // 向下偏移
         }
 
+        // 绘制高亮背景
+        if (props.highlight) {
+          ctx.save();
+          ctx.fillStyle = props.highlight;
+          // 高亮高度通常覆盖整个行高
+          ctx.fillRect(drawX, currentY - line.height, frag.width, line.height * lineSpacing);
+          ctx.restore();
+        }
+
+        // 处理字符间距绘制逻辑
+        const letterSpacing = (props.letterSpacing || 0) * 0.05;
+
         // 处理小型大写字母渲染
         if (props.smallCaps) {
           ctx.save();
@@ -209,8 +224,8 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
             const char = rawText[i];
             const isLower = char === char.toLowerCase() && char !== char.toUpperCase();
             
-            // 记录原始字符的测量宽度 (排版宽度)
-            const charLayoutWidth = ctx.measureText(char).width;
+            // 记录原始字符的测量宽度 (排版宽度，已包含 letterSpacing)
+            const charLayoutWidth = ctx.measureText(char).width + letterSpacing;
 
             if (isLower) {
               // 如果是小写字母，则渲染为较小字号的大写字母
@@ -220,21 +235,26 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
               const fontFamily = ctx.font.split(' ').pop();
               ctx.font = `${style} ${weight} ${smallFontSize}px ${fontFamily}`;
               
-              // 居中或按小写布局渲染大写形式
               ctx.fillText(char.toUpperCase(), currentX, drawY);
             } else {
-              // 本身就是大写字母，直接渲染
               ctx.fillText(char, currentX, drawY);
             }
             
-            // 严格遵循小写布局宽度进行步进
             currentX += charLayoutWidth;
-            // 恢复字体以便下次测量
             ctx.font = frag.font;
           }
           ctx.restore();
         } else {
-          ctx.fillText(drawText, drawX, drawY);
+          // 如果有字符间距，需要逐个字符绘制或使用更现代的 Canvas API (如果支持)
+          if (letterSpacing !== 0) {
+            let currentX = drawX;
+            for (const char of drawText) {
+              ctx.fillText(char, currentX, drawY);
+              currentX += ctx.measureText(char).width + letterSpacing;
+            }
+          } else {
+            ctx.fillText(drawText, drawX, drawY);
+          }
         }
         
         // 渲染装饰线 (委托给 RunElement，但由于我们现在是在段落中切分的文本，需要特殊处理)
