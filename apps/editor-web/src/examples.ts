@@ -118,6 +118,7 @@ export const FULL_DOC: Document = {
       ...TITLE_DOC.sections[0].children,
       ...BASIC_STYLES_DOC.sections[0].children,
       ...COLOR_AND_SIZE_DOC.sections[0].children,
+      ...FONTS_DOC.sections[0].children,
       ...WORD_WRAP_DOC.sections[0].children
     ]
   }]
