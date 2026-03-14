@@ -42,12 +42,23 @@ pnpm clean       # 清理产物
 - ✅ 已完成统一 TypeScript / ESLint / Vitest / Prettier 工程配置。
 - ✅ 已完成应用与服务脚手架、构建链路和开发命令。
 
+## 核心架构原则 (Architecture Principles)
+
+### 总体设计
+- **单一事实源 (SSOT)**：所有状态以结构化文档模型为准，而非 DOM。
+- **输入与渲染解耦**：输入事件 -> 产生命令 -> 变更模型 -> 触发重排版与 Canvas 渲染。
+- **协同优先 (Collab-first)**：所有编辑操作均可序列化为原子 Operation，天然支持 OT/CRDT。
+- **高性能 Canvas 渲染**：基于脏矩形 (Dirty Rect) 的增量更新与多层画布管理。
+
+### 数据模型设计
+- **类 OpenXML 架构**：数据模型采用类似 Word 的 `Document -> Section -> Paragraph -> Run -> Text` 分层结构，以实现像素级的排版还原度。详见 [data-model-spec.md](docs/data-model-spec.md)。
+
 ## 路线图 (Roadmap) / TODO
 
 ### 阶段一：核心模型与数据结构 (Foundation)
-- [ ] **文档模型定义**：在 `editor-core` 中实现 `Document -> Block -> InlineSpan -> TextRun` 数据结构。
+- [ ] **OpenXML 风格模型实现**：在 `editor-core` 中实现基于 [data-model-spec.md](docs/data-model-spec.md) 的树形数据结构。
 - [ ] **不可变状态管理**：实现文档状态的快照机制，支持基于操作 (Operation) 的状态转换。
-- [ ] **操作原语 (Operations)**：在 `shared-protocol` 中定义 `insert_text`, `delete_range`, `set_mark` 等原子操作。
+- [ ] **操作原语 (Operations)**：在 `editor-protocol` 中定义 `insert_text`, `split_paragraph`, `merge_paragraph`, `update_properties` 等原子操作。
 - [ ] **撤销/重做系统**：基于 Operation 实现 Undo/Redo 栈管理。
 
 ### 阶段二：排版与渲染引擎 (Layout & Rendering)
