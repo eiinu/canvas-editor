@@ -39,7 +39,7 @@
 
 | 属性名 | OpenXML 标签 | 描述 | 状态 |
 | :--- | :--- | :--- | :--- |
-| **fontFamily** | `w:rFonts` | 字体名称 | ✅ 已实现 (支持 w:ascii, w:eastAsia 等) |
+| **fontFamily** | `w:rFonts` | 字体名称 | ✅ 已实现 (支持 w:ascii, w:eastAsia, w:hAnsi, w:cs) |
 | **fontSize** | `w:sz` | 字号 (half-points) | ✅ 已实现 |
 | **bold** | `w:b` | 加粗 | ✅ 已实现 |
 | **italic** | `w:i` | 斜体 | ✅ 已实现 |

@@ -114,7 +114,20 @@ export interface Run {
  * 运行块属性 - 对应 <w:rPr>
  */
 export interface RunProperties {
-  /** 字体名称 - 对应 <w:rFonts> */
+  /** 字体名称集合 - 对应 <w:rFonts> */
+  fonts?: {
+    /** 西文字体 - 对应 <w:ascii> (0-127) */
+    ascii?: string;
+    /** 东亚字体 - 对应 <w:eastAsia> (CJK) */
+    eastAsia?: string;
+    /** 高位 ANSI 字体 - 对应 <w:hAnsi> (128-255) */
+    hAnsi?: string;
+    /** 复杂脚本字体 - 对应 <w:cs> (Arabic, etc.) */
+    cs?: string;
+    /** 提示字体 - 对应 <w:hint> (eastAsia | default) */
+    hint?: 'eastAsia' | 'default';
+  };
+  /** 兼容性字段：字体名称 - 对应 <w:rFonts w:val="..."> */
   fontFamily?: string;
   /** 字号 - 对应 <w:sz> (单位: half-points) */
   fontSize?: number;

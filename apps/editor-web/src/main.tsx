@@ -10,8 +10,7 @@ import {
   BASIC_STYLES_DOC, 
   COLOR_AND_SIZE_DOC, 
   WORD_WRAP_DOC,
-  FONTS_DOC,
-  FONT_FALLBACK_DOC
+  FONTS_DOC
 } from './examples.js';
 import './styles.css';
 
@@ -173,13 +172,6 @@ function App() {
               title="Fonts Only"
             >
               Fonts
-            </button>
-            <button 
-              onClick={() => setXmlCode(converter.toXml(FONT_FALLBACK_DOC))} 
-              style={{ fontSize: '10px', padding: '2px 4px', cursor: 'pointer' }}
-              title="Fallback Demo"
-            >
-              Fallback
             </button>
           </div>
         </div>

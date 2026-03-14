@@ -7,6 +7,7 @@ interface LineFragment {
   run: RunElement;
   text: string;
   width: number;
+  font: string; // 每个片段使用的具体字体
 }
 
 interface RenderLine {
@@ -30,7 +31,43 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
   }
 
   /**
-   * 布局计算 (自动换行)
+   * 判断字符是否属于东亚字符集 (CJK)
+   */
+  private isEastAsian(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return (
+      (code >= 0x4e00 && code <= 0x9fff) || // CJK Unified Ideographs
+      (code >= 0x3400 && code <= 0x4dbf) || // CJK Unified Ideographs Extension A
+      (code >= 0x3000 && code <= 0x303f) || // CJK Symbols and Punctuation
+      (code >= 0xff00 && code <= 0xffef)    // Halfwidth and Fullwidth Forms
+    );
+  }
+
+  /**
+   * 获取当前字符应使用的字体名称
+   */
+  private getFontForChar(run: RunElement, char: string): string {
+    const props = run.getData().properties;
+    const fonts = props.fonts;
+    
+    if (!fonts) return props.fontFamily || 'Arial';
+    
+    if (this.isEastAsian(char)) {
+      return fonts.eastAsia || props.fontFamily || 'SimSun';
+    } else {
+      const code = char.charCodeAt(0);
+      if (code <= 127) {
+        return fonts.ascii || props.fontFamily || 'Arial';
+      } else if (code <= 255) {
+        return fonts.hAnsi || fonts.ascii || props.fontFamily || 'Arial';
+      } else {
+        return fonts.cs || fonts.ascii || props.fontFamily || 'Arial';
+      }
+    }
+  }
+
+  /**
+   * 布局计算 (自动换行 + 混合字体处理)
    */
   layout(context: RenderContext): number {
     const { ctx, maxWidth } = context;
@@ -42,44 +79,69 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       if (data.content.type !== 'text') continue;
       
       const text = (data.content as TextContent).text;
-      run.applyStyles(ctx);
+      const fontSize = data.properties.fontSize ? (data.properties.fontSize / 2) : 12;
+      const bold = data.properties.bold ? 'bold' : '';
+      const italic = data.properties.italic ? 'italic' : '';
       
       let start = 0;
-      for (let i = 1; i <= text.length; i++) {
-        const subtext = text.substring(start, i);
-        const w = this.fontManager.measureText(ctx, subtext, ctx.font);
-        const fontSize = data.properties.fontSize ? (data.properties.fontSize / 2) : 12;
+      while (start < text.length) {
+        // 1. 确定当前字符块的字体
+         const firstChar = text[start];
+         const currentFontFamily = this.getFontForChar(run, firstChar);
+         const currentFont = `${italic} ${bold} ${fontSize}px ${this.fontManager.getFontFamily(currentFontFamily)}`.trim();
+         
+         // 2. 找到相同字体的连续文本块
+        let end = start + 1;
+        while (end < text.length && this.getFontForChar(run, text[end]) === currentFontFamily) {
+          end++;
+        }
+        
+        const segmentText = text.substring(start, end);
+        ctx.font = currentFont;
+        
+        // 3. 对该文本块进行换行处理
+        let segmentStart = 0;
+        for (let i = 1; i <= segmentText.length; i++) {
+          const subtext = segmentText.substring(segmentStart, i);
+          const w = this.fontManager.measureText(ctx, subtext, currentFont);
 
-        if (currentLine.width + w > maxWidth) {
-          if (i > start + 1) {
-            const finalSubtext = text.substring(start, i - 1);
-            const finalW = this.fontManager.measureText(ctx, finalSubtext, ctx.font);
-            currentLine.fragments.push({ run, text: finalSubtext, width: finalW });
-            currentLine.width += finalW;
-            currentLine.height = Math.max(currentLine.height, fontSize);
-            this.lines.push(currentLine);
-            
-            currentLine = { fragments: [], width: 0, height: 0 };
-            start = i - 1;
-            i--;
-          } else {
-            if (currentLine.fragments.length > 0) {
+          if (currentLine.width + w > maxWidth) {
+            // 需要换行
+            if (i > segmentStart + 1) {
+              const finalSubtext = segmentText.substring(segmentStart, i - 1);
+              const finalW = this.fontManager.measureText(ctx, finalSubtext, currentFont);
+              currentLine.fragments.push({ run, text: finalSubtext, width: finalW, font: currentFont });
+              currentLine.width += finalW;
+              currentLine.height = Math.max(currentLine.height, fontSize);
+              this.lines.push(currentLine);
+              
+              currentLine = { fragments: [], width: 0, height: 0 };
+              segmentStart = i - 1;
+              i--;
+            } else {
+              // 单个字符就超过了宽度 (或者当前行已有内容)
+              if (currentLine.fragments.length > 0) {
+                this.lines.push(currentLine);
+                currentLine = { fragments: [], width: 0, height: 0 };
+              }
+              const singleChar = segmentText.substring(segmentStart, i);
+              const singleW = this.fontManager.measureText(ctx, singleChar, currentFont);
+              currentLine.width = singleW;
+              currentLine.height = fontSize;
+              currentLine.fragments.push({ run, text: singleChar, width: singleW, font: currentFont });
               this.lines.push(currentLine);
               currentLine = { fragments: [], width: 0, height: 0 };
+              segmentStart = i;
             }
-            const singleChar = text.substring(start, i);
-            const singleW = this.fontManager.measureText(ctx, singleChar, ctx.font);
-            currentLine.width = singleW;
-            currentLine.height = fontSize;
-            this.lines.push(currentLine);
-            currentLine = { fragments: [], width: 0, height: 0 };
-            start = i;
+          } else if (i === segmentText.length) {
+            // 文本块结束，加入当前行
+            currentLine.fragments.push({ run, text: subtext, width: w, font: currentFont });
+            currentLine.width += w;
+            currentLine.height = Math.max(currentLine.height, fontSize);
           }
-        } else if (i === text.length) {
-          currentLine.fragments.push({ run, text: subtext, width: w });
-          currentLine.width += w;
-          currentLine.height = Math.max(currentLine.height, fontSize);
         }
+        
+        start = end;
       }
     }
 
@@ -119,12 +181,14 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       let drawX = x + offsetX;
 
       line.fragments.forEach(frag => {
-        frag.run.applyStyles(ctx);
+        ctx.font = frag.font;
+        // 提取颜色
+        const props = frag.run.getData().properties;
+        ctx.fillStyle = props.color || '#000000';
         ctx.fillText(frag.text, drawX, currentY);
         
         // 渲染装饰线 (委托给 RunElement，但由于我们现在是在段落中切分的文本，需要特殊处理)
         // 为了简单，我们直接在 Paragraph 中处理 Fragment 的装饰线
-        const props = frag.run.getData().properties;
         if (props.underline || props.strike) {
           const fontSize = props.fontSize ? (props.fontSize / 2) : 12;
           ctx.beginPath();

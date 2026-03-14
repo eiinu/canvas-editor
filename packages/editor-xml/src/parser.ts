@@ -58,7 +58,24 @@ export class BasicXmlConverter implements XmlConverter {
             'w:r': p.children.map(r => {
               const rPr: any = {};
               const props = r.properties;
-              if (props.fontFamily) rPr['w:rFonts'] = { 'w:ascii': props.fontFamily, 'w:hAnsi': props.fontFamily, 'w:eastAsia': props.fontFamily };
+              
+              // 处理字体 (优先使用 fonts 集合)
+              if (props.fonts) {
+                const rFonts: any = {};
+                if (props.fonts.ascii) rFonts['w:ascii'] = props.fonts.ascii;
+                if (props.fonts.eastAsia) rFonts['w:eastAsia'] = props.fonts.eastAsia;
+                if (props.fonts.hAnsi) rFonts['w:hAnsi'] = props.fonts.hAnsi;
+                if (props.fonts.cs) rFonts['w:cs'] = props.fonts.cs;
+                if (props.fonts.hint) rFonts['w:hint'] = props.fonts.hint;
+                rPr['w:rFonts'] = rFonts;
+              } else if (props.fontFamily) {
+                rPr['w:rFonts'] = { 
+                  'w:ascii': props.fontFamily, 
+                  'w:hAnsi': props.fontFamily, 
+                  'w:eastAsia': props.fontFamily 
+                };
+              }
+
               if (props.fontSize) rPr['w:sz'] = { 'w:val': props.fontSize };
               if (props.bold) rPr['w:b'] = {};
               if (props.italic) rPr['w:i'] = {};
@@ -132,6 +149,13 @@ export class BasicXmlConverter implements XmlConverter {
           const color = getVal(rPr, 'color');
 
           const rProps: RunProperties = {
+            fonts: rFonts ? {
+              ascii: rFonts.ascii || rFonts['w:ascii'] || rFonts.val || rFonts['w:val'],
+              eastAsia: rFonts.eastAsia || rFonts['w:eastAsia'],
+              hAnsi: rFonts.hAnsi || rFonts['w:hAnsi'],
+              cs: rFonts.cs || rFonts['w:cs'],
+              hint: rFonts.hint || rFonts['w:hint'],
+            } : undefined,
             fontFamily: rFonts ? (rFonts.ascii || rFonts['w:ascii'] || rFonts.eastAsia || rFonts['w:eastAsia'] || rFonts.val || rFonts['w:val']) : undefined,
             fontSize: sz ? parseInt(sz.val || sz['w:val']) : 24, // 默认 12pt (24 half-points)
             bold: b !== undefined,

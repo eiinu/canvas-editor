@@ -103,7 +103,7 @@ export const FONTS_DOC: Document = {
   sections: [{
     properties: {},
     children: [
-      createSectionHeader('Font Mapping (EN/ZH)'),
+      createSectionHeader('Font Management (Mapping & Fallback)'),
       {
         id: 'p-fonts-en',
         properties: { alignment: 'left' },
@@ -122,43 +122,32 @@ export const FONTS_DOC: Document = {
           { properties: { fontSize: 32, fontFamily: 'KaiTi' }, content: { type: 'text', text: '楷体：前端开发是一个充满挑战的领域。' } },
           { properties: { fontSize: 32, fontFamily: 'SimHei' }, content: { type: 'text', text: '黑体：前端开发是一个充满挑战的领域。' } }
         ]
-      } as Paragraph
-    ]
-  }]
-};
-
-/** 字体回退演示示例数据 */
-export const FONT_FALLBACK_DOC: Document = {
-  id: 'font-fallback-doc',
-  sections: [{
-    properties: {},
-    children: [
-      createSectionHeader('Cross-platform Font Fallback'),
+      } as Paragraph,
+      createSectionHeader('Mixed Fonts (ASCII vs EastAsia)'),
+      {
+        id: 'p-mixed-fonts',
+        properties: { alignment: 'left' },
+        children: [
+          { 
+            properties: { 
+              fontSize: 32, 
+              fonts: { ascii: 'Courier New', eastAsia: 'KaiTi' } 
+            }, 
+            content: { type: 'text', text: '这是一段混合文本: English(Courier New) + 中文(楷体)。' } 
+          },
+          { 
+            properties: { 
+              fontSize: 32, 
+              fonts: { ascii: 'Times New Roman', eastAsia: 'SimSun' } 
+            }, 
+            content: { type: 'text', text: 'Another mixed sample: Numbers 123456 + 中文(宋体)。' } 
+          }
+        ]
+      } as Paragraph,
       {
         id: 'p-fallback-desc',
-        properties: { alignment: 'left' },
-        children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: '即便在没有安装对应字体的系统上，编辑器也会自动映射到相似的本地字体：' } }]
-      } as Paragraph,
-      {
-        id: 'p-fallback-ms-yahei',
-        properties: { alignment: 'left' },
-        children: [
-          { properties: { fontSize: 32, fontFamily: 'Microsoft YaHei' }, content: { type: 'text', text: '1. 微软雅黑 (Microsoft YaHei) -> macOS 下映射为 萍方' } }
-        ]
-      } as Paragraph,
-      {
-        id: 'p-fallback-simsun',
-        properties: { alignment: 'left' },
-        children: [
-          { properties: { fontSize: 32, fontFamily: 'SimSun' }, content: { type: 'text', text: '2. 宋体 (SimSun) -> macOS 下映射为 华文宋体' } }
-        ]
-      } as Paragraph,
-      {
-        id: 'p-fallback-kaiti',
-        properties: { alignment: 'left' },
-        children: [
-          { properties: { fontSize: 32, fontFamily: 'KaiTi' }, content: { type: 'text', text: '3. 楷体 (KaiTi) -> macOS 下映射为 华文楷体' } }
-        ]
+        properties: { alignment: 'left', spacing: { before: 200 } },
+        children: [{ properties: { fontSize: 24, italic: true, color: '#666666' }, content: { type: 'text', text: '注：跨平台环境下，缺失字体将自动回退到系统相似字体（如 macOS 下微软雅黑回退至萍方）。' } }]
       } as Paragraph
     ]
   }]
@@ -179,13 +168,10 @@ export const FULL_DOC: Document = {
       // 3. 颜色与字号
       ...COLOR_AND_SIZE_DOC.sections[0].children,
 
-      // 4. 字体映射 (英文与中文)
+      // 4. 字体管理 (映射与回退)
       ...FONTS_DOC.sections[0].children,
 
-      // 5. 跨平台字体回退
-      ...FONT_FALLBACK_DOC.sections[0].children,
-
-      // 6. 自动换行
+      // 5. 自动换行
       ...WORD_WRAP_DOC.sections[0].children,
     ]
   }]
