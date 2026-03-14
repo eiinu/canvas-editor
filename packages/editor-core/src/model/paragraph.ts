@@ -65,8 +65,15 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       const data = run.getData();
       if (data.content.type !== 'text') continue;
       
-      const text = (data.content as TextContent).text;
-      const originalFontSize = data.properties.fontSize ? (data.properties.fontSize / 2) : 12;
+      let text = (data.content as TextContent).text;
+      const props = data.properties;
+      
+      // 处理全部大写转换 (smallCaps 模式下使用原文/小写进行测量，符合排版逻辑)
+      if (props.caps) {
+        text = text.toUpperCase();
+      }
+
+      const originalFontSize = props.fontSize ? (props.fontSize / 2) : 12;
       const vertAlign = data.properties.vertAlign || 'baseline';
       
       // 上下标缩放比例 (通常为 0.6-0.7)
@@ -178,6 +185,12 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         const props = frag.run.getData().properties;
         ctx.fillStyle = props.color || '#000000';
         
+        // 处理文字内容 (caps 转换为全大写)
+        let drawText = frag.text;
+        if (props.caps) {
+          drawText = drawText.toUpperCase();
+        }
+
         // 处理上下标偏移
         let drawY = currentY;
         const originalFontSize = props.fontSize ? (props.fontSize / 2) : 12;
@@ -187,7 +200,42 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           drawY += originalFontSize * 0.15; // 向下偏移
         }
 
-        ctx.fillText(frag.text, drawX, drawY);
+        // 处理小型大写字母渲染
+        if (props.smallCaps) {
+          ctx.save();
+          const rawText = frag.text;
+          let currentX = drawX;
+          for (let i = 0; i < rawText.length; i++) {
+            const char = rawText[i];
+            const isLower = char === char.toLowerCase() && char !== char.toUpperCase();
+            
+            // 记录原始字符的测量宽度 (排版宽度)
+            const charLayoutWidth = ctx.measureText(char).width;
+
+            if (isLower) {
+              // 如果是小写字母，则渲染为较小字号的大写字母
+              const smallFontSize = (props.fontSize ? (props.fontSize / 2) : 12) * 0.85;
+              const weight = props.bold ? 'bold' : 'normal';
+              const style = props.italic ? 'italic' : 'normal';
+              const fontFamily = ctx.font.split(' ').pop();
+              ctx.font = `${style} ${weight} ${smallFontSize}px ${fontFamily}`;
+              
+              // 居中或按小写布局渲染大写形式
+              ctx.fillText(char.toUpperCase(), currentX, drawY);
+            } else {
+              // 本身就是大写字母，直接渲染
+              ctx.fillText(char, currentX, drawY);
+            }
+            
+            // 严格遵循小写布局宽度进行步进
+            currentX += charLayoutWidth;
+            // 恢复字体以便下次测量
+            ctx.font = frag.font;
+          }
+          ctx.restore();
+        } else {
+          ctx.fillText(drawText, drawX, drawY);
+        }
         
         // 渲染装饰线 (委托给 RunElement，但由于我们现在是在段落中切分的文本，需要特殊处理)
         // 为了简单，我们直接在 Paragraph 中处理 Fragment 的装饰线

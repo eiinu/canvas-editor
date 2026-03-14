@@ -15,6 +15,7 @@ export class RunElement extends DocumentElement<Run> {
 
   layout(_context: RenderContext): number {
     // Run 本身不独立占行，高度由 Paragraph 决定
+    void _context;
     return 0;
   }
 
@@ -23,7 +24,14 @@ export class RunElement extends DocumentElement<Run> {
    */
   measureWidth(ctx: CanvasRenderingContext2D): number {
     if (this.data.content.type !== 'text') return 0;
-    const text = (this.data.content as TextContent).text;
+    let text = (this.data.content as TextContent).text;
+    const props = this.data.properties;
+    
+    // 如果是全大写，则按大写测量
+    if (props.caps) {
+      text = text.toUpperCase();
+    }
+    
     this.applyStyles(ctx);
     return this.fontManager.measureText(ctx, text, ctx.font);
   }
@@ -54,7 +62,41 @@ export class RunElement extends DocumentElement<Run> {
       drawY += originalFontSize * 0.15;
     }
 
-    ctx.fillText(textContent.text, x, drawY);
+    // 处理全大写转换 (caps 模式下直接转换为大写绘制)
+    let drawText = textContent.text;
+    if (properties.caps) {
+      drawText = drawText.toUpperCase();
+    }
+
+    // 处理小型大写字母渲染 (smallCaps)
+    if (properties.smallCaps) {
+      ctx.save();
+      let currentX = x;
+      for (let i = 0; i < drawText.length; i++) {
+        const char = drawText[i];
+        const isLower = char === char.toLowerCase() && char !== char.toUpperCase();
+        
+        // 测量排版宽度
+        const charLayoutWidth = ctx.measureText(char).width;
+
+        if (isLower) {
+          const smallFontSize = (properties.fontSize ? (properties.fontSize / 2) : 12) * 0.85;
+          const weight = properties.bold ? 'bold' : 'normal';
+          const style = properties.italic ? 'italic' : 'normal';
+          const fontFamily = ctx.font.split(' ').pop();
+          ctx.font = `${style} ${weight} ${smallFontSize}px ${fontFamily}`;
+          ctx.fillText(char.toUpperCase(), currentX, drawY);
+        } else {
+          ctx.fillText(char, currentX, drawY);
+        }
+        
+        currentX += charLayoutWidth;
+        this.applyStyles(ctx); // 恢复字体并重置
+      }
+      ctx.restore();
+    } else {
+      ctx.fillText(drawText, x, drawY);
+    }
 
     const width = this.fontManager.measureText(ctx, textContent.text, ctx.font);
 

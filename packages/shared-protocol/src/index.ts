@@ -149,6 +149,10 @@ export interface RunProperties {
   highlight?: string;
   /** 垂直对齐 - 对应 <w:vertAlign> (上标、下标) */
   vertAlign?: 'baseline' | 'superscript' | 'subscript';
+  /** 全部大写 - 对应 <w:caps> */
+  caps?: boolean;
+  /** 小型大写字母 - 对应 <w:smallCaps> */
+  smallCaps?: boolean;
   /** 字符间距 - 对应 <w:spacing> */
   letterSpacing?: number;
 }

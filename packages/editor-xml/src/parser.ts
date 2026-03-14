@@ -91,6 +91,8 @@ export class BasicXmlConverter implements XmlConverter {
               if (props.vertAlign && props.vertAlign !== 'baseline') {
                 rPr['w:vertAlign'] = { 'w:val': props.vertAlign };
               }
+              if (props.caps) rPr['w:caps'] = {};
+              if (props.smallCaps) rPr['w:smallCaps'] = {};
               if (props.color) rPr['w:color'] = { 'w:val': props.color.replace('#', '') };
 
               return {
@@ -158,6 +160,8 @@ export class BasicXmlConverter implements XmlConverter {
           const strike = getVal(rPr, 'strike');
           const dstrike = getVal(rPr, 'dstrike');
           const vertAlign = getVal(rPr, 'vertAlign');
+          const caps = getVal(rPr, 'caps');
+          const smallCaps = getVal(rPr, 'smallCaps');
           const color = getVal(rPr, 'color');
 
           const rProps: RunProperties = {
@@ -177,6 +181,8 @@ export class BasicXmlConverter implements XmlConverter {
             strike: strike !== undefined,
               doubleStrike: dstrike !== undefined,
               vertAlign: vertAlign ? (vertAlign.val || vertAlign['w:val']) : 'baseline',
+              caps: caps !== undefined,
+              smallCaps: smallCaps !== undefined,
               color: color ? `#${color.val || color['w:val']}` : undefined,
           };
 

@@ -60,7 +60,11 @@ export const BASIC_STYLES_DOC: Document = {
           { properties: { fontSize: 24, vertAlign: 'superscript' }, content: { type: 'text', text: '2' } },
           { properties: { fontSize: 24 }, content: { type: 'text', text: '，H' } },
           { properties: { fontSize: 24, vertAlign: 'subscript' }, content: { type: 'text', text: '2' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: 'O' } }
+          { properties: { fontSize: 24 }, content: { type: 'text', text: 'O' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 24, caps: true }, content: { type: 'text', text: 'all caps' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 24, smallCaps: true }, content: { type: 'text', text: 'Small Caps' } }
         ]
       } as Paragraph,
       createSectionHeader('Mixed Styles Combinations'),
