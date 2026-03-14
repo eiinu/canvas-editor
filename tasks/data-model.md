@@ -26,7 +26,7 @@
 | :--- | :--- | :--- | :--- |
 | **alignment** | `w:jc` | 对齐方式 (left, center, right, justify) | ✅ 已实现 |
 | **indentation** | `w:ind` | 缩进 (left, right, firstLine, hanging) | ⏳ 接口已定义 |
-| **spacing** | `w:spacing` | 间距 (before, after, line, lineRule) | ⏳ 接口已定义 |
+| **spacing** | `w:spacing` | 间距 (before, after, line, lineRule) | ✅ 已实现 |
 | **styleId** | `w:pStyle` | 关联的段落样式 ID | ✅ 已实现 |
 | **borders** | `w:pBdr` | 段落边框 | 📅 待处理 |
 | **shading** | `w:shd` | 段落底纹/背景 | 📅 待处理 |

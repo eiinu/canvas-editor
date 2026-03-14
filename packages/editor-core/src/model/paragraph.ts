@@ -87,8 +87,14 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       this.lines.push(currentLine);
     }
 
-    // 计算总高度 (行高 * 1.2)
-    return this.lines.reduce((acc, line) => acc + line.height * 1.2, 0);
+    // 计算内容高度 (行高 * 1.2)
+    const contentHeight = this.lines.reduce((acc, line) => acc + line.height * 1.2, 0);
+    
+    // 加上段前距和段后距 (单位为 twips，需要转换为像素，简单处理 1 twip = 0.05px)
+    const spacingBefore = (this.data.properties.spacing?.before || 0) * 0.05;
+    const spacingAfter = (this.data.properties.spacing?.after || 0) * 0.05;
+    
+    return contentHeight + spacingBefore + spacingAfter;
   }
 
   /**
@@ -96,7 +102,10 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
    */
   render(context: RenderContext, x: number, y: number): number {
     const { ctx, maxWidth } = context;
-    let currentY = y;
+    const spacingBefore = (this.data.properties.spacing?.before || 0) * 0.05;
+    const spacingAfter = (this.data.properties.spacing?.after || 0) * 0.05;
+    
+    let currentY = y + spacingBefore;
     const lineSpacing = 1.2;
 
     this.lines.forEach(line => {
@@ -138,6 +147,6 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       currentY += line.height * lineSpacing;
     });
 
-    return currentY;
+    return currentY + spacingAfter;
   }
 }

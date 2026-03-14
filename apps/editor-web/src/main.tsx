@@ -117,7 +117,9 @@ function App() {
         if ('children' in child) { // Paragraph
           const el = ModelFactory.createElement(child);
           currentY = renderer.renderElement(el, 50, currentY, logicalWidth - 100);
-          currentY += 20; // 段落间距
+          // 移除硬编码的段落间距，改由 ParagraphElement 的 spacing 属性或默认行高控制
+          // 为了保持基础文档的可读性，给一个极小的默认间隔
+          currentY += 8; 
         }
       });
     });

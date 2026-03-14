@@ -1,6 +1,20 @@
 import { Document, Paragraph } from '@eiinu/editor-protocol';
 
 /**
+ * 辅助函数：创建功能模块标题
+ */
+const createSectionHeader = (title: string): Paragraph => ({
+  id: `header-${title.replace(/\s+/g, '-').toLowerCase()}`,
+  properties: { alignment: 'left', spacing: { before: 400, after: 200 } },
+  children: [
+    {
+      properties: { fontSize: 32, bold: true, color: '#312E81', underline: 'single' },
+      content: { type: 'text', text: `Section: ${title}` }
+    }
+  ]
+} as Paragraph);
+
+/**
  * OpenXML 示例数据集合
  * 使用标准的 Document 对象定义，不再使用字符串拼接
  */
@@ -13,9 +27,9 @@ export const TITLE_DOC: Document = {
     children: [
       {
         id: 'p-title',
-        properties: { alignment: 'center' },
+        properties: { alignment: 'center', spacing: { after: 600 } },
         children: [{
-          properties: { fontSize: 48, bold: true, color: '#4F46E5' },
+          properties: { fontSize: 60, bold: true, color: '#4F46E5' },
           content: { type: 'text', text: 'EIINU Editor (Elegant Objects)' }
         }]
       } as Paragraph
@@ -29,6 +43,7 @@ export const BASIC_STYLES_DOC: Document = {
   sections: [{
     properties: {},
     children: [
+      createSectionHeader('Basic Text Styles'),
       {
         id: 'p-styles',
         properties: { alignment: 'left' },
@@ -50,9 +65,10 @@ export const COLOR_AND_SIZE_DOC: Document = {
   sections: [{
     properties: {},
     children: [
+      createSectionHeader('Color & Size'),
       {
         id: 'p-colors',
-        properties: { alignment: 'right' },
+        properties: { alignment: 'left' },
         children: [
           { properties: { fontSize: 32, color: '#FF0000' }, content: { type: 'text', text: '红色 16pt 文本' } },
           { properties: { fontSize: 20, color: '#0000FF' }, content: { type: 'text', text: '，蓝色 10pt 文本' } }
@@ -68,6 +84,7 @@ export const WORD_WRAP_DOC: Document = {
   sections: [{
     properties: {},
     children: [
+      createSectionHeader('Word Wrap & Layout'),
       {
         id: 'p-wrap',
         properties: { alignment: 'left' },
@@ -86,6 +103,7 @@ export const FONTS_DOC: Document = {
   sections: [{
     properties: {},
     children: [
+      createSectionHeader('Font Mapping (EN/ZH)'),
       {
         id: 'p-fonts-en',
         properties: { alignment: 'left' },
@@ -115,11 +133,7 @@ export const FONT_FALLBACK_DOC: Document = {
   sections: [{
     properties: {},
     children: [
-      {
-        id: 'p-fallback-title',
-        properties: { alignment: 'center' },
-        children: [{ properties: { fontSize: 36, bold: true }, content: { type: 'text', text: '跨平台字体回退演示' } }]
-      } as Paragraph,
+      createSectionHeader('Cross-platform Font Fallback'),
       {
         id: 'p-fallback-desc',
         properties: { alignment: 'left' },
@@ -156,12 +170,23 @@ export const FULL_DOC: Document = {
   sections: [{
     properties: {},
     children: [
+      // 1. 标题
       ...TITLE_DOC.sections[0].children,
+
+      // 2. 基础文本样式
       ...BASIC_STYLES_DOC.sections[0].children,
+
+      // 3. 颜色与字号
       ...COLOR_AND_SIZE_DOC.sections[0].children,
+
+      // 4. 字体映射 (英文与中文)
       ...FONTS_DOC.sections[0].children,
+
+      // 5. 跨平台字体回退
       ...FONT_FALLBACK_DOC.sections[0].children,
-      ...WORD_WRAP_DOC.sections[0].children
+
+      // 6. 自动换行
+      ...WORD_WRAP_DOC.sections[0].children,
     ]
   }]
 };

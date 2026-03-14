@@ -44,6 +44,14 @@ export class BasicXmlConverter implements XmlConverter {
           if (p.properties.alignment) {
             pPr['w:jc'] = { 'w:val': p.properties.alignment };
           }
+          if (p.properties.spacing) {
+            const spacing: any = {};
+            if (p.properties.spacing.before !== undefined) spacing['w:before'] = p.properties.spacing.before;
+            if (p.properties.spacing.after !== undefined) spacing['w:after'] = p.properties.spacing.after;
+            if (p.properties.spacing.line !== undefined) spacing['w:line'] = p.properties.spacing.line;
+            if (p.properties.spacing.lineRule) spacing['w:lineRule'] = p.properties.spacing.lineRule;
+            pPr['w:spacing'] = spacing;
+          }
 
           return {
             'w:pPr': Object.keys(pPr).length > 0 ? pPr : undefined,
@@ -98,9 +106,16 @@ export class BasicXmlConverter implements XmlConverter {
       rawPs.forEach((p: any, idx: number) => {
         const pPr = getVal(p, 'pPr') || {};
         const jc = getVal(pPr, 'jc');
+        const spacing = getVal(pPr, 'spacing');
         
         const pProps: ParagraphProperties = {
           alignment: jc?.val || jc?.['w:val'] || 'left',
+          spacing: spacing ? {
+            before: spacing.before || spacing['w:before'] ? parseInt(spacing.before || spacing['w:before']) : undefined,
+            after: spacing.after || spacing['w:after'] ? parseInt(spacing.after || spacing['w:after']) : undefined,
+            line: spacing.line || spacing['w:line'] ? parseInt(spacing.line || spacing['w:line']) : undefined,
+            lineRule: spacing.lineRule || spacing['w:lineRule'] || undefined,
+          } : undefined,
         };
 
         const runs: Run[] = [];
