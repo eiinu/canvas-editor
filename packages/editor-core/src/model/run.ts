@@ -45,13 +45,24 @@ export class RunElement extends DocumentElement<Run> {
     const fontFamily = this.fontManager.getFontFamily(rawFontFamily);
     this.fontManager.ensureFontLoaded(fontFamily);
 
-    ctx.fillText(textContent.text, x, y);
+    // 处理上下标偏移
+    let drawY = y;
+    const originalFontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
+    if (properties.vertAlign === 'superscript') {
+      drawY -= originalFontSize * 0.35;
+    } else if (properties.vertAlign === 'subscript') {
+      drawY += originalFontSize * 0.15;
+    }
+
+    ctx.fillText(textContent.text, x, drawY);
 
     const width = this.fontManager.measureText(ctx, textContent.text, ctx.font);
 
     // 绘制装饰线
     if (properties.underline || properties.strike || properties.doubleStrike) {
       const fontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
+      const decorFontSize = properties.vertAlign !== 'baseline' ? fontSize * 0.65 : fontSize;
+
       ctx.save(); // 保存当前状态
       ctx.lineWidth = 1;
       
@@ -59,16 +70,16 @@ export class RunElement extends DocumentElement<Run> {
         ctx.beginPath();
         const uColor = properties.underlineColor || properties.color || '#000000';
         ctx.strokeStyle = uColor;
-        ctx.moveTo(x, y + 2);
-        ctx.lineTo(x + width, y + 2);
+        ctx.moveTo(x, drawY + 2);
+        ctx.lineTo(x + width, drawY + 2);
         ctx.stroke();
       }
       
       if (properties.strike) {
         ctx.beginPath();
         ctx.strokeStyle = properties.color || '#000000';
-        ctx.moveTo(x, y - fontSize / 3);
-        ctx.lineTo(x + width, y - fontSize / 3);
+        ctx.moveTo(x, drawY - decorFontSize / 3);
+        ctx.lineTo(x + width, drawY - decorFontSize / 3);
         ctx.stroke();
       }
 
@@ -76,11 +87,11 @@ export class RunElement extends DocumentElement<Run> {
         ctx.beginPath();
         ctx.strokeStyle = properties.color || '#000000';
         // 第一条线
-        ctx.moveTo(x, y - fontSize / 3 - 1);
-        ctx.lineTo(x + width, y - fontSize / 3 - 1);
+        ctx.moveTo(x, drawY - decorFontSize / 3 - 1);
+        ctx.lineTo(x + width, drawY - decorFontSize / 3 - 1);
         // 第二条线
-        ctx.moveTo(x, y - fontSize / 3 + 2);
-        ctx.lineTo(x + width, y - fontSize / 3 + 2);
+        ctx.moveTo(x, drawY - decorFontSize / 3 + 2);
+        ctx.lineTo(x + width, drawY - decorFontSize / 3 + 2);
         ctx.stroke();
       }
       ctx.restore(); // 恢复状态
@@ -94,7 +105,12 @@ export class RunElement extends DocumentElement<Run> {
    */
   public applyStyles(ctx: CanvasRenderingContext2D) {
     const { properties } = this.data;
-    const fontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
+    const originalFontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
+    const vertAlign = properties.vertAlign || 'baseline';
+    
+    // 上下标缩放
+    const fontSize = vertAlign !== 'baseline' ? originalFontSize * 0.65 : originalFontSize;
+    
     const rawFontFamily = properties.fontFamily || 'Arial';
     const fontFamily = this.fontManager.getFontFamily(rawFontFamily);
     const weight = properties.bold ? 'bold' : 'normal';

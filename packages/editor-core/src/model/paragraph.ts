@@ -66,7 +66,12 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       if (data.content.type !== 'text') continue;
       
       const text = (data.content as TextContent).text;
-      const fontSize = data.properties.fontSize ? (data.properties.fontSize / 2) : 12;
+      const originalFontSize = data.properties.fontSize ? (data.properties.fontSize / 2) : 12;
+      const vertAlign = data.properties.vertAlign || 'baseline';
+      
+      // 上下标缩放比例 (通常为 0.6-0.7)
+      const fontSize = vertAlign !== 'baseline' ? originalFontSize * 0.65 : originalFontSize;
+      
       const bold = data.properties.bold ? 'bold' : '';
       const italic = data.properties.italic ? 'italic' : '';
       
@@ -172,28 +177,41 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         // 提取颜色
         const props = frag.run.getData().properties;
         ctx.fillStyle = props.color || '#000000';
-        ctx.fillText(frag.text, drawX, currentY);
+        
+        // 处理上下标偏移
+        let drawY = currentY;
+        const originalFontSize = props.fontSize ? (props.fontSize / 2) : 12;
+        if (props.vertAlign === 'superscript') {
+          drawY -= originalFontSize * 0.35; // 向上偏移
+        } else if (props.vertAlign === 'subscript') {
+          drawY += originalFontSize * 0.15; // 向下偏移
+        }
+
+        ctx.fillText(frag.text, drawX, drawY);
         
         // 渲染装饰线 (委托给 RunElement，但由于我们现在是在段落中切分的文本，需要特殊处理)
         // 为了简单，我们直接在 Paragraph 中处理 Fragment 的装饰线
         if (props.underline || props.strike || props.doubleStrike) {
           const fontSize = props.fontSize ? (props.fontSize / 2) : 12;
+          // 装饰线也需要跟随上下标缩放和偏移
+          const decorFontSize = props.vertAlign !== 'baseline' ? fontSize * 0.65 : fontSize;
+          
           ctx.save();
           ctx.lineWidth = 1;
           
           if (props.underline) {
             ctx.beginPath();
             ctx.strokeStyle = props.underlineColor || props.color || '#000000';
-            ctx.moveTo(drawX, currentY + 2);
-            ctx.lineTo(drawX + frag.width, currentY + 2);
+            ctx.moveTo(drawX, drawY + 2);
+            ctx.lineTo(drawX + frag.width, drawY + 2);
             ctx.stroke();
           }
           
           if (props.strike) {
             ctx.beginPath();
             ctx.strokeStyle = props.color || '#000000';
-            ctx.moveTo(drawX, currentY - fontSize / 3);
-            ctx.lineTo(drawX + frag.width, currentY - fontSize / 3);
+            ctx.moveTo(drawX, drawY - decorFontSize / 3);
+            ctx.lineTo(drawX + frag.width, drawY - decorFontSize / 3);
             ctx.stroke();
           }
 
@@ -201,11 +219,11 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
             ctx.beginPath();
             ctx.strokeStyle = props.color || '#000000';
             // 第一条线
-            ctx.moveTo(drawX, currentY - fontSize / 3 - 1);
-            ctx.lineTo(drawX + frag.width, currentY - fontSize / 3 - 1);
+            ctx.moveTo(drawX, drawY - decorFontSize / 3 - 1);
+            ctx.lineTo(drawX + frag.width, drawY - decorFontSize / 3 - 1);
             // 第二条线
-            ctx.moveTo(drawX, currentY - fontSize / 3 + 2);
-            ctx.lineTo(drawX + frag.width, currentY - fontSize / 3 + 2);
+            ctx.moveTo(drawX, drawY - decorFontSize / 3 + 2);
+            ctx.lineTo(drawX + frag.width, drawY - decorFontSize / 3 + 2);
             ctx.stroke();
           }
           ctx.restore();
