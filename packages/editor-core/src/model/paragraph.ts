@@ -183,6 +183,9 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       let drawX = x + offsetX;
 
       line.fragments.forEach(frag => {
+        // 每个 fragment 的样式完全独立，使用 save/restore 包裹整个绘制过程
+        ctx.save();
+
         ctx.font = frag.font;
         // 提取颜色
         const props = frag.run.getData().properties;
@@ -205,38 +208,37 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
         // 绘制高亮或底纹背景
         if (props.highlight || props.shading) {
-          ctx.save();
           ctx.fillStyle = (props.highlight || props.shading) as string;
           // 高亮/底纹高度通常覆盖整个行高
           ctx.fillRect(drawX, currentY - line.height, frag.width, line.height * lineSpacing);
-          ctx.restore();
+          // 恢复原来的 fillStyle
+          ctx.fillStyle = props.color || '#000000';
         }
 
         // 处理文字特效 (Shadow, Outline, Emboss, Imprint)
-        if (props.shadow || props.outline || props.emboss || props.imprint) {
-          ctx.save();
-          if (props.shadow) {
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 2;
-            ctx.shadowOffsetX = 1;
-            ctx.shadowOffsetY = 1;
-          }
-          if (props.outline) {
-            ctx.strokeStyle = props.color || '#000000';
-            ctx.lineWidth = 0.5;
-            ctx.strokeText(drawText, drawX, drawY); // 只有在不是 smallCaps 时才这样简单处理，smallCaps 需要逐字符
-          }
-          if (props.emboss) {
-            // 简单模拟：向左上偏移白色，向右下偏移黑色
-            ctx.fillStyle = 'rgba(255,255,255,0.7)';
-            ctx.fillText(drawText, drawX - 0.5, drawY - 0.5);
-            ctx.fillStyle = props.color || '#000000';
-          }
-          if (props.imprint) {
-            ctx.fillStyle = 'rgba(0,0,0,0.5)';
-            ctx.fillText(drawText, drawX + 0.5, drawY + 0.5);
-            ctx.fillStyle = props.color || '#000000';
-          }
+        if (props.shadow) {
+          ctx.shadowColor = 'rgba(0,0,0,0.5)';
+          ctx.shadowBlur = 2;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+        }
+        if (props.outline) {
+          ctx.strokeStyle = props.color || '#000000';
+          ctx.lineWidth = 0.5;
+          ctx.strokeText(drawText, drawX, drawY); // 只有在不是 smallCaps 时才这样简单处理，smallCaps 需要逐字符
+        }
+        if (props.emboss) {
+          // 简单模拟：向左上偏移白色，向右下偏移黑色
+          ctx.fillStyle = 'rgba(255,255,255,0.7)';
+          ctx.fillText(drawText, drawX - 0.5, drawY - 0.5);
+          ctx.fillStyle = 'rgba(0,0,0,0.3)';
+          ctx.fillText(drawText, drawX + 0.5, drawY + 0.5);
+          ctx.fillStyle = props.color || '#000000';
+        }
+        if (props.imprint) {
+          ctx.fillStyle = 'rgba(0,0,0,0.5)';
+          ctx.fillText(drawText, drawX + 0.5, drawY + 0.5);
+          ctx.fillStyle = props.color || '#000000';
         }
 
         // 处理字符间距绘制逻辑
@@ -244,13 +246,12 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
         // 处理小型大写字母渲染
         if (props.smallCaps) {
-          ctx.save();
           const rawText = frag.text;
           let currentX = drawX;
           for (let i = 0; i < rawText.length; i++) {
             const char = rawText[i];
             const isLower = char === char.toLowerCase() && char !== char.toUpperCase();
-            
+
             // 记录原始字符的测量宽度 (排版宽度，已包含 letterSpacing)
             const charLayoutWidth = ctx.measureText(char).width + letterSpacing;
 
@@ -261,16 +262,16 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
               const style = props.italic ? 'italic' : 'normal';
               const fontFamily = ctx.font.split(' ').pop();
               ctx.font = `${style} ${weight} ${smallFontSize}px ${fontFamily}`;
-              
+
               ctx.fillText(char.toUpperCase(), currentX, drawY);
+              // 恢复原始字体
+              ctx.font = frag.font;
             } else {
               ctx.fillText(char, currentX, drawY);
             }
-            
+
             currentX += charLayoutWidth;
-            ctx.font = frag.font;
           }
-          ctx.restore();
         } else {
           // 如果有字符间距，需要逐个字符绘制或使用更现代的 Canvas API (如果支持)
           if (letterSpacing !== 0) {
@@ -283,17 +284,15 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
             ctx.fillText(drawText, drawX, drawY);
           }
         }
-        
-        // 渲染装饰线 (委托给 RunElement，但由于我们现在是在段落中切分的文本，需要特殊处理)
-        // 为了简单，我们直接在 Paragraph 中处理 Fragment 的装饰线
+
+        // 渲染装饰线
         if (props.underline || props.strike || props.doubleStrike) {
           const fontSize = props.fontSize ? (props.fontSize / 2) : 12;
           // 装饰线也需要跟随上下标缩放和偏移
           const decorFontSize = props.vertAlign !== 'baseline' ? fontSize * 0.65 : fontSize;
-          
-          ctx.save();
+
           ctx.lineWidth = 1;
-          
+
           if (props.underline) {
             ctx.beginPath();
             ctx.strokeStyle = props.underlineColor || props.color || '#000000';
@@ -301,7 +300,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
             ctx.lineTo(drawX + frag.width, drawY + 2);
             ctx.stroke();
           }
-          
+
           if (props.strike) {
             ctx.beginPath();
             ctx.strokeStyle = props.color || '#000000';
@@ -321,8 +320,10 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
             ctx.lineTo(drawX + frag.width, drawY - decorFontSize / 3 + 2);
             ctx.stroke();
           }
-          ctx.restore();
         }
+
+        // 恢复所有样式状态，确保不影响后续片段
+        ctx.restore();
 
         drawX += frag.width;
       });
