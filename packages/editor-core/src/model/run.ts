@@ -50,7 +50,7 @@ export class RunElement extends DocumentElement<Run> {
     const width = this.fontManager.measureText(ctx, textContent.text, ctx.font);
 
     // 绘制装饰线
-    if (properties.underline || properties.strike) {
+    if (properties.underline || properties.strike || properties.doubleStrike) {
       const fontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
       ctx.save(); // 保存当前状态
       ctx.lineWidth = 1;
@@ -69,6 +69,18 @@ export class RunElement extends DocumentElement<Run> {
         ctx.strokeStyle = properties.color || '#000000';
         ctx.moveTo(x, y - fontSize / 3);
         ctx.lineTo(x + width, y - fontSize / 3);
+        ctx.stroke();
+      }
+
+      if (properties.doubleStrike) {
+        ctx.beginPath();
+        ctx.strokeStyle = properties.color || '#000000';
+        // 第一条线
+        ctx.moveTo(x, y - fontSize / 3 - 1);
+        ctx.lineTo(x + width, y - fontSize / 3 - 1);
+        // 第二条线
+        ctx.moveTo(x, y - fontSize / 3 + 2);
+        ctx.lineTo(x + width, y - fontSize / 3 + 2);
         ctx.stroke();
       }
       ctx.restore(); // 恢复状态

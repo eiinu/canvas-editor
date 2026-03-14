@@ -176,7 +176,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         
         // 渲染装饰线 (委托给 RunElement，但由于我们现在是在段落中切分的文本，需要特殊处理)
         // 为了简单，我们直接在 Paragraph 中处理 Fragment 的装饰线
-        if (props.underline || props.strike) {
+        if (props.underline || props.strike || props.doubleStrike) {
           const fontSize = props.fontSize ? (props.fontSize / 2) : 12;
           ctx.save();
           ctx.lineWidth = 1;
@@ -194,6 +194,18 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
             ctx.strokeStyle = props.color || '#000000';
             ctx.moveTo(drawX, currentY - fontSize / 3);
             ctx.lineTo(drawX + frag.width, currentY - fontSize / 3);
+            ctx.stroke();
+          }
+
+          if (props.doubleStrike) {
+            ctx.beginPath();
+            ctx.strokeStyle = props.color || '#000000';
+            // 第一条线
+            ctx.moveTo(drawX, currentY - fontSize / 3 - 1);
+            ctx.lineTo(drawX + frag.width, currentY - fontSize / 3 - 1);
+            // 第二条线
+            ctx.moveTo(drawX, currentY - fontSize / 3 + 2);
+            ctx.lineTo(drawX + frag.width, currentY - fontSize / 3 + 2);
             ctx.stroke();
           }
           ctx.restore();

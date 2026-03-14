@@ -141,6 +141,8 @@ export interface RunProperties {
   underlineColor?: string;
   /** 删除线 - 对应 <w:strike> */
   strike?: boolean;
+  /** 双删除线 - 对应 <w:dstrike> */
+  doubleStrike?: boolean;
   /** 文本颜色 - 对应 <w:color> */
   color?: string;
   /** 突出显示/高亮 - 对应 <w:highlight> */

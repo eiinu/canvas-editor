@@ -87,6 +87,7 @@ export class BasicXmlConverter implements XmlConverter {
                 rPr['w:u'] = u;
               }
               if (props.strike) rPr['w:strike'] = {};
+              if (props.doubleStrike) rPr['w:dstrike'] = {};
               if (props.color) rPr['w:color'] = { 'w:val': props.color.replace('#', '') };
 
               return {
@@ -152,6 +153,7 @@ export class BasicXmlConverter implements XmlConverter {
           const i = getVal(rPr, 'i');
           const u = getVal(rPr, 'u');
           const strike = getVal(rPr, 'strike');
+          const dstrike = getVal(rPr, 'dstrike');
           const color = getVal(rPr, 'color');
 
           const rProps: RunProperties = {
@@ -169,6 +171,7 @@ export class BasicXmlConverter implements XmlConverter {
             underline: u !== undefined,
             underlineColor: u && (u.color || u['w:color']) ? `#${u.color || u['w:color']}` : undefined,
             strike: strike !== undefined,
+            doubleStrike: dstrike !== undefined,
             color: color ? `#${color.val || color['w:val']}` : undefined,
           };
 
