@@ -61,6 +61,7 @@ export class BasicXmlConverter implements XmlConverter {
           const b = getVal(rPr, 'b');
           const i = getVal(rPr, 'i');
           const u = getVal(rPr, 'u');
+          const strike = getVal(rPr, 'strike');
           const color = getVal(rPr, 'color');
 
           const rProps: RunProperties = {
@@ -68,6 +69,7 @@ export class BasicXmlConverter implements XmlConverter {
             bold: b !== undefined,
             italic: i !== undefined,
             underline: u !== undefined,
+            strike: strike !== undefined,
             color: color ? `#${color.val || color['w:val']}` : undefined,
           };
 

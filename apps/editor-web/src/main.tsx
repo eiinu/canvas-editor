@@ -8,6 +8,7 @@ import './styles.css';
 
 const DEFAULT_XML = `<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:body>
+    <!-- 标题：居中、大字号、加粗、紫色 -->
     <w:p>
       <w:pPr>
         <w:jc w:val="center"/>
@@ -18,28 +19,59 @@ const DEFAULT_XML = `<w:document xmlns:w="http://schemas.openxmlformats.org/word
           <w:b/>
           <w:color w:val="4F46E5"/>
         </w:rPr>
-        <w:t>EIINU Editor (Real OpenXML)</w:t>
+        <w:t>EIINU Editor (Standard OpenXML)</w:t>
       </w:r>
     </w:p>
+
+    <!-- 基础样式演示：左对齐 -->
     <w:p>
       <w:pPr>
         <w:jc w:val="left"/>
       </w:pPr>
       <w:r>
+        <w:rPr><w:sz w:val="24"/></w:rPr>
+        <w:t>基础样式：</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr><w:sz w:val="24"/><w:b/></w:rPr>
+        <w:t>加粗 (Bold)</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr><w:sz w:val="24"/><w:i/></w:rPr>
+        <w:t>，斜体 (Italic)</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr><w:sz w:val="24"/><w:u/></w:rPr>
+        <w:t>，下划线 (Underline)</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr><w:sz w:val="24"/><w:strike/></w:rPr>
+        <w:t>，删除线 (Strike)</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- 颜色与字号：右对齐 -->
+    <w:p>
+      <w:pPr>
+        <w:jc w:val="right"/>
+      </w:pPr>
+      <w:r>
         <w:rPr>
-          <w:sz w:val="24"/>
+          <w:sz w:val="32"/>
+          <w:color w:val="FF0000"/>
         </w:rPr>
-        <w:t>这是一个完全兼容 OOXML 标签格式的实时预览。</w:t>
+        <w:t>红色 16pt 文本</w:t>
       </w:r>
       <w:r>
         <w:rPr>
-          <w:sz w:val="24"/>
-          <w:color w:val="FF0000"/>
-          <w:i/>
+          <w:sz w:val="20"/>
+          <w:color w:val="0000FF"/>
         </w:rPr>
-        <w:t>支持 w:p, w:r, w:t, w:pPr, w:rPr 等标准标签！</w:t>
+        <w:t>，蓝色 10pt 文本</w:t>
       </w:r>
     </w:p>
+
+    <!-- 自动换行演示 -->
     <w:p>
       <w:pPr>
         <w:jc w:val="left"/>
@@ -49,20 +81,7 @@ const DEFAULT_XML = `<w:document xmlns:w="http://schemas.openxmlformats.org/word
           <w:sz w:val="24"/>
           <w:color w:val="666666"/>
         </w:rPr>
-        <w:t>这是一段非常长的文本，用来测试自动换行功能。在 Canvas 渲染器中，我们需要根据指定的 maxWidth 自动计算文本的宽度，并在合适的字符位置进行截断，将文本流分配到多个行（Line）中进行绘制。只有实现了自动换行，编辑器才能处理长篇大论的文档内容。</w:t>
-      </w:r>
-    </w:p>
-    <w:p>
-      <w:pPr>
-        <w:jc w:val="right"/>
-      </w:pPr>
-      <w:r>
-        <w:rPr>
-          <w:sz w:val="24"/>
-          <w:u w:val="single"/>
-          <w:color w:val="0000FF"/>
-        </w:rPr>
-        <w:t>右对齐且带有下划线</w:t>
+        <w:t>这是一段测试长文本自动换行逻辑的内容。无论你输入的文字有多长，Canvas 渲染引擎都会根据右侧容器的宽度自动将其切分为多行显示，并保持正确的行间距和对齐方式。你可以尝试拖拽中间的分割线来观察排版的变化。</w:t>
       </w:r>
     </w:p>
   </w:body>
