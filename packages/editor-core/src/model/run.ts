@@ -52,19 +52,26 @@ export class RunElement extends DocumentElement<Run> {
     // 绘制装饰线
     if (properties.underline || properties.strike) {
       const fontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
-      ctx.beginPath();
-      ctx.strokeStyle = properties.color || '#000000';
+      ctx.save(); // 保存当前状态
       ctx.lineWidth = 1;
       
       if (properties.underline) {
+        ctx.beginPath();
+        const uColor = properties.underlineColor || properties.color || '#000000';
+        ctx.strokeStyle = uColor;
         ctx.moveTo(x, y + 2);
         ctx.lineTo(x + width, y + 2);
+        ctx.stroke();
       }
+      
       if (properties.strike) {
+        ctx.beginPath();
+        ctx.strokeStyle = properties.color || '#000000';
         ctx.moveTo(x, y - fontSize / 3);
         ctx.lineTo(x + width, y - fontSize / 3);
+        ctx.stroke();
       }
-      ctx.stroke();
+      ctx.restore(); // 恢复状态
     }
 
     return x + width;

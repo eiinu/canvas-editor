@@ -178,18 +178,25 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         // 为了简单，我们直接在 Paragraph 中处理 Fragment 的装饰线
         if (props.underline || props.strike) {
           const fontSize = props.fontSize ? (props.fontSize / 2) : 12;
-          ctx.beginPath();
-          ctx.strokeStyle = props.color || '#000000';
+          ctx.save();
           ctx.lineWidth = 1;
+          
           if (props.underline) {
+            ctx.beginPath();
+            ctx.strokeStyle = props.underlineColor || props.color || '#000000';
             ctx.moveTo(drawX, currentY + 2);
             ctx.lineTo(drawX + frag.width, currentY + 2);
+            ctx.stroke();
           }
+          
           if (props.strike) {
+            ctx.beginPath();
+            ctx.strokeStyle = props.color || '#000000';
             ctx.moveTo(drawX, currentY - fontSize / 3);
             ctx.lineTo(drawX + frag.width, currentY - fontSize / 3);
+            ctx.stroke();
           }
-          ctx.stroke();
+          ctx.restore();
         }
 
         drawX += frag.width;

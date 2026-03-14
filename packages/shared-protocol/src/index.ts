@@ -137,6 +137,8 @@ export interface RunProperties {
   italic?: boolean;
   /** 下划线 - 对应 <w:u> */
   underline?: string | boolean;
+  /** 下划线颜色 - 对应 <w:u w:color="..."> */
+  underlineColor?: string;
   /** 删除线 - 对应 <w:strike> */
   strike?: boolean;
   /** 文本颜色 - 对应 <w:color> */

@@ -43,7 +43,7 @@
 | **fontSize** | `w:sz` | 字号 (half-points) | ✅ 已实现 |
 | **bold** | `w:b` | 加粗 | ✅ 已实现 |
 | **italic** | `w:i` | 斜体 | ✅ 已实现 |
-| **underline** | `w:u` | 下划线 | ✅ 已实现 |
+| **underline** | `w:u` | 下划线 | ✅ 已实现 (支持 w:color) |
 | **strike** | `w:strike` | 删除线 | ✅ 已实现 |
 | **color** | `w:color` | 文本颜色 (Hex) | ✅ 已实现 |
 | **highlight** | `w:highlight` | 突出显示颜色 | ⏳ 接口已定义 |
