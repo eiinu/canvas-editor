@@ -1,5 +1,7 @@
 # Canvas Editor
 
+本项目旨在探索并挑战 **Coding Agent** 在处理超大规模、高复杂度工程任务（如：自研 Canvas 富文本编辑器引擎）时的极限能力。
+
 Canvas 富文本编辑器工程化基础仓库（pnpm workspace）。
 
 ## Workspace 结构
