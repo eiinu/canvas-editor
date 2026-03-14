@@ -5,17 +5,16 @@ import { xml } from '@codemirror/lang-xml';
 import { CanvasRenderer, ModelFactory } from '@eiinu/editor-core';
 import { BasicXmlConverter } from '@eiinu/editor-xml';
 import { 
-  DEFAULT_FULL_XML, 
-  TITLE_EXAMPLE, 
-  BASIC_STYLES_EXAMPLE, 
-  COLOR_AND_SIZE_EXAMPLE, 
-  WORD_WRAP_EXAMPLE,
-  XML_HEADER,
-  XML_FOOTER
+  FULL_DOC, 
+  TITLE_DOC, 
+  BASIC_STYLES_DOC, 
+  COLOR_AND_SIZE_DOC, 
+  WORD_WRAP_DOC
 } from './examples.js';
 import './styles.css';
 
-const DEFAULT_XML = DEFAULT_FULL_XML;
+const converter = new BasicXmlConverter();
+const DEFAULT_XML = converter.toXml(FULL_DOC);
 
 function App() {
   const [xmlCode, setXmlCode] = useState(DEFAULT_XML);
@@ -130,35 +129,35 @@ function App() {
           <span>XML Editor</span>
           <div style={{ display: 'flex', gap: '4px' }}>
             <button 
-              onClick={() => setXmlCode(DEFAULT_FULL_XML)} 
+              onClick={() => setXmlCode(converter.toXml(FULL_DOC))} 
               style={{ fontSize: '10px', padding: '2px 4px', cursor: 'pointer' }}
               title="Full Example"
             >
               Full
             </button>
             <button 
-              onClick={() => setXmlCode([XML_HEADER, TITLE_EXAMPLE, XML_FOOTER].join('\n'))} 
+              onClick={() => setXmlCode(converter.toXml(TITLE_DOC))} 
               style={{ fontSize: '10px', padding: '2px 4px', cursor: 'pointer' }}
               title="Title Only"
             >
               Title
             </button>
             <button 
-              onClick={() => setXmlCode([XML_HEADER, BASIC_STYLES_EXAMPLE, XML_FOOTER].join('\n'))} 
+              onClick={() => setXmlCode(converter.toXml(BASIC_STYLES_DOC))} 
               style={{ fontSize: '10px', padding: '2px 4px', cursor: 'pointer' }}
               title="Styles Only"
             >
               Styles
             </button>
             <button 
-              onClick={() => setXmlCode([XML_HEADER, COLOR_AND_SIZE_EXAMPLE, XML_FOOTER].join('\n'))} 
+              onClick={() => setXmlCode(converter.toXml(COLOR_AND_SIZE_DOC))} 
               style={{ fontSize: '10px', padding: '2px 4px', cursor: 'pointer' }}
               title="Colors Only"
             >
               Colors
             </button>
             <button 
-              onClick={() => setXmlCode([XML_HEADER, WORD_WRAP_EXAMPLE, XML_FOOTER].join('\n'))} 
+              onClick={() => setXmlCode(converter.toXml(WORD_WRAP_DOC))} 
               style={{ fontSize: '10px', padding: '2px 4px', cursor: 'pointer' }}
               title="Wrap Only"
             >

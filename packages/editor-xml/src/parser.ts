@@ -1,4 +1,4 @@
-import { XMLParser } from 'fast-xml-parser';
+import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import { 
   Document, 
   Paragraph, 
@@ -14,18 +14,67 @@ import { XmlConverter } from './index.js';
  */
 export class BasicXmlConverter implements XmlConverter {
   private parser: XMLParser;
+  private builder: XMLBuilder;
 
   constructor() {
     this.parser = new XMLParser({
       ignoreAttributes: false,
       attributeNamePrefix: '',
       allowBooleanAttributes: true,
-      removeNSPrefix: false, // 保留 w: 这种命名空间前缀，因为用户要求完全一致
+      removeNSPrefix: false,
+    });
+    this.builder = new XMLBuilder({
+      ignoreAttributes: false,
+      attributeNamePrefix: '',
+      format: true,
+      suppressEmptyNode: true,
     });
   }
 
-  toXml(_doc: Document): string {
-    return 'Not implemented';
+  /**
+   * 将 Document 模型转换为标准 OpenXML 字符串
+   */
+  toXml(doc: Document): string {
+    const body: any = {
+      'w:p': doc.sections.flatMap(section => 
+        section.children.map(p => {
+          if (!('children' in p)) return null; // 暂时只支持 Paragraph
+
+          const pPr: any = {};
+          if (p.properties.alignment) {
+            pPr['w:jc'] = { 'w:val': p.properties.alignment };
+          }
+
+          return {
+            'w:pPr': Object.keys(pPr).length > 0 ? pPr : undefined,
+            'w:r': p.children.map(r => {
+              const rPr: any = {};
+              const props = r.properties;
+              if (props.fontSize) rPr['w:sz'] = { 'w:val': props.fontSize };
+              if (props.bold) rPr['w:b'] = {};
+              if (props.italic) rPr['w:i'] = {};
+              if (props.underline) rPr['w:u'] = { 'w:val': 'single' };
+              if (props.strike) rPr['w:strike'] = {};
+              if (props.color) rPr['w:color'] = { 'w:val': props.color.replace('#', '') };
+
+              return {
+                'w:rPr': Object.keys(rPr).length > 0 ? rPr : undefined,
+                'w:t': (r.content as TextContent).text,
+              };
+            }),
+          };
+        }).filter(Boolean)
+      ),
+    };
+
+    const xmlObj = {
+      'w:document': {
+        '@xmlns:w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
+        'w:body': body,
+      },
+    };
+
+    return this.builder.build(xmlObj);
   }
 
   fromXml(xml: string): Document {
@@ -34,6 +83,7 @@ export class BasicXmlConverter implements XmlConverter {
       
       // 处理命名空间前缀 w: (常用在 OpenXML)
       const getVal = (obj: any, key: string) => {
+        if (!obj) return undefined;
         return obj[key] || obj[`w:${key}`];
       };
 

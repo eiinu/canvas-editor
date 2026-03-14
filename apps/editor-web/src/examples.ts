@@ -1,109 +1,95 @@
+import { Document, Paragraph } from '@eiinu/editor-protocol';
+
 /**
- * OpenXML 示例片段集合
- * 按功能进行拆分，方便演示与测试
+ * OpenXML 示例数据集合
+ * 使用标准的 Document 对象定义，不再使用字符串拼接
  */
 
-export const XML_HEADER = `<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-  <w:body>`;
+/** 标题示例数据 */
+export const TITLE_DOC: Document = {
+  id: 'title-doc',
+  sections: [{
+    properties: {},
+    children: [
+      {
+        id: 'p-title',
+        properties: { alignment: 'center' },
+        children: [{
+          properties: { fontSize: 48, bold: true, color: '#4F46E5' },
+          content: { type: 'text', text: 'EIINU Editor (Elegant Objects)' }
+        }]
+      } as Paragraph
+    ]
+  }]
+};
 
-export const XML_FOOTER = `  </w:body>
-</w:document>`;
+/** 基础样式示例数据 */
+export const BASIC_STYLES_DOC: Document = {
+  id: 'styles-doc',
+  sections: [{
+    properties: {},
+    children: [
+      {
+        id: 'p-styles',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 24 }, content: { type: 'text', text: '基础样式：' } },
+          { properties: { fontSize: 24, bold: true }, content: { type: 'text', text: '加粗 (Bold)' } },
+          { properties: { fontSize: 24, italic: true }, content: { type: 'text', text: '，斜体 (Italic)' } },
+          { properties: { fontSize: 24, underline: 'single' }, content: { type: 'text', text: '，下划线 (Underline)' } },
+          { properties: { fontSize: 24, strike: true }, content: { type: 'text', text: '，删除线 (Strike)' } }
+        ]
+      } as Paragraph
+    ]
+  }]
+};
 
-/** 标题片段 */
-export const TITLE_EXAMPLE = `
-    <!-- 标题：居中、大字号、加粗、紫色 -->
-    <w:p>
-      <w:pPr>
-        <w:jc w:val="center"/>
-      </w:pPr>
-      <w:r>
-        <w:rPr>
-          <w:sz w:val="48"/>
-          <w:b/>
-          <w:color w:val="4F46E5"/>
-        </w:rPr>
-        <w:t>EIINU Editor (Standard OpenXML)</w:t>
-      </w:r>
-    </w:p>
-`;
+/** 颜色与字号示例数据 */
+export const COLOR_AND_SIZE_DOC: Document = {
+  id: 'color-doc',
+  sections: [{
+    properties: {},
+    children: [
+      {
+        id: 'p-colors',
+        properties: { alignment: 'right' },
+        children: [
+          { properties: { fontSize: 32, color: '#FF0000' }, content: { type: 'text', text: '红色 16pt 文本' } },
+          { properties: { fontSize: 20, color: '#0000FF' }, content: { type: 'text', text: '，蓝色 10pt 文本' } }
+        ]
+      } as Paragraph
+    ]
+  }]
+};
 
-/** 基础文本样式片段 */
-export const BASIC_STYLES_EXAMPLE = `
-    <!-- 基础样式演示：左对齐 -->
-    <w:p>
-      <w:pPr>
-        <w:jc w:val="left"/>
-      </w:pPr>
-      <w:r>
-        <w:rPr><w:sz w:val="24"/></w:rPr>
-        <w:t>基础样式：</w:t>
-      </w:r>
-      <w:r>
-        <w:rPr><w:sz w:val="24"/><w:b/></w:rPr>
-        <w:t>加粗 (Bold)</w:t>
-      </w:r>
-      <w:r>
-        <w:rPr><w:sz w:val="24"/><w:i/></w:rPr>
-        <w:t>，斜体 (Italic)</w:t>
-      </w:r>
-      <w:r>
-        <w:rPr><w:sz w:val="24"/><w:u/></w:rPr>
-        <w:t>，下划线 (Underline)</w:t>
-      </w:r>
-      <w:r>
-        <w:rPr><w:sz w:val="24"/><w:strike/></w:rPr>
-        <w:t>，删除线 (Strike)</w:t>
-      </w:r>
-    </w:p>
-`;
+/** 自动换行示例数据 */
+export const WORD_WRAP_DOC: Document = {
+  id: 'wrap-doc',
+  sections: [{
+    properties: {},
+    children: [
+      {
+        id: 'p-wrap',
+        properties: { alignment: 'left' },
+        children: [{
+          properties: { fontSize: 24, color: '#666666' },
+          content: { type: 'text', text: '这是一段通过 Document 对象生成的长文本，用于测试自动换行。相比字符串拼接，这种方式更加结构化，易于通过代码动态控制属性，且能利用 TypeScript 的类型检查。' }
+        }]
+      } as Paragraph
+    ]
+  }]
+};
 
-/** 颜色与字号演示片段 */
-export const COLOR_AND_SIZE_EXAMPLE = `
-    <!-- 颜色与字号：右对齐 -->
-    <w:p>
-      <w:pPr>
-        <w:jc w:val="right"/>
-      </w:pPr>
-      <w:r>
-        <w:rPr>
-          <w:sz w:val="32"/>
-          <w:color w:val="FF0000"/>
-        </w:rPr>
-        <w:t>红色 16pt 文本</w:t>
-      </w:r>
-      <w:r>
-        <w:rPr>
-          <w:sz w:val="20"/>
-          <w:color w:val="0000FF"/>
-        </w:rPr>
-        <w:t>，蓝色 10pt 文本</w:t>
-      </w:r>
-    </w:p>
-`;
-
-/** 自动换行演示片段 */
-export const WORD_WRAP_EXAMPLE = `
-    <!-- 自动换行演示 -->
-    <w:p>
-      <w:pPr>
-        <w:jc w:val="left"/>
-      </w:pPr>
-      <w:r>
-        <w:rPr>
-          <w:sz w:val="24"/>
-          <w:color w:val="666666"/>
-        </w:rPr>
-        <w:t>这是一段测试长文本自动换行逻辑的内容。无论你输入的文字有多长，Canvas 渲染引擎都会根据右侧容器的宽度自动将其切分为多行显示，并保持正确的行间距和对齐方式。你可以尝试拖拽中间的分割线来观察排版的变化。</w:t>
-      </w:r>
-    </w:p>
-`;
-
-/** 默认拼接后的完整示例 */
-export const DEFAULT_FULL_XML = [
-  XML_HEADER,
-  TITLE_EXAMPLE,
-  BASIC_STYLES_EXAMPLE,
-  COLOR_AND_SIZE_EXAMPLE,
-  WORD_WRAP_EXAMPLE,
-  XML_FOOTER
-].join('\n');
+/** 全量示例数据 */
+export const FULL_DOC: Document = {
+  id: 'full-doc',
+  sections: [{
+    properties: {},
+    children: [
+      ...TITLE_DOC.sections[0].children,
+      ...BASIC_STYLES_DOC.sections[0].children,
+      ...COLOR_AND_SIZE_DOC.sections[0].children,
+      ...WORD_WRAP_DOC.sections[0].children
+    ]
+  }]
+};
