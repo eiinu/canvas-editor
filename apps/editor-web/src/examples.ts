@@ -62,17 +62,55 @@ export const BASIC_STYLES_DOC: Document = {
           { properties: { fontSize: 24, vertAlign: 'subscript' }, content: { type: 'text', text: '2' } },
           { properties: { fontSize: 24 }, content: { type: 'text', text: 'O' } }
         ]
-      } as Paragraph
-    ]
-  }]
-};
-
-/** 颜色与字号示例数据 */
-export const COLOR_AND_SIZE_DOC: Document = {
-  id: 'color-doc',
-  sections: [{
-    properties: {},
-    children: [
+      } as Paragraph,
+      createSectionHeader('Mixed Styles Combinations'),
+      {
+        id: 'p-mixed-1',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 28, bold: true, italic: true, color: '#FF4500' }, content: { type: 'text', text: '加粗+斜体+橙色' } },
+          { properties: { fontSize: 28 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 28, bold: true, underline: 'single', underlineColor: '#008000' }, content: { type: 'text', text: '加粗+绿色下划线' } },
+          { properties: { fontSize: 28 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 28, italic: true, strike: true, color: '#808080' }, content: { type: 'text', text: '斜体+删除线+灰色' } },
+        ]
+      } as Paragraph,
+      {
+        id: 'p-mixed-2',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 28, bold: true, doubleStrike: true, color: '#4B0082' }, content: { type: 'text', text: '加粗+靛蓝色双删除线' } },
+          { properties: { fontSize: 28 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 28, underline: 'single', underlineColor: '#FFD700', italic: true }, content: { type: 'text', text: '斜体+金色下划线' } },
+        ]
+      } as Paragraph,
+      {
+        id: 'p-mixed-complex',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 24 }, content: { type: 'text', text: '复杂组合：' } },
+          { properties: { fontSize: 36, bold: true, color: '#FF0000', underline: 'single', underlineColor: '#0000FF' }, content: { type: 'text', text: '红字蓝线下划线' } },
+          { properties: { fontSize: 24, vertAlign: 'superscript', bold: true, italic: true, color: '#006400' }, content: { type: 'text', text: '上标加粗斜体' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: ' 正常 ' } },
+          { properties: { fontSize: 24, vertAlign: 'subscript', doubleStrike: true, color: '#A52A2A' }, content: { type: 'text', text: '下标双删除线' } },
+        ]
+      } as Paragraph,
+      {
+        id: 'p-mixed-fonts-styles',
+        properties: { alignment: 'left' },
+        children: [
+          { 
+            properties: { 
+              fontSize: 32, 
+              fonts: { ascii: 'Courier New', eastAsia: 'KaiTi' },
+              bold: true,
+              underline: 'single',
+              underlineColor: '#FF00FF'
+            }, 
+            content: { type: 'text', text: '混合字体+加粗+粉色下划线' } 
+          }
+        ]
+      } as Paragraph,
       createSectionHeader('Color & Size'),
       {
         id: 'p-colors',
@@ -173,13 +211,10 @@ export const FULL_DOC: Document = {
       // 2. 基础文本样式
       ...BASIC_STYLES_DOC.sections[0].children,
 
-      // 3. 颜色与字号
-      ...COLOR_AND_SIZE_DOC.sections[0].children,
-
-      // 4. 字体管理 (映射与回退)
+      // 5. 字体管理 (映射与回退)
       ...FONTS_DOC.sections[0].children,
 
-      // 5. 自动换行
+      // 6. 自动换行
       ...WORD_WRAP_DOC.sections[0].children,
     ]
   }]

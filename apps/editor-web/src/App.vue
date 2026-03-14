@@ -10,7 +10,6 @@ import {
   FULL_DOC, 
   TITLE_DOC, 
   BASIC_STYLES_DOC, 
-  COLOR_AND_SIZE_DOC, 
   WORD_WRAP_DOC,
   FONTS_DOC
 } from './examples.js';
@@ -169,7 +168,6 @@ const setExample = (doc: any) => {
           <button @click="setExample(FULL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Full Example">Full</button>
           <button @click="setExample(TITLE_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Title Only">Title</button>
           <button @click="setExample(BASIC_STYLES_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Styles Only">Styles</button>
-          <button @click="setExample(COLOR_AND_SIZE_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Colors Only">Colors</button>
           <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
           <button @click="setExample(FONTS_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Fonts Only">Fonts</button>
         </div>
