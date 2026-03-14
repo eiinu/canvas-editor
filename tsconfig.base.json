@@ -12,6 +12,12 @@
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@eiinu/editor-core": ["packages/editor-core/src/index.ts"],
+      "@eiinu/editor-utils": ["packages/editor-utils/src/index.ts"],
+      "@eiinu/editor-xml": ["packages/editor-xml/src/index.ts"],
+      "@eiinu/editor-protocol": ["packages/shared-protocol/src/index.ts"]
+    }
   }
 }

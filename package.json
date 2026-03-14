@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm -r --parallel --if-present run dev",
+    "dev": "pnpm --filter \"@eiinu/editor-web\" --filter \"@eiinu/editor-collab\" --parallel run dev",
     "build": "pnpm -r --if-present run build",
     "typecheck": "pnpm -r --if-present run typecheck",
     "lint": "pnpm -r --if-present run lint",
