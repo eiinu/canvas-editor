@@ -51,6 +51,12 @@ export class FontManager {
       macos: '"STFangsong", "FangSong SC", serif',
       linux: 'serif',
       generic: 'serif'
+    },
+    'Apple Color Emoji': {
+      windows: '"Segoe UI Emoji", "Segoe UI Symbol", emoji',
+      macos: '"Apple Color Emoji", emoji',
+      linux: '"Noto Color Emoji", emoji',
+      generic: '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", emoji'
     }
   };
 

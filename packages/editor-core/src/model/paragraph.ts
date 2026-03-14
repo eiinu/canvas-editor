@@ -37,9 +37,14 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
   private getFontForChar(run: RunElement, char: string): string {
     const props = run.getData().properties;
     const fonts = props.fonts;
-    
+
     if (!fonts) return props.fontFamily || 'Arial';
-    
+
+    // 首先检查是否为 emoji 字符
+    if (UnicodeRange.isEmoji(char)) {
+      return fonts.emoji || 'Apple Color Emoji, "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif';
+    }
+
     if (UnicodeRange.isEastAsian(char)) {
       return fonts.eastAsia || props.fontFamily || 'SimSun';
     } else {
@@ -67,10 +72,17 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       
       let text = (data.content as TextContent).text;
       const props = data.properties;
-      
+
       // 处理全部大写转换 (smallCaps 模式下使用原文/小写进行测量，符合排版逻辑)
+      // 注意：emoji 字符不应该被转换
       if (props.caps) {
-        text = text.toUpperCase();
+        text = text.split('').map(char => {
+          // 如果是 emoji，保持原样
+          if (UnicodeRange.isEmoji(char)) {
+            return char;
+          }
+          return char.toUpperCase();
+        }).join('');
       }
 
       const originalFontSize = props.fontSize ? (props.fontSize / 2) : 12;
@@ -104,19 +116,23 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         let segmentStart = 0;
         for (let i = 1; i <= segmentText.length; i++) {
           const subtext = segmentText.substring(segmentStart, i);
-          // 测量时加上字符间距
-          const w = this.fontManager.measureText(ctx, subtext, currentFont) + (subtext.length * letterSpacing);
+          // 计算宽度，emoji 字符不应用字符间距
+          const emojiCount = subtext.split('').filter(c => UnicodeRange.isEmoji(c)).length;
+          const nonEmojiCount = subtext.length - emojiCount;
+          const w = this.fontManager.measureText(ctx, subtext, currentFont) + (nonEmojiCount * letterSpacing);
 
           if (currentLine.width + w > maxWidth) {
             // 需要换行
             if (i > segmentStart + 1) {
               const finalSubtext = segmentText.substring(segmentStart, i - 1);
-              const finalW = this.fontManager.measureText(ctx, finalSubtext, currentFont) + (finalSubtext.length * letterSpacing);
+              const finalEmojiCount = finalSubtext.split('').filter(c => UnicodeRange.isEmoji(c)).length;
+              const finalNonEmojiCount = finalSubtext.length - finalEmojiCount;
+              const finalW = this.fontManager.measureText(ctx, finalSubtext, currentFont) + (finalNonEmojiCount * letterSpacing);
               currentLine.fragments.push({ run, text: finalSubtext, width: finalW, font: currentFont });
               currentLine.width += finalW;
               currentLine.height = Math.max(currentLine.height, fontSize);
               this.lines.push(currentLine);
-              
+
               currentLine = { fragments: [], width: 0, height: 0 };
               segmentStart = i - 1;
               i--;
@@ -127,7 +143,8 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
                 currentLine = { fragments: [], width: 0, height: 0 };
               }
               const singleChar = segmentText.substring(segmentStart, i);
-              const singleW = this.fontManager.measureText(ctx, singleChar, currentFont) + letterSpacing;
+              const isEmoji = UnicodeRange.isEmoji(singleChar);
+              const singleW = this.fontManager.measureText(ctx, singleChar, currentFont) + (isEmoji ? 0 : letterSpacing);
               currentLine.width = singleW;
               currentLine.height = fontSize;
               currentLine.fragments.push({ run, text: singleChar, width: singleW, font: currentFont });
@@ -251,12 +268,15 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           for (let i = 0; i < rawText.length; i++) {
             const char = rawText[i];
             const isLower = char === char.toLowerCase() && char !== char.toUpperCase();
+            const isEmoji = UnicodeRange.isEmoji(char);
 
             // 记录原始字符的测量宽度 (排版宽度，已包含 letterSpacing)
-            const charLayoutWidth = ctx.measureText(char).width + letterSpacing;
+            // 注意：emoji 通常不应用字符间距
+            const applyLetterSpacing = !isEmoji;
+            const charLayoutWidth = ctx.measureText(char).width + (applyLetterSpacing ? letterSpacing : 0);
 
-            if (isLower) {
-              // 如果是小写字母，则渲染为较小字号的大写字母
+            if (isLower && !isEmoji) {
+              // 如果是小写字母且不是 emoji，则渲染为较小字号的大写字母
               const smallFontSize = (props.fontSize ? (props.fontSize / 2) : 12) * 0.85;
               const weight = props.bold ? 'bold' : 'normal';
               const style = props.italic ? 'italic' : 'normal';
@@ -267,6 +287,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
               // 恢复原始字体
               ctx.font = frag.font;
             } else {
+              // emoji 或其他字符保持原样
               ctx.fillText(char, currentX, drawY);
             }
 
@@ -277,8 +298,11 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           if (letterSpacing !== 0) {
             let currentX = drawX;
             for (const char of drawText) {
+              // emoji 不应用字符间距
+              const isEmoji = UnicodeRange.isEmoji(char);
               ctx.fillText(char, currentX, drawY);
-              currentX += ctx.measureText(char).width + letterSpacing;
+              const charWidth = ctx.measureText(char).width;
+              currentX += charWidth + (isEmoji ? 0 : letterSpacing);
             }
           } else {
             ctx.fillText(drawText, drawX, drawY);

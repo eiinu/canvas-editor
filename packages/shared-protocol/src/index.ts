@@ -124,6 +124,8 @@ export interface RunProperties {
     hAnsi?: string;
     /** 复杂脚本字体 - 对应 <w:cs> (Arabic, etc.) */
     cs?: string;
+    /** Emoji 字体 - 用于显示 emoji 字符 */
+    emoji?: string;
     /** 提示字体 - 对应 <w:hint> (eastAsia | default) */
     hint?: 'eastAsia' | 'default';
   };
