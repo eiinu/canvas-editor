@@ -1,5 +1,5 @@
 {
-  "name": "canvas-editor-workspace",
+  "name": "@eiinu/editor-workspace",
   "version": "0.1.0",
   "private": true,
   "scripts": {

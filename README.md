@@ -7,12 +7,12 @@ Canvas 富文本编辑器工程化基础仓库（pnpm workspace）。
 ```text
 .
 ├─ apps/
-│  └─ editor-web/           # Web 宿主应用（Vite + React）
+│  └─ editor-web/           # @eiinu/editor-web
 ├─ packages/
-│  ├─ editor-core/          # 编辑器核心引擎（模型/命令/渲染层骨架）
-│  └─ shared-protocol/      # 前后端共享协议类型
+│  ├─ editor-core/          # @eiinu/editor-core
+│  └─ shared-protocol/      # @eiinu/editor-protocol
 ├─ services/
-│  └─ collab-service/       # 协同服务骨架
+│  └─ collab-service/       # @eiinu/editor-collab
 ├─ configs/
 │  └─ tsconfig/             # 统一 TS 配置
 └─ docs/

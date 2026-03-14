@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { bootstrapEditorCore } from '@canvas-editor/editor-core';
+import { bootstrapEditorCore } from '@eiinu/editor-core';
 import './styles.css';
 
 const core = bootstrapEditorCore();

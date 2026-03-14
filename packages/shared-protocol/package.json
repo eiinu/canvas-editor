@@ -1,5 +1,5 @@
 {
-  "name": "@canvas-editor/shared-protocol",
+  "name": "@eiinu/editor-protocol",
   "version": "0.1.0",
   "private": true,
   "type": "module",

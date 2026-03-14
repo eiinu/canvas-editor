@@ -1,4 +1,4 @@
-import type { OperationEnvelope } from '@canvas-editor/shared-protocol';
+import type { OperationEnvelope } from '@eiinu/editor-protocol';
 
 export interface EditorCoreBootstrapResult {
   initialized: true;

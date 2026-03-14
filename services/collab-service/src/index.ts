@@ -1,4 +1,4 @@
-import type { OperationEnvelope } from '@canvas-editor/shared-protocol';
+import type { OperationEnvelope } from '@eiinu/editor-protocol';
 
 export interface CollabServiceContext {
   serviceName: string;
@@ -8,7 +8,7 @@ export interface CollabServiceContext {
 export const bootstrapCollabService = (
   _initialOps: OperationEnvelope[] = []
 ): CollabServiceContext => ({
-  serviceName: '@canvas-editor/collab-service',
+  serviceName: '@eiinu/editor-collab',
   acceptedOps: ['insert_text', 'delete_range', 'set_mark']
 });
 

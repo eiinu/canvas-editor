@@ -12,10 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": ".",
-    "paths": {
-      "@canvas-editor/shared-protocol": ["packages/shared-protocol/src/index.ts"],
-      "@canvas-editor/editor-core": ["packages/editor-core/src/index.ts"]
-    }
+    "baseUrl": "."
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bootstrapEditorCore } from './index';
+import { bootstrapEditorCore } from './index.js';
 
 describe('editor-core scaffold', () => {
   it('returns bootstrap metadata', () => {

@@ -1,5 +1,5 @@
 {
-  "name": "@canvas-editor/collab-service",
+  "name": "@eiinu/editor-collab",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,7 +15,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@canvas-editor/shared-protocol": "workspace:*"
+    "@eiinu/editor-protocol": "workspace:*"
   },
   "devDependencies": {
     "tsx": "^4.19.3"

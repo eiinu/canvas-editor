@@ -1,5 +1,5 @@
 {
-  "name": "@canvas-editor/editor-web",
+  "name": "@eiinu/editor-web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@canvas-editor/editor-core": "workspace:*",
+    "@eiinu/editor-core": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
