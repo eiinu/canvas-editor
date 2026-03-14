@@ -53,7 +53,8 @@ export const BASIC_STYLES_DOC: Document = {
           { properties: { fontSize: 24, italic: true }, content: { type: 'text', text: '，斜体 (Italic)' } },
           { properties: { fontSize: 24, underline: 'single' }, content: { type: 'text', text: '，下划线 (Underline)' } },
           { properties: { fontSize: 24, underline: 'single', underlineColor: '#FF0000' }, content: { type: 'text', text: '，红色下划线' } },
-          { properties: { fontSize: 24, strike: true }, content: { type: 'text', text: '，删除线 (Strike)' } }
+          { properties: { fontSize: 24, strike: true }, content: { type: 'text', text: '，删除线 (Strike)' } },
+          { properties: { fontSize: 24, doubleStrike: true }, content: { type: 'text', text: '，双删除线 (Double Strike)' } }
         ]
       } as Paragraph
     ]
