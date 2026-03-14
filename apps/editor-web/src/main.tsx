@@ -9,7 +9,8 @@ import {
   TITLE_DOC, 
   BASIC_STYLES_DOC, 
   COLOR_AND_SIZE_DOC, 
-  WORD_WRAP_DOC
+  WORD_WRAP_DOC,
+  FONTS_DOC
 } from './examples.js';
 import './styles.css';
 
@@ -162,6 +163,13 @@ function App() {
               title="Wrap Only"
             >
               Wrap
+            </button>
+            <button 
+              onClick={() => setXmlCode(converter.toXml(FONTS_DOC))} 
+              style={{ fontSize: '10px', padding: '2px 4px', cursor: 'pointer' }}
+              title="Fonts Only"
+            >
+              Fonts
             </button>
           </div>
         </div>

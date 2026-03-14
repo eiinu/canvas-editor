@@ -80,6 +80,35 @@ export const WORD_WRAP_DOC: Document = {
   }]
 };
 
+/** 字体演示示例数据 */
+export const FONTS_DOC: Document = {
+  id: 'fonts-doc',
+  sections: [{
+    properties: {},
+    children: [
+      {
+        id: 'p-fonts-en',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 32, fontFamily: 'Arial' }, content: { type: 'text', text: 'Arial: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Times New Roman' }, content: { type: 'text', text: 'Times New Roman: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Courier New' }, content: { type: 'text', text: 'Courier New: The quick brown fox jumps over the lazy dog.' } }
+        ]
+      } as Paragraph,
+      {
+        id: 'p-fonts-zh',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 32, fontFamily: 'Microsoft YaHei' }, content: { type: 'text', text: '微软雅黑：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'SimSun' }, content: { type: 'text', text: '宋体：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'KaiTi' }, content: { type: 'text', text: '楷体：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'SimHei' }, content: { type: 'text', text: '黑体：前端开发是一个充满挑战的领域。' } }
+        ]
+      } as Paragraph
+    ]
+  }]
+};
+
 /** 全量示例数据 */
 export const FULL_DOC: Document = {
   id: 'full-doc',

@@ -39,7 +39,7 @@
 
 | 属性名 | OpenXML 标签 | 描述 | 状态 |
 | :--- | :--- | :--- | :--- |
-| **fontFamily** | `w:rFonts` | 字体名称 | ✅ 已实现 |
+| **fontFamily** | `w:rFonts` | 字体名称 | ✅ 已实现 (支持 w:ascii, w:eastAsia 等) |
 | **fontSize** | `w:sz` | 字号 (half-points) | ✅ 已实现 |
 | **bold** | `w:b` | 加粗 | ✅ 已实现 |
 | **italic** | `w:i` | 斜体 | ✅ 已实现 |
@@ -59,5 +59,5 @@
 - [x] **Namespace 支持** (`xmlns:w=...`)
 - [x] **w:val 属性解析**
 - [x] **嵌套标签解析** (`w:pPr -> w:jc`)
-- [ ] **反向序列化** (`Document -> XML`)
+- [x] **反向序列化** (`Document -> XML`)
 - [ ] **复杂字段解析** (`w:fldChar`)

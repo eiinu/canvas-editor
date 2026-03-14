@@ -50,6 +50,7 @@ export class BasicXmlConverter implements XmlConverter {
             'w:r': p.children.map(r => {
               const rPr: any = {};
               const props = r.properties;
+              if (props.fontFamily) rPr['w:rFonts'] = { 'w:ascii': props.fontFamily, 'w:hAnsi': props.fontFamily, 'w:eastAsia': props.fontFamily };
               if (props.fontSize) rPr['w:sz'] = { 'w:val': props.fontSize };
               if (props.bold) rPr['w:b'] = {};
               if (props.italic) rPr['w:i'] = {};
@@ -107,6 +108,7 @@ export class BasicXmlConverter implements XmlConverter {
         
         rawRs.forEach((r: any) => {
           const rPr = getVal(r, 'rPr') || {};
+          const rFonts = getVal(rPr, 'rFonts');
           const sz = getVal(rPr, 'sz');
           const b = getVal(rPr, 'b');
           const i = getVal(rPr, 'i');
@@ -115,6 +117,7 @@ export class BasicXmlConverter implements XmlConverter {
           const color = getVal(rPr, 'color');
 
           const rProps: RunProperties = {
+            fontFamily: rFonts ? (rFonts.ascii || rFonts['w:ascii'] || rFonts.eastAsia || rFonts['w:eastAsia'] || rFonts.val || rFonts['w:val']) : undefined,
             fontSize: sz ? parseInt(sz.val || sz['w:val']) : 24, // 默认 12pt (24 half-points)
             bold: b !== undefined,
             italic: i !== undefined,
