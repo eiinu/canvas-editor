@@ -64,7 +64,62 @@ export const BASIC_STYLES_DOC: Document = {
           { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
           { properties: { fontSize: 24, caps: true }, content: { type: 'text', text: 'all caps' } },
           { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
-          { properties: { fontSize: 24, smallCaps: true }, content: { type: 'text', text: 'Small Caps' } }
+          { properties: { fontSize: 24, smallCaps: true }, content: { type: 'text', text: 'Small Caps' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 24, vanish: true }, content: { type: 'text', text: '你看不到我' } }
+        ]
+      } as Paragraph,
+      createSectionHeader('Highlight & Spacing'),
+      {
+        id: 'p-highlight-demo',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 24, highlight: '#FFFF00' }, content: { type: 'text', text: '黄色高亮' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 24, highlight: '#00FF00' }, content: { type: 'text', text: '绿色高亮' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 24, highlight: '#00FFFF' }, content: { type: 'text', text: '青色高亮' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 24, highlight: '#FF00FF', color: '#FFFFFF' }, content: { type: 'text', text: '粉色高亮+白字' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 24, highlight: '#333333', color: '#FFFFFF' }, content: { type: 'text', text: '深灰高亮+白字' } },
+        ]
+      } as Paragraph,
+      {
+        id: 'p-spacing-demo',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 24, letterSpacing: 40 }, content: { type: 'text', text: '紧凑间距 (40 twips)' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: '\n' } },
+          { properties: { fontSize: 24, letterSpacing: 100 }, content: { type: 'text', text: '标准宽间距 (100 twips)' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: '\n' } },
+          { properties: { fontSize: 24, letterSpacing: 300 }, content: { type: 'text', text: '超宽间距 (300 twips)' } },
+        ]
+      } as Paragraph,
+      {
+        id: 'p-mixed-highlight-spacing',
+        properties: { alignment: 'left' },
+        children: [
+          { 
+            properties: { 
+              fontSize: 28, 
+              bold: true, 
+              highlight: '#FFD700', 
+              letterSpacing: 150,
+              color: '#000000'
+            }, 
+            content: { type: 'text', text: '金底+加粗+宽间距组合' } 
+          },
+          { properties: { fontSize: 28 }, content: { type: 'text', text: '\n' } },
+          { 
+            properties: { 
+              fontSize: 24, 
+              smallCaps: true, 
+              letterSpacing: 200,
+              color: '#4B0082'
+            }, 
+            content: { type: 'text', text: 'Small Caps + Letter Spacing' } 
+          }
         ]
       } as Paragraph,
       createSectionHeader('Mixed Styles Combinations'),
