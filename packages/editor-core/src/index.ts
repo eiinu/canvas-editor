@@ -11,6 +11,7 @@ export * from './renderer.js';
 export * from './model/base.js';
 export * from './model/paragraph.js';
 export * from './model/run.js';
+export * from './fonts/font-manager.js';
 
 export interface EditorCoreBootstrapResult {
   initialized: true;

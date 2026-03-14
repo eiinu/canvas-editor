@@ -1,6 +1,7 @@
 import type { Paragraph, TextContent } from '@eiinu/editor-protocol';
 import { DocumentElement, RenderContext } from './base.js';
 import { RunElement } from './run.js';
+import { FontManager } from '../fonts/font-manager.js';
 
 interface LineFragment {
   run: RunElement;
@@ -20,10 +21,12 @@ interface RenderLine {
 export class ParagraphElement extends DocumentElement<Paragraph> {
   private runs: RunElement[];
   private lines: RenderLine[] = [];
+  private fontManager: FontManager;
 
   constructor(data: Paragraph) {
     super(data.id, data);
     this.runs = data.children.map(run => new RunElement(run));
+    this.fontManager = FontManager.getInstance();
   }
 
   /**
@@ -44,13 +47,13 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       let start = 0;
       for (let i = 1; i <= text.length; i++) {
         const subtext = text.substring(start, i);
-        const w = ctx.measureText(subtext).width;
+        const w = this.fontManager.measureText(ctx, subtext, ctx.font);
         const fontSize = data.properties.fontSize ? (data.properties.fontSize / 2) : 12;
 
         if (currentLine.width + w > maxWidth) {
           if (i > start + 1) {
             const finalSubtext = text.substring(start, i - 1);
-            const finalW = ctx.measureText(finalSubtext).width;
+            const finalW = this.fontManager.measureText(ctx, finalSubtext, ctx.font);
             currentLine.fragments.push({ run, text: finalSubtext, width: finalW });
             currentLine.width += finalW;
             currentLine.height = Math.max(currentLine.height, fontSize);
@@ -65,8 +68,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
               currentLine = { fragments: [], width: 0, height: 0 };
             }
             const singleChar = text.substring(start, i);
-            const singleW = ctx.measureText(singleChar).width;
-            currentLine.fragments.push({ run, text: singleChar, width: singleW });
+            const singleW = this.fontManager.measureText(ctx, singleChar, ctx.font);
             currentLine.width = singleW;
             currentLine.height = fontSize;
             this.lines.push(currentLine);

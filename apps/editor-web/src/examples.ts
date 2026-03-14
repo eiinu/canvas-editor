@@ -109,6 +109,47 @@ export const FONTS_DOC: Document = {
   }]
 };
 
+/** 字体回退演示示例数据 */
+export const FONT_FALLBACK_DOC: Document = {
+  id: 'font-fallback-doc',
+  sections: [{
+    properties: {},
+    children: [
+      {
+        id: 'p-fallback-title',
+        properties: { alignment: 'center' },
+        children: [{ properties: { fontSize: 36, bold: true }, content: { type: 'text', text: '跨平台字体回退演示' } }]
+      } as Paragraph,
+      {
+        id: 'p-fallback-desc',
+        properties: { alignment: 'left' },
+        children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: '即便在没有安装对应字体的系统上，编辑器也会自动映射到相似的本地字体：' } }]
+      } as Paragraph,
+      {
+        id: 'p-fallback-ms-yahei',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 32, fontFamily: 'Microsoft YaHei' }, content: { type: 'text', text: '1. 微软雅黑 (Microsoft YaHei) -> macOS 下映射为 萍方' } }
+        ]
+      } as Paragraph,
+      {
+        id: 'p-fallback-simsun',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 32, fontFamily: 'SimSun' }, content: { type: 'text', text: '2. 宋体 (SimSun) -> macOS 下映射为 华文宋体' } }
+        ]
+      } as Paragraph,
+      {
+        id: 'p-fallback-kaiti',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 32, fontFamily: 'KaiTi' }, content: { type: 'text', text: '3. 楷体 (KaiTi) -> macOS 下映射为 华文楷体' } }
+        ]
+      } as Paragraph
+    ]
+  }]
+};
+
 /** 全量示例数据 */
 export const FULL_DOC: Document = {
   id: 'full-doc',
@@ -119,6 +160,7 @@ export const FULL_DOC: Document = {
       ...BASIC_STYLES_DOC.sections[0].children,
       ...COLOR_AND_SIZE_DOC.sections[0].children,
       ...FONTS_DOC.sections[0].children,
+      ...FONT_FALLBACK_DOC.sections[0].children,
       ...WORD_WRAP_DOC.sections[0].children
     ]
   }]
