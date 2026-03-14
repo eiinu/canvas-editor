@@ -8,6 +8,9 @@ import type {
 } from '@eiinu/editor-protocol';
 
 export * from './renderer.js';
+export * from './model/base.js';
+export * from './model/paragraph.js';
+export * from './model/run.js';
 
 export interface EditorCoreBootstrapResult {
   initialized: true;
@@ -24,6 +27,8 @@ export const bootstrapEditorCore = (
     acceptedOperationTypes: ['insert_text', 'delete_range', 'set_mark']
   };
 };
+
+import { ParagraphElement } from './model/paragraph.js';
 
 /**
  * 文档模型工厂函数
@@ -62,5 +67,12 @@ export const ModelFactory = {
       p.children.push(this.createRun(text, rPr));
     }
     return p;
+  },
+
+  /**
+   * 将普通数据转换为元素实例
+   */
+  createElement(p: Paragraph): ParagraphElement {
+    return new ParagraphElement(p);
   }
 };

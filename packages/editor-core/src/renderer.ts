@@ -1,9 +1,4 @@
-import type { 
-  Paragraph, 
-  Run, 
-  RunProperties, 
-  TextContent 
-} from '@eiinu/editor-protocol';
+import { DocumentElement, RenderContext } from './model/base.js';
 
 /**
  * 简单的 Canvas 渲染器
@@ -11,9 +6,49 @@ import type {
  */
 export class CanvasRenderer {
   private ctx: CanvasRenderingContext2D;
+  private dpr: number = 1;
+  private zoom: number = 1;
 
-  constructor(ctx: CanvasRenderingContext2D) {
+  constructor(ctx: CanvasRenderingContext2D, options: { dpr?: number; zoom?: number } = {}) {
     this.ctx = ctx;
+    this.dpr = options.dpr || (typeof window !== 'undefined' ? window.devicePixelRatio : 1);
+    this.zoom = options.zoom || 1;
+  }
+
+  /**
+   * 获取综合缩放比例 (Device DPR * App Zoom)
+   */
+  get scale(): number {
+    return this.dpr * this.zoom;
+  }
+
+  /**
+   * 更新缩放参数
+   */
+  updateScale(options: { dpr?: number; zoom?: number }) {
+    if (options.dpr !== undefined) this.dpr = options.dpr;
+    if (options.zoom !== undefined) this.zoom = options.zoom;
+  }
+
+  /**
+   * 设置画布物理尺寸与逻辑尺寸
+   * @param width 逻辑宽度
+   * @param height 逻辑高度
+   */
+  setDimensions(width: number, height: number) {
+    const { canvas } = this.ctx;
+    const scale = this.scale;
+    
+    // 物理像素尺寸
+    canvas.width = width * scale;
+    canvas.height = height * scale;
+    
+    // 逻辑像素尺寸 (CSS)
+    canvas.style.width = `${width * this.zoom}px`;
+    canvas.style.height = `${height * this.zoom}px`;
+
+    // 重置变换矩阵，应用综合缩放
+    this.ctx.setTransform(scale, 0, 0, scale, 0, 0);
   }
 
   /**
@@ -24,95 +59,20 @@ export class CanvasRenderer {
   }
 
   /**
-   * 渲染一个段落
-   * @param p 段落数据
-   * @param x 段落左上角 X
-   * @param y 段落基线 Y
-   * @param maxWidth 最大绘制宽度，用于处理对齐
+   * 渲染文档元素
    */
-  renderParagraph(p: Paragraph, x: number, y: number, maxWidth: number = 800) {
-    let currentX = x;
+  renderElement(el: DocumentElement, x: number, y: number, maxWidth: number = 800): number {
+    const context: RenderContext = {
+      ctx: this.ctx,
+      dpr: this.dpr,
+      zoom: this.zoom,
+      maxWidth
+    };
+
+    // 1. 布局
+    el.layout(context);
     
-    // 1. 预先测量总宽度，以便处理对齐
-    let totalWidth = 0;
-    const runWidths: number[] = [];
-    for (const run of p.children) {
-      if (run.content.type === 'text') {
-        this.applyRunStyles(run.properties);
-        const w = this.ctx.measureText((run.content as TextContent).text).width;
-        runWidths.push(w);
-        totalWidth += w;
-      } else {
-        runWidths.push(0);
-      }
-    }
-
-    // 2. 处理对齐偏移
-    let offsetX = 0;
-    if (p.properties.alignment === 'center') {
-      offsetX = (maxWidth - totalWidth) / 2;
-    } else if (p.properties.alignment === 'right') {
-      offsetX = maxWidth - totalWidth;
-    }
-
-    currentX += offsetX;
-
-    // 3. 实际渲染
-    p.children.forEach((run, index) => {
-      this.renderRun(run, currentX, y);
-      currentX += runWidths[index];
-    });
-  }
-
-  /**
-   * 渲染一个 Run (文本块)
-   * 返回渲染后的下一个 X 坐标
-   */
-  renderRun(run: Run, x: number, y: number): number {
-    const { properties, content } = run;
-
-    if (content.type !== 'text') {
-      return x;
-    }
-
-    const textContent = content as TextContent;
-    
-    this.applyRunStyles(properties);
-    this.ctx.fillText(textContent.text, x, y);
-
-    // 绘制下划线/删除线 (简单模拟)
-    if (properties.underline || properties.strike) {
-      const metrics = this.ctx.measureText(textContent.text);
-      const fontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
-      this.ctx.beginPath();
-      this.ctx.strokeStyle = properties.color || '#000000';
-      this.ctx.lineWidth = 1;
-      
-      if (properties.underline) {
-        this.ctx.moveTo(x, y + 2);
-        this.ctx.lineTo(x + metrics.width, y + 2);
-      }
-      if (properties.strike) {
-        this.ctx.moveTo(x, y - fontSize / 3);
-        this.ctx.lineTo(x + metrics.width, y - fontSize / 3);
-      }
-      this.ctx.stroke();
-    }
-
-    return x + this.ctx.measureText(textContent.text).width;
-  }
-
-  /**
-   * 应用运行块样式
-   */
-  private applyRunStyles(props: RunProperties) {
-    const fontSize = props.fontSize ? (props.fontSize / 2) : 12; // OpenXML sz 是半磅
-    const fontFamily = props.fontFamily || 'Arial';
-    const weight = props.bold ? 'bold' : 'normal';
-    const style = props.italic ? 'italic' : 'normal';
-
-    this.ctx.font = `${style} ${weight} ${fontSize}px ${fontFamily}`;
-    this.ctx.fillStyle = props.color || '#000000';
-    this.ctx.textBaseline = 'alphabetic'; // 对齐 OpenXML 习惯
+    // 2. 渲染
+    return el.render(context, x, y);
   }
 }

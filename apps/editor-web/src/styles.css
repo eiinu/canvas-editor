@@ -17,11 +17,27 @@ body {
 }
 
 .left-panel {
-  flex: 1;
   border-right: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   background: #fff;
+  min-width: 200px;
+  overflow: hidden;
+}
+
+.resizer {
+  width: 6px;
+  cursor: col-resize;
+  background: #f1f5f9;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  transition: background 0.2s;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.resizer:hover, .resizer.dragging {
+  background: #3b82f6;
 }
 
 .right-panel {
@@ -31,6 +47,7 @@ body {
   flex-direction: column;
   padding: 20px;
   overflow-y: auto;
+  min-width: 200px;
 }
 
 .panel-header {

@@ -20,45 +20,59 @@ export class BasicXmlConverter implements XmlConverter {
       ignoreAttributes: false,
       attributeNamePrefix: '',
       allowBooleanAttributes: true,
+      removeNSPrefix: false, // 保留 w: 这种命名空间前缀，因为用户要求完全一致
     });
   }
 
   toXml(_doc: Document): string {
-    // 暂时不做反向转换
     return 'Not implemented';
   }
 
   fromXml(xml: string): Document {
     try {
       const jsonObj = this.parser.parse(xml);
-      const root = jsonObj.document || jsonObj.w_document || jsonObj;
       
+      // 处理命名空间前缀 w: (常用在 OpenXML)
+      const getVal = (obj: any, key: string) => {
+        return obj[key] || obj[`w:${key}`];
+      };
+
+      const root = jsonObj['w:document'] || jsonObj.document || jsonObj;
+      const body = getVal(root, 'body') || root;
       const sections = [];
-      
-      // 处理 body 或直接处理内容
-      const body = root.body || root;
       const paragraphs: Paragraph[] = [];
       
-      const rawPs = Array.isArray(body.p) ? body.p : (body.p ? [body.p] : []);
+      const rawPs = Array.isArray(getVal(body, 'p')) ? getVal(body, 'p') : (getVal(body, 'p') ? [getVal(body, 'p')] : []);
       
       rawPs.forEach((p: any, idx: number) => {
+        const pPr = getVal(p, 'pPr') || {};
+        const jc = getVal(pPr, 'jc');
+        
         const pProps: ParagraphProperties = {
-          alignment: p.alignment || (p.pPr?.jc) || 'left',
+          alignment: jc?.val || jc?.['w:val'] || 'left',
         };
 
         const runs: Run[] = [];
-        const rawRs = Array.isArray(p.r) ? p.r : (p.r ? [p.r] : []);
+        const rawRs = Array.isArray(getVal(p, 'r')) ? getVal(p, 'r') : (getVal(p, 'r') ? [getVal(p, 'r')] : []);
         
         rawRs.forEach((r: any) => {
+          const rPr = getVal(r, 'rPr') || {};
+          const sz = getVal(rPr, 'sz');
+          const b = getVal(rPr, 'b');
+          const i = getVal(rPr, 'i');
+          const u = getVal(rPr, 'u');
+          const color = getVal(rPr, 'color');
+
           const rProps: RunProperties = {
-            fontSize: r.fontSize ? parseInt(r.fontSize) : (r.rPr?.sz ? parseInt(r.rPr.sz) : 24),
-            bold: r.bold === 'true' || r.bold === true || !!r.rPr?.b,
-            italic: r.italic === 'true' || r.italic === true || !!r.rPr?.i,
-            underline: r.underline === 'true' || r.underline === true || !!r.rPr?.u,
-            color: r.color || r.rPr?.color,
+            fontSize: sz ? parseInt(sz.val || sz['w:val']) : 24, // 默认 12pt (24 half-points)
+            bold: b !== undefined,
+            italic: i !== undefined,
+            underline: u !== undefined,
+            color: color ? `#${color.val || color['w:val']}` : undefined,
           };
 
-          const text = typeof r === 'string' ? r : (r['#text'] || r.t || '');
+          const t = getVal(r, 't');
+          const text = typeof t === 'string' ? t : (t?.['#text'] || t?.['w:t'] || '');
           
           runs.push({
             properties: rProps,
