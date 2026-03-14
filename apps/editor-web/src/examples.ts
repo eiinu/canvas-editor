@@ -122,6 +122,29 @@ export const BASIC_STYLES_DOC: Document = {
           }
         ]
       } as Paragraph,
+      createSectionHeader('Text Effects (Shadow, Outline, etc.)'),
+      {
+        id: 'p-effects-demo',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 32, shadow: true }, content: { type: 'text', text: '阴影文字 (Shadow)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, outline: true }, content: { type: 'text', text: '空心轮廓 (Outline)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, emboss: true }, content: { type: 'text', text: '阳文/浮雕 (Emboss)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, imprint: true }, content: { type: 'text', text: '阴文/雕刻 (Imprint)' } },
+        ]
+      } as Paragraph,
+      {
+        id: 'p-shading-demo',
+        properties: { alignment: 'left' },
+        children: [
+          { properties: { fontSize: 24, shading: '#E0E7FF' }, content: { type: 'text', text: '文字底纹 (Shading: Indigo 100)' } },
+          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 24, shading: '#FEE2E2' }, content: { type: 'text', text: '粉色底纹 (Shading: Red 100)' } },
+        ]
+      } as Paragraph,
       createSectionHeader('Mixed Styles Combinations'),
       {
         id: 'p-mixed-1',

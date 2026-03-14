@@ -203,13 +203,40 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           drawY += originalFontSize * 0.15; // 向下偏移
         }
 
-        // 绘制高亮背景
-        if (props.highlight) {
+        // 绘制高亮或底纹背景
+        if (props.highlight || props.shading) {
           ctx.save();
-          ctx.fillStyle = props.highlight;
-          // 高亮高度通常覆盖整个行高
+          ctx.fillStyle = (props.highlight || props.shading) as string;
+          // 高亮/底纹高度通常覆盖整个行高
           ctx.fillRect(drawX, currentY - line.height, frag.width, line.height * lineSpacing);
           ctx.restore();
+        }
+
+        // 处理文字特效 (Shadow, Outline, Emboss, Imprint)
+        if (props.shadow || props.outline || props.emboss || props.imprint) {
+          ctx.save();
+          if (props.shadow) {
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 2;
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+          }
+          if (props.outline) {
+            ctx.strokeStyle = props.color || '#000000';
+            ctx.lineWidth = 0.5;
+            ctx.strokeText(drawText, drawX, drawY); // 只有在不是 smallCaps 时才这样简单处理，smallCaps 需要逐字符
+          }
+          if (props.emboss) {
+            // 简单模拟：向左上偏移白色，向右下偏移黑色
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fillText(drawText, drawX - 0.5, drawY - 0.5);
+            ctx.fillStyle = props.color || '#000000';
+          }
+          if (props.imprint) {
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillText(drawText, drawX + 0.5, drawY + 0.5);
+            ctx.fillStyle = props.color || '#000000';
+          }
         }
 
         // 处理字符间距绘制逻辑

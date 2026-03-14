@@ -157,6 +157,16 @@ export interface RunProperties {
   letterSpacing?: number;
   /** 隐藏文字 - 对应 <w:vanish> */
   vanish?: boolean;
+  /** 文字底纹 - 对应 <w:shd> */
+  shading?: string;
+  /** 文字阴影 - 对应 <w:shadow> */
+  shadow?: boolean;
+  /** 轮廓 - 对应 <w:outline> */
+  outline?: boolean;
+  /** 阳文/浮雕 - 对应 <w:emboss> */
+  emboss?: boolean;
+  /** 阴文/雕刻 - 对应 <w:imprint> */
+  imprint?: boolean;
 }
 
 /**

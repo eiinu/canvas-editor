@@ -94,6 +94,11 @@ export class BasicXmlConverter implements XmlConverter {
               if (props.caps) rPr['w:caps'] = {};
               if (props.smallCaps) rPr['w:smallCaps'] = {};
               if (props.highlight) rPr['w:highlight'] = { 'w:val': props.highlight };
+              if (props.shading) rPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': props.shading.replace('#', '') };
+              if (props.shadow) rPr['w:shadow'] = {};
+              if (props.outline) rPr['w:outline'] = {};
+              if (props.emboss) rPr['w:emboss'] = {};
+              if (props.imprint) rPr['w:imprint'] = {};
               if (props.letterSpacing) rPr['w:spacing'] = { 'w:val': props.letterSpacing };
               if (props.vanish) rPr['w:vanish'] = {};
               if (props.color) rPr['w:color'] = { 'w:val': props.color.replace('#', '') };
@@ -166,6 +171,11 @@ export class BasicXmlConverter implements XmlConverter {
           const caps = getVal(rPr, 'caps');
           const smallCaps = getVal(rPr, 'smallCaps');
           const highlight = getVal(rPr, 'highlight');
+          const shading = getVal(rPr, 'shd');
+          const shadow = getVal(rPr, 'shadow');
+          const outline = getVal(rPr, 'outline');
+          const emboss = getVal(rPr, 'emboss');
+          const imprint = getVal(rPr, 'imprint');
           const spacing = getVal(rPr, 'spacing');
           const vanish = getVal(rPr, 'vanish');
           const color = getVal(rPr, 'color');
@@ -190,6 +200,11 @@ export class BasicXmlConverter implements XmlConverter {
               caps: caps !== undefined,
               smallCaps: smallCaps !== undefined,
               highlight: highlight ? (highlight.val || highlight['w:val']) : undefined,
+              shading: shading ? `#${shading.fill || shading['w:fill']}` : undefined,
+              shadow: shadow !== undefined,
+              outline: outline !== undefined,
+              emboss: emboss !== undefined,
+              imprint: imprint !== undefined,
               letterSpacing: spacing ? parseInt(spacing.val || spacing['w:val']) : undefined,
               vanish: vanish !== undefined,
               color: color ? `#${color.val || color['w:val']}` : undefined,

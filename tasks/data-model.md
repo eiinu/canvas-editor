@@ -53,7 +53,11 @@
 | **smallCaps** | `w:smallCaps` | 小型大写字母 | ✅ 已实现 |
 | **letterSpacing** | `w:spacing` | 字符间距 | ✅ 已实现 |
 | **vanish** | `w:vanish` | 隐藏文字 | ✅ 已实现 |
-| **shadow** | `w:shd` | 文字阴影 | 📅 待处理 |
+| **shading** | `w:shd` | 文字底纹/背景 | ✅ 已实现 |
+| **shadow** | `w:shadow` | 文字阴影 | ✅ 已实现 |
+| **outline** | `w:outline` | 轮廓/空心 | ✅ 已实现 |
+| **emboss** | `w:emboss` | 阳文/浮雕 | ✅ 已实现 |
+| **imprint** | `w:imprint` | 阴文/雕刻 | ✅ 已实现 |
 
 ---
 
