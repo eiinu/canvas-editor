@@ -15,7 +15,8 @@ import {
   EMOJI_DOC,
   ALIGNMENT_DOC,
   COLOR_GRADIENT_DOC,
-  INTERNATIONAL_DOC
+  INTERNATIONAL_DOC,
+  TABLE_DOC
 } from './examples.js';
 import './styles.css';
 
@@ -84,64 +85,56 @@ watch(xmlCode, (newVal) => {
 });
 
 // 渲染编辑器
-const renderEditor = () => {
-  const canvas = canvasRef.value;
-  const renderer = rendererRef.value;
-  if (!canvas || !renderer) return;
+  const renderEditor = () => {
+    const canvas = canvasRef.value;
+    const renderer = rendererRef.value;
+    if (!canvas || !renderer) return;
 
-  const doc = converterRef.value.fromXml(debouncedXml.value);
+    const doc = converterRef.value.fromXml(debouncedXml.value);
 
-  // 首先计算内容的实际高度
-  let contentHeight = 0;
-  let currentY = 100;
-  
-  // 遍历所有段落，计算总高度
-  doc.sections.forEach(section => {
-    section.children.forEach(child => {
-      if ('children' in child) { // Paragraph
+    // 首先计算内容的实际高度
+    let contentHeight = 0;
+    let currentY = 100;
+    const elements = [];
+    
+    // 遍历所有元素，计算总高度并保存元素实例
+    doc.sections.forEach(section => {
+      section.children.forEach(child => {
         const el = ModelFactory.createElement(child);
-        // 计算段落的高度
+        elements.push(el);
+        // 计算元素的高度
         const context = { 
           ctx: renderer.ctx, 
           dpr: 1, 
           zoom: 1, 
           maxWidth: 700 
         };
-        el.layout(context);
-        // 估算段落高度（基于行数和行高）
-        const lineHeight = 30; // 平均行高
-        const lineCount = el.lines ? el.lines.length : 1;
-        currentY += lineCount * lineHeight + 8; // 加上段落间距
-      }
+        const elementHeight = el.layout(context);
+        currentY += elementHeight + 8; // 加上元素间距
+      });
     });
-  });
-  
-  // 计算最终高度
-  contentHeight = currentY + 100; // 添加底部边距
-  const logicalWidth = 800;
-  const logicalHeight = Math.max(1000, contentHeight); // 至少 1000 像素高
-  
-  // 设置画布尺寸
-  renderer.setDimensions(logicalWidth, logicalHeight);
-  renderer.clear(logicalWidth, logicalHeight);
+    
+    // 计算最终高度
+    contentHeight = currentY + 100; // 添加底部边距
+    const logicalWidth = 800;
+    const logicalHeight = Math.max(1000, contentHeight); // 至少 1000 像素高
+    
+    // 设置画布尺寸
+    renderer.setDimensions(logicalWidth, logicalHeight);
+    renderer.clear(logicalWidth, logicalHeight);
 
-  // 重新渲染内容
-  currentY = 100;
-  doc.sections.forEach(section => {
-    section.children.forEach(child => {
-      if ('children' in child) { // Paragraph
-        const el = ModelFactory.createElement(child);
-        currentY = renderer.renderElement(el, 50, currentY, logicalWidth - 100);
-        currentY += 8;
-      }
+    // 重新渲染内容
+    currentY = 100;
+    elements.forEach(el => {
+      currentY = renderer.renderElement(el, 50, currentY, logicalWidth - 100);
+      currentY += 8;
     });
-  });
 
-  // 更新 canvas-wrapper 的宽度，确保它不会被压缩
-  canvasWrapperStyle.value = {
-    flexShrink: 0
+    // 更新 canvas-wrapper 的宽度，确保它不会被压缩
+    canvasWrapperStyle.value = {
+      flexShrink: 0
+    };
   };
-};
 
 watch([debouncedXml, zoom], () => {
   if (rendererRef.value) {
@@ -280,6 +273,7 @@ const setExample = (doc: any) => {
           <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>
           <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
           <button @click="setExample(INTERNATIONAL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="International Languages">i18n</button>
+          <button @click="setExample(TABLE_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Table Only">Table</button>
         </div>
       </div>
       <div class="editor-wrapper" ref="editorRef"></div>
@@ -308,6 +302,7 @@ const setExample = (doc: any) => {
             <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>
             <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
             <button @click="setExample(INTERNATIONAL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="International Languages">i18n</button>
+            <button @click="setExample(TABLE_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Table Only">Table</button>
           </div>
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%;">
             <div style="font-size: 12px; color: #64748b">

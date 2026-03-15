@@ -5,7 +5,10 @@ import {
   Run, 
   RunProperties, 
   ParagraphProperties,
-  TextContent 
+  TextContent,
+  Table,
+  TableRow,
+  TableCell
 } from '@eiinu/editor-protocol';
 import { XmlConverter } from './index.js';
 
@@ -35,11 +38,14 @@ export class BasicXmlConverter implements XmlConverter {
    * 将 Document 模型转换为标准 OpenXML 字符串
    */
   toXml(doc: Document): string {
-    const body: any = {
-      'w:p': doc.sections.flatMap(section => 
-        section.children.map(p => {
-          if (!('children' in p)) return null; // 暂时只支持 Paragraph
+    const body: any = {};
+    const elements: any[] = [];
 
+    doc.sections.forEach(section => {
+      section.children.forEach(element => {
+        if ('children' in element && !('rows' in element)) {
+          // 处理段落
+          const p = element as Paragraph;
           const pPr: any = {};
           if (p.properties.alignment) {
             pPr['w:jc'] = { 'w:val': p.properties.alignment };
@@ -67,65 +73,166 @@ export class BasicXmlConverter implements XmlConverter {
             pPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': p.properties.shading.replace('#', '') };
           }
 
-          return {
-            'w:pPr': Object.keys(pPr).length > 0 ? pPr : undefined,
-            'w:r': p.children.map(r => {
-              const rPr: any = {};
-              const props = r.properties;
-              
-              // 处理字体 (优先使用 fonts 集合)
-              if (props.fonts) {
-                const rFonts: any = {};
-                if (props.fonts.ascii) rFonts['w:ascii'] = props.fonts.ascii;
-                if (props.fonts.eastAsia) rFonts['w:eastAsia'] = props.fonts.eastAsia;
-                if (props.fonts.hAnsi) rFonts['w:hAnsi'] = props.fonts.hAnsi;
-                if (props.fonts.cs) rFonts['w:cs'] = props.fonts.cs;
-                if (props.fonts.hint) rFonts['w:hint'] = props.fonts.hint;
-                rPr['w:rFonts'] = rFonts;
-              } else if (props.fontFamily) {
-                rPr['w:rFonts'] = { 
-                  'w:ascii': props.fontFamily, 
-                  'w:hAnsi': props.fontFamily, 
-                  'w:eastAsia': props.fontFamily 
+          elements.push({
+            'w:p': {
+              'w:pPr': Object.keys(pPr).length > 0 ? pPr : undefined,
+              'w:r': p.children.map(r => {
+                const rPr: any = {};
+                const props = r.properties;
+                
+                // 处理字体 (优先使用 fonts 集合)
+                if (props.fonts) {
+                  const rFonts: any = {};
+                  if (props.fonts.ascii) rFonts['w:ascii'] = props.fonts.ascii;
+                  if (props.fonts.eastAsia) rFonts['w:eastAsia'] = props.fonts.eastAsia;
+                  if (props.fonts.hAnsi) rFonts['w:hAnsi'] = props.fonts.hAnsi;
+                  if (props.fonts.cs) rFonts['w:cs'] = props.fonts.cs;
+                  if (props.fonts.hint) rFonts['w:hint'] = props.fonts.hint;
+                  rPr['w:rFonts'] = rFonts;
+                } else if (props.fontFamily) {
+                  rPr['w:rFonts'] = { 
+                    'w:ascii': props.fontFamily, 
+                    'w:hAnsi': props.fontFamily, 
+                    'w:eastAsia': props.fontFamily 
+                  };
+                }
+
+                if (props.fontSize) rPr['w:sz'] = { 'w:val': props.fontSize };
+                if (props.bold) rPr['w:b'] = {};
+                if (props.italic) rPr['w:i'] = {};
+                if (props.underline) {
+                  const u: any = { 'w:val': props.underlineType || (typeof props.underline === 'string' ? props.underline : 'single') };
+                  if (props.underlineColor) {
+                    u['w:color'] = props.underlineColor.replace('#', '');
+                  }
+                  rPr['w:u'] = u;
+                }
+                if (props.strike) rPr['w:strike'] = {};
+                if (props.doubleStrike) rPr['w:dstrike'] = {};
+                if (props.vertAlign && props.vertAlign !== 'baseline') {
+                  rPr['w:vertAlign'] = { 'w:val': props.vertAlign };
+                }
+                if (props.caps) rPr['w:caps'] = {};
+                if (props.smallCaps) rPr['w:smallCaps'] = {};
+                if (props.highlight) rPr['w:highlight'] = { 'w:val': props.highlight };
+                if (props.shading) rPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': props.shading.replace('#', '') };
+                if (props.shadow) rPr['w:shadow'] = {};
+                if (props.outline) rPr['w:outline'] = {};
+                if (props.emboss) rPr['w:emboss'] = {};
+                if (props.imprint) rPr['w:imprint'] = {};
+                if (props.letterSpacing) rPr['w:spacing'] = { 'w:val': props.letterSpacing };
+                if (props.vanish) rPr['w:vanish'] = {};
+                if (props.color) rPr['w:color'] = { 'w:val': props.color.replace('#', '') };
+
+                return {
+                  'w:rPr': Object.keys(rPr).length > 0 ? rPr : undefined,
+                  'w:t': (r.content as TextContent).text,
                 };
+              }),
+            }
+          });
+        } else if ('rows' in element) {
+          // 处理表格
+          const table = element as Table;
+          const tblPr: any = {};
+          if (table.properties.width) {
+            tblPr['w:tblW'] = { 'w:val': table.properties.width, 'w:type': 'dxa' };
+          }
+          if (table.properties.alignment) {
+            tblPr['w:jc'] = { 'w:val': table.properties.alignment };
+          }
+          if (table.properties.borders) {
+            tblPr['w:tblBorders'] = table.properties.borders;
+          }
+          if (table.properties.shading) {
+            tblPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': table.properties.shading.replace('#', '') };
+          }
+
+          const tblGrid = table.grid ? {
+            'w:gridCol': table.grid.columns.map(col => ({
+              'w:w': { 'w:val': col.width }
+            }))
+          } : undefined;
+
+          const rows = table.rows.map(row => {
+            const trPr: any = {};
+            if (row.properties?.height) {
+              trPr['w:trHeight'] = { 'w:val': row.properties.height, 'w:hRule': row.properties.heightRule || 'auto' };
+            }
+
+            const cells = row.cells.map(cell => {
+              const tcPr: any = {};
+              if (cell.properties?.width) {
+                tcPr['w:tcW'] = { 'w:val': cell.properties.width, 'w:type': 'dxa' };
+              }
+              if (cell.properties?.gridSpan) {
+                tcPr['w:gridSpan'] = { 'w:val': cell.properties.gridSpan };
+              }
+              if (cell.properties?.vMerge) {
+                tcPr['w:vMerge'] = { 'w:val': cell.properties.vMerge };
+              }
+              if (cell.properties?.verticalAlignment) {
+                tcPr['w:vAlign'] = { 'w:val': cell.properties.verticalAlignment };
+              }
+              if (cell.properties?.borders) {
+                tcPr['w:tcBorders'] = cell.properties.borders;
+              }
+              if (cell.properties?.shading) {
+                tcPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': cell.properties.shading.replace('#', '') };
               }
 
-              if (props.fontSize) rPr['w:sz'] = { 'w:val': props.fontSize };
-              if (props.bold) rPr['w:b'] = {};
-              if (props.italic) rPr['w:i'] = {};
-              if (props.underline) {
-                const u: any = { 'w:val': props.underlineType || (typeof props.underline === 'string' ? props.underline : 'single') };
-                if (props.underlineColor) {
-                  u['w:color'] = props.underlineColor.replace('#', '');
+              const cellChildren: any[] = [];
+              cell.children.forEach(child => {
+                if ('children' in child && !('rows' in child)) {
+                  // 处理单元格内的段落
+                  const p = child as Paragraph;
+                  const pPr: any = {};
+                  if (p.properties.alignment) {
+                    pPr['w:jc'] = { 'w:val': p.properties.alignment };
+                  }
+                  // 其他段落属性...
+
+                  cellChildren.push({
+                    'w:pPr': Object.keys(pPr).length > 0 ? pPr : undefined,
+                    'w:r': p.children.map(r => ({
+                      'w:rPr': {}, // 简化处理
+                      'w:t': (r.content as TextContent).text,
+                    })),
+                  });
                 }
-                rPr['w:u'] = u;
-              }
-              if (props.strike) rPr['w:strike'] = {};
-              if (props.doubleStrike) rPr['w:dstrike'] = {};
-              if (props.vertAlign && props.vertAlign !== 'baseline') {
-                rPr['w:vertAlign'] = { 'w:val': props.vertAlign };
-              }
-              if (props.caps) rPr['w:caps'] = {};
-              if (props.smallCaps) rPr['w:smallCaps'] = {};
-              if (props.highlight) rPr['w:highlight'] = { 'w:val': props.highlight };
-              if (props.shading) rPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': props.shading.replace('#', '') };
-              if (props.shadow) rPr['w:shadow'] = {};
-              if (props.outline) rPr['w:outline'] = {};
-              if (props.emboss) rPr['w:emboss'] = {};
-              if (props.imprint) rPr['w:imprint'] = {};
-              if (props.letterSpacing) rPr['w:spacing'] = { 'w:val': props.letterSpacing };
-              if (props.vanish) rPr['w:vanish'] = {};
-              if (props.color) rPr['w:color'] = { 'w:val': props.color.replace('#', '') };
+              });
 
               return {
-                'w:rPr': Object.keys(rPr).length > 0 ? rPr : undefined,
-                'w:t': (r.content as TextContent).text,
+                'w:tcPr': Object.keys(tcPr).length > 0 ? tcPr : undefined,
+                ...(cellChildren.length > 0 ? { 'w:p': cellChildren } : {})
               };
-            }),
-          };
-        }).filter(Boolean)
-      ),
-    };
+            });
+
+            return {
+              'w:trPr': Object.keys(trPr).length > 0 ? trPr : undefined,
+              'w:tc': cells
+            };
+          });
+
+          elements.push({
+            'w:tbl': {
+              'w:tblPr': Object.keys(tblPr).length > 0 ? tblPr : undefined,
+              'w:tblGrid': tblGrid,
+              'w:tr': rows
+            }
+          });
+        }
+      });
+    });
+
+    // 构建 body 对象
+    elements.forEach(element => {
+      const key = Object.keys(element)[0];
+      if (!body[key]) {
+        body[key] = [];
+      }
+      body[key].push(element[key]);
+    });
 
     const xmlObj = {
       'w:document': {
@@ -150,8 +257,9 @@ export class BasicXmlConverter implements XmlConverter {
       const root = jsonObj['w:document'] || jsonObj.document || jsonObj;
       const body = getVal(root, 'body') || root;
       const sections = [];
-      const paragraphs: Paragraph[] = [];
+      const elements: (Paragraph | Table)[] = [];
       
+      // 处理段落
       const rawPs = Array.isArray(getVal(body, 'p')) ? getVal(body, 'p') : (getVal(body, 'p') ? [getVal(body, 'p')] : []);
       
       rawPs.forEach((p: any, idx: number) => {
@@ -248,16 +356,134 @@ export class BasicXmlConverter implements XmlConverter {
           });
         });
 
-        paragraphs.push({
+        elements.push({
           id: `p-${idx}`,
           properties: pProps,
           children: runs,
         });
       });
 
+      // 处理表格
+      const rawTbls = Array.isArray(getVal(body, 'tbl')) ? getVal(body, 'tbl') : (getVal(body, 'tbl') ? [getVal(body, 'tbl')] : []);
+      
+      rawTbls.forEach((tbl: any, idx: number) => {
+        const tblPr = getVal(tbl, 'tblPr') || {};
+        const tblW = getVal(tblPr, 'tblW');
+        const jc = getVal(tblPr, 'jc');
+        const tblBorders = getVal(tblPr, 'tblBorders');
+        const shd = getVal(tblPr, 'shd');
+
+        const tblProps = {
+          width: tblW ? parseInt(tblW.val || tblW['w:val']) : undefined,
+          alignment: jc ? (jc.val || jc['w:val']) : undefined,
+          borders: tblBorders || undefined,
+          shading: shd ? `#${shd.fill || shd['w:fill']}` : undefined,
+        };
+
+        // 处理表格网格
+        const tblGrid = getVal(tbl, 'tblGrid');
+        const gridColumns = tblGrid ? {
+          columns: Array.isArray(getVal(tblGrid, 'gridCol')) ? getVal(tblGrid, 'gridCol').map((col: any) => {
+            const w = getVal(col, 'w');
+            return {
+              width: w ? parseInt(w.val || w['w:val']) : 0
+            };
+          }) : []
+        } : undefined;
+
+        // 处理表格行
+        const rawRows = Array.isArray(getVal(tbl, 'tr')) ? getVal(tbl, 'tr') : (getVal(tbl, 'tr') ? [getVal(tbl, 'tr')] : []);
+        const rows: TableRow[] = [];
+
+        rawRows.forEach((tr: any) => {
+          const trPr = getVal(tr, 'trPr') || {};
+          const trHeight = getVal(trPr, 'trHeight');
+
+          const rowProps = {
+            height: trHeight ? parseInt(trHeight.val || trHeight['w:val']) : undefined,
+            heightRule: trHeight ? (trHeight.hRule || trHeight['w:hRule']) : undefined,
+          };
+
+          // 处理表格单元格
+          const rawCells = Array.isArray(getVal(tr, 'tc')) ? getVal(tr, 'tc') : (getVal(tr, 'tc') ? [getVal(tr, 'tc')] : []);
+          const cells: TableCell[] = [];
+
+          rawCells.forEach((tc: any) => {
+            const tcPr = getVal(tc, 'tcPr') || {};
+            const tcW = getVal(tcPr, 'tcW');
+            const gridSpan = getVal(tcPr, 'gridSpan');
+            const vMerge = getVal(tcPr, 'vMerge');
+            const vAlign = getVal(tcPr, 'vAlign');
+            const tcBorders = getVal(tcPr, 'tcBorders');
+            const tcShd = getVal(tcPr, 'shd');
+
+            const cellProps = {
+              width: tcW ? parseInt(tcW.val || tcW['w:val']) : undefined,
+              gridSpan: gridSpan ? parseInt(gridSpan.val || gridSpan['w:val']) : undefined,
+              vMerge: vMerge ? (vMerge.val || vMerge['w:val']) : undefined,
+              verticalAlignment: vAlign ? (vAlign.val || vAlign['w:val']) : undefined,
+              borders: tcBorders || undefined,
+              shading: tcShd ? `#${tcShd.fill || tcShd['w:fill']}` : undefined,
+            };
+
+            // 处理单元格内的段落
+            const cellChildren: (Paragraph | Table)[] = [];
+            const cellPs = Array.isArray(getVal(tc, 'p')) ? getVal(tc, 'p') : (getVal(tc, 'p') ? [getVal(tc, 'p')] : []);
+
+            cellPs.forEach((cellP: any, cellPIdx: number) => {
+              const cellPPr = getVal(cellP, 'pPr') || {};
+              const cellPJc = getVal(cellPPr, 'jc');
+
+              const cellPProps: ParagraphProperties = {
+                alignment: cellPJc ? (cellPJc.val || cellPJc['w:val']) : 'left',
+              };
+
+              const cellRuns: Run[] = [];
+              const cellRawRs = Array.isArray(getVal(cellP, 'r')) ? getVal(cellP, 'r') : (getVal(cellP, 'r') ? [getVal(cellP, 'r')] : []);
+
+              cellRawRs.forEach((cellR: any) => {
+                const cellRT = getVal(cellR, 't');
+                const cellRText = typeof cellRT === 'string' ? cellRT : (cellRT?.['#text'] || cellRT?.['w:t'] || '');
+
+                cellRuns.push({
+                  properties: {},
+                  content: {
+                    type: 'text',
+                    text: String(cellRText),
+                  } as TextContent,
+                });
+              });
+
+              cellChildren.push({
+                id: `cell-p-${idx}-${cellPIdx}`,
+                properties: cellPProps,
+                children: cellRuns,
+              });
+            });
+
+            cells.push({
+              properties: cellProps,
+              children: cellChildren,
+            });
+          });
+
+          rows.push({
+            properties: rowProps,
+            cells: cells,
+          });
+        });
+
+        elements.push({
+          id: `tbl-${idx}`,
+          properties: tblProps,
+          grid: gridColumns,
+          rows: rows,
+        });
+      });
+
       sections.push({
         properties: {},
-        children: paragraphs,
+        children: elements,
       });
 
       return {

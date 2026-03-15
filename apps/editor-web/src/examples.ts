@@ -1176,6 +1176,218 @@ export const EMOJI_DOC: Document = {
 
 
 
+/** 表格示例数据 */
+export const TABLE_DOC: Document = {
+  id: 'table-doc',
+  sections: [{
+    properties: {},
+    children: [
+      createSectionHeader('Table Examples'),
+      {
+        id: 'table-basic',
+        properties: {
+          width: 6000,
+          alignment: 'center',
+          borders: {
+            top: { val: 'single', size: 4, space: 0, color: 'auto' },
+            bottom: { val: 'single', size: 4, space: 0, color: 'auto' },
+            left: { val: 'single', size: 4, space: 0, color: 'auto' },
+            right: { val: 'single', size: 4, space: 0, color: 'auto' },
+            insideH: { val: 'single', size: 2, space: 0, color: 'auto' },
+            insideV: { val: 'single', size: 2, space: 0, color: 'auto' }
+          }
+        },
+        grid: {
+          columns: [
+            { width: 2000 },
+            { width: 2000 },
+            { width: 2000 }
+          ]
+        },
+        rows: [
+          {
+            cells: [
+              {
+                properties: {
+                  shading: '#E3F2FD',
+                  verticalAlignment: 'center'
+                },
+                children: [{
+                  id: 'cell-1-1',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { bold: true, fontSize: 24 }, content: { type: 'text', text: 'Name' } }]
+                }]
+              },
+              {
+                properties: {
+                  shading: '#E3F2FD',
+                  verticalAlignment: 'center'
+                },
+                children: [{
+                  id: 'cell-1-2',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { bold: true, fontSize: 24 }, content: { type: 'text', text: 'Age' } }]
+                }]
+              },
+              {
+                properties: {
+                  shading: '#E3F2FD',
+                  verticalAlignment: 'center'
+                },
+                children: [{
+                  id: 'cell-1-3',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { bold: true, fontSize: 24 }, content: { type: 'text', text: 'City' } }]
+                }]
+              }
+            ]
+          },
+          {
+            cells: [
+              {
+                children: [{
+                  id: 'cell-2-1',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'John Doe' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-2-2',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: '30' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-2-3',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'New York' } }]
+                }]
+              }
+            ]
+          },
+          {
+            cells: [
+              {
+                children: [{
+                  id: 'cell-3-1',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'Jane Smith' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-3-2',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: '25' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-3-3',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'London' } }]
+                }]
+              }
+            ]
+          }
+        ]
+      } as Table,
+      {
+        id: 'table-merged',
+        properties: {
+          width: 6000,
+          alignment: 'center',
+          borders: {
+            top: { val: 'double', size: 6, space: 0, color: 'auto' },
+            bottom: { val: 'double', size: 6, space: 0, color: 'auto' },
+            left: { val: 'double', size: 6, space: 0, color: 'auto' },
+            right: { val: 'double', size: 6, space: 0, color: 'auto' },
+            insideH: { val: 'single', size: 2, space: 0, color: 'auto' },
+            insideV: { val: 'single', size: 2, space: 0, color: 'auto' }
+          }
+        },
+        grid: {
+          columns: [
+            { width: 2000 },
+            { width: 2000 },
+            { width: 2000 }
+          ]
+        },
+        rows: [
+          {
+            cells: [
+              {
+                properties: {
+                  gridSpan: 3,
+                  shading: '#FFF3E0',
+                  verticalAlignment: 'center'
+                },
+                children: [{
+                  id: 'cell-merged-1',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { bold: true, fontSize: 28 }, content: { type: 'text', text: 'Merged Cells Example' } }]
+                }]
+              }
+            ]
+          },
+          {
+            cells: [
+              {
+                children: [{
+                  id: 'cell-merged-2-1',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'Product' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-merged-2-2',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'Price' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-merged-2-3',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'Stock' } }]
+                }]
+              }
+            ]
+          },
+          {
+            cells: [
+              {
+                children: [{
+                  id: 'cell-merged-3-1',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: 'Laptop' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-merged-3-2',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: '$999' } }]
+                }]
+              },
+              {
+                children: [{
+                  id: 'cell-merged-3-3',
+                  properties: { alignment: 'center' },
+                  children: [{ properties: { fontSize: 24 }, content: { type: 'text', text: '50' } }]
+                }]
+              }
+            ]
+          }
+        ]
+      } as Table
+    ]
+  }]
+};
+
 /** 全量示例数据 */
 export const FULL_DOC: Document = {
   id: 'full-doc',
@@ -1205,6 +1417,9 @@ export const FULL_DOC: Document = {
 
       // 8. 国际化多语言
       ...INTERNATIONAL_DOC.sections[0].children,
+
+      // 9. 表格
+      ...TABLE_DOC.sections[0].children,
     ]
   }]
 };

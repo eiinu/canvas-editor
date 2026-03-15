@@ -17,6 +17,14 @@ export interface PresenceState {
  */
 
 /**
+ * 文档基础接口 - 所有包含子元素的容器元素的基础接口
+ */
+export interface DocumentBase {
+  /** 子元素列表 - 可以是段落、表格等 */
+  children: (Paragraph | Table)[];
+}
+
+/**
  * 文档根节点 - 对应 WordprocessingML 的 <w:document>
  */
 export interface Document {
@@ -30,11 +38,9 @@ export interface Document {
 /**
  * 章节 - 包含页面布局定义
  */
-export interface Section {
+export interface Section extends DocumentBase {
   /** 章节属性 - 对应 <w:sectPr> (页面大小、边距等) */
   properties: SectionProperties;
-  /** 章节内的段落或表格 - 对应 <w:p> 或 <w:tbl> */
-  children: (Paragraph | Table)[];
 }
 
 /**
@@ -219,14 +225,152 @@ export interface DrawingContent extends BaseContent {
  */
 export interface Table {
   id: string;
-  properties: any; // <w:tblPr>
+  /** 表格属性 - 对应 <w:tblPr> */
+  properties: TableProperties;
+  /** 表格网格 - 对应 <w:tblGrid> */
+  grid?: TableGrid;
+  /** 表格行 - 对应 <w:tr> */
   rows: TableRow[];
 }
 
+/**
+ * 表格属性 - 对应 <w:tblPr>
+ */
+export interface TableProperties {
+  /** 边框 - 对应 <w:tblBorders> */
+  borders?: TableBorders;
+  /** 底纹 - 对应 <w:shd> */
+  shading?: string;
+  /** 表格宽度 - 对应 <w:tblW> */
+  width?: number;
+  /** 表格对齐 - 对应 <w:jc> */
+  alignment?: 'left' | 'center' | 'right';
+  /** 单元格边距 - 对应 <w:tblCellMar> */
+  cellMargin?: TableCellMargin;
+  /** 表格布局 - 对应 <w:tblLayout> */
+  layout?: 'fixed' | 'autofit';
+  /** 表格样式 - 对应 <w:tblStyle> */
+  styleId?: string;
+}
+
+/**
+ * 表格边框 - 对应 <w:tblBorders>
+ */
+export interface TableBorders {
+  top?: Border;
+  bottom?: Border;
+  left?: Border;
+  right?: Border;
+  insideH?: Border;
+  insideV?: Border;
+}
+
+/**
+ * 边框 - 对应 <w:top>, <w:bottom>, etc.
+ */
+export interface Border {
+  val: string; // 边框样式: single, double, dotted, etc.
+  size: number; // 边框粗细
+  space: number; // 边框间距
+  color: string; // 边框颜色
+}
+
+/**
+ * 表格网格 - 对应 <w:tblGrid>
+ */
+export interface TableGrid {
+  /** 网格列 - 对应 <w:gridCol> */
+  columns: TableGridColumn[];
+}
+
+/**
+ * 表格网格列 - 对应 <w:gridCol>
+ */
+export interface TableGridColumn {
+  /** 列宽 - 对应 <w:w> */
+  width: number;
+}
+
+/**
+ * 表格行 - 对应 <w:tr>
+ */
 export interface TableRow {
+  /** 行属性 - 对应 <w:trPr> */
+  properties?: TableRowProperties;
+  /** 表格单元格 - 对应 <w:tc> */
   cells: TableCell[];
 }
 
-export interface TableCell {
-  children: (Paragraph | Table)[];
+/**
+ * 表格行属性 - 对应 <w:trPr>
+ */
+export interface TableRowProperties {
+  /** 行高 - 对应 <w:trHeight> */
+  height?: number;
+  /** 行高规则 - 对应 <w:trHeight w:hRule="..."> */
+  heightRule?: 'auto' | 'exact' | 'atLeast';
+  /** 边框 - 对应 <w:trBorders> */
+  borders?: TableRowBorders;
+}
+
+/**
+ * 表格行边框 - 对应 <w:trBorders>
+ */
+export interface TableRowBorders {
+  top?: Border;
+  bottom?: Border;
+  left?: Border;
+  right?: Border;
+  insideH?: Border;
+  insideV?: Border;
+}
+
+/**
+ * 表格单元格 - 对应 <w:tc>
+ */
+export interface TableCell extends DocumentBase {
+  /** 单元格属性 - 对应 <w:tcPr> */
+  properties?: TableCellProperties;
+}
+
+/**
+ * 表格单元格属性 - 对应 <w:tcPr>
+ */
+export interface TableCellProperties {
+  /** 单元格宽度 - 对应 <w:tcW> */
+  width?: number;
+  /** 单元格边距 - 对应 <w:tcMar> */
+  margin?: TableCellMargin;
+  /** 单元格合并 - 对应 <w:gridSpan> */
+  gridSpan?: number;
+  /** 垂直合并 - 对应 <w:vMerge> */
+  vMerge?: 'restart' | 'continue';
+  /** 垂直对齐 - 对应 <w:vAlign> */
+  verticalAlignment?: 'top' | 'center' | 'bottom';
+  /** 边框 - 对应 <w:tcBorders> */
+  borders?: TableCellBorders;
+  /** 底纹 - 对应 <w:shd> */
+  shading?: string;
+}
+
+/**
+ * 表格单元格边距 - 对应 <w:tcMar> 或 <w:tblCellMar>
+ */
+export interface TableCellMargin {
+  top?: number;
+  right?: number;
+  bottom?: number;
+  left?: number;
+}
+
+/**
+ * 表格单元格边框 - 对应 <w:tcBorders>
+ */
+export interface TableCellBorders {
+  top?: Border;
+  bottom?: Border;
+  left?: Border;
+  right?: Border;
+  insideH?: Border;
+  insideV?: Border;
 }
