@@ -45,8 +45,8 @@ body {
   background: #f8fafc;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  overflow-y: auto;
+  padding: 0;
+  overflow: hidden;
   min-width: 200px;
 }
 
@@ -59,15 +59,42 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .canvas-wrapper {
   background: #fff;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  margin: 0 auto;
   border: 1px solid #e2e8f0;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .cm-editor {
   height: 100% !important;
+}
+
+.canvas-scroll-container {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  padding: 40px;
+}
+
+.canvas-scroll-container::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.canvas-scroll-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.canvas-scroll-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 6px;
+}
+
+.canvas-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
