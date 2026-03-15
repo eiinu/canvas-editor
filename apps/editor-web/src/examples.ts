@@ -39,7 +39,7 @@ export const PARAGRAPH_DOC: Document = {
         id: 'p-indent-left',
         properties: { alignment: 'left', indentation: { left: 1000 } },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '左缩进 1000 twips 的段落' }
         }]
       } as Paragraph,
@@ -47,7 +47,7 @@ export const PARAGRAPH_DOC: Document = {
         id: 'p-indent-first-line',
         properties: { alignment: 'left', indentation: { firstLine: 500 } },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '首行缩进 500 twips 的段落' }
         }]
       } as Paragraph,
@@ -55,7 +55,7 @@ export const PARAGRAPH_DOC: Document = {
         id: 'p-indent-hanging',
         properties: { alignment: 'left', indentation: { hanging: 500 } },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '悬挂缩进 500 twips 的段落' }
         }]
       } as Paragraph,
@@ -63,7 +63,7 @@ export const PARAGRAPH_DOC: Document = {
         id: 'p-indent-both',
         properties: { alignment: 'left', indentation: { left: 500, right: 500 } },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '左右各缩进 500 twips 的段落' }
         }]
       } as Paragraph,
@@ -80,7 +80,7 @@ export const PARAGRAPH_DOC: Document = {
           }
         },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '带四边边框的段落' }
         }]
       } as Paragraph,
@@ -94,7 +94,7 @@ export const PARAGRAPH_DOC: Document = {
           }
         },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '只带上下边边框的段落' }
         }]
       } as Paragraph,
@@ -103,7 +103,7 @@ export const PARAGRAPH_DOC: Document = {
         id: 'p-shading-light',
         properties: { alignment: 'left', shading: '#F0F0F0' },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '带浅灰色底纹的段落' }
         }]
       } as Paragraph,
@@ -111,7 +111,7 @@ export const PARAGRAPH_DOC: Document = {
         id: 'p-shading-colorful',
         properties: { alignment: 'left', shading: '#E0F7FA' },
         children: [{
-          properties: { fontSize: 24, color: '#006064' },
+          properties: { fontSize: 32, color: '#006064' },
           content: { type: 'text', text: '带青色底纹和深青色文字的段落' }
         }]
       } as Paragraph,
@@ -128,7 +128,7 @@ export const PARAGRAPH_DOC: Document = {
           shading: '#FFF3E0'
         },
         children: [{
-          properties: { fontSize: 24 },
+          properties: { fontSize: 32 },
           content: { type: 'text', text: '组合了缩进、边框和底纹的段落' }
         }]
       } as Paragraph
@@ -147,25 +147,25 @@ export const BASIC_STYLES_DOC: Document = {
         id: 'p-styles',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '基础样式：' } },
-          { properties: { fontSize: 24, bold: true }, content: { type: 'text', text: '加粗 (Bold)' } },
-          { properties: { fontSize: 24, italic: true }, content: { type: 'text', text: '，斜体 (Italic)' } },
-          { properties: { fontSize: 24, underline: 'single' }, content: { type: 'text', text: '，下划线 (Underline)' } },
-          { properties: { fontSize: 24, underline: 'single', underlineColor: '#FF0000' }, content: { type: 'text', text: '，红色下划线' } },
-          { properties: { fontSize: 24, strike: true }, content: { type: 'text', text: '，删除线 (Strike)' } },
-          { properties: { fontSize: 24, doubleStrike: true }, content: { type: 'text', text: '，双删除线 (Double Strike)' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: 'E=mc' } },
-          { properties: { fontSize: 24, vertAlign: 'superscript' }, content: { type: 'text', text: '2' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '，H' } },
-          { properties: { fontSize: 24, vertAlign: 'subscript' }, content: { type: 'text', text: '2' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: 'O' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
-          { properties: { fontSize: 24, caps: true }, content: { type: 'text', text: 'all caps' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
-          { properties: { fontSize: 24, smallCaps: true }, content: { type: 'text', text: 'Small Caps' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '，' } },
-          { properties: { fontSize: 24, vanish: true }, content: { type: 'text', text: '你看不到我' } }
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '基础样式：' } },
+          { properties: { fontSize: 32, bold: true }, content: { type: 'text', text: '加粗 (Bold)' } },
+          { properties: { fontSize: 32, italic: true }, content: { type: 'text', text: '，斜体 (Italic)' } },
+          { properties: { fontSize: 32, underline: 'single' }, content: { type: 'text', text: '，下划线 (Underline)' } },
+          { properties: { fontSize: 32, underline: 'single', underlineColor: '#FF0000' }, content: { type: 'text', text: '，红色下划线' } },
+          { properties: { fontSize: 32, strike: true }, content: { type: 'text', text: '，删除线 (Strike)' } },
+          { properties: { fontSize: 32, doubleStrike: true }, content: { type: 'text', text: '，双删除线 (Double Strike)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: 'E=mc' } },
+          { properties: { fontSize: 32, vertAlign: 'superscript' }, content: { type: 'text', text: '2' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '，H' } },
+          { properties: { fontSize: 32, vertAlign: 'subscript' }, content: { type: 'text', text: '2' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: 'O' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 32, caps: true }, content: { type: 'text', text: 'all caps' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 32, smallCaps: true }, content: { type: 'text', text: 'Small Caps' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '，' } },
+          { properties: { fontSize: 32, vanish: true }, content: { type: 'text', text: '你看不到我' } }
         ]
       } as Paragraph,
       createSectionHeader('Highlight & Spacing'),
@@ -173,26 +173,26 @@ export const BASIC_STYLES_DOC: Document = {
         id: 'p-highlight-demo',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, highlight: '#FFFF00' }, content: { type: 'text', text: '黄色高亮' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, highlight: '#00FF00' }, content: { type: 'text', text: '绿色高亮' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, highlight: '#00FFFF' }, content: { type: 'text', text: '青色高亮' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, highlight: '#FF00FF', color: '#FFFFFF' }, content: { type: 'text', text: '粉色高亮+白字' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, highlight: '#333333', color: '#FFFFFF' }, content: { type: 'text', text: '深灰高亮+白字' } },
+          { properties: { fontSize: 32, highlight: '#FFFF00' }, content: { type: 'text', text: '黄色高亮' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, highlight: '#00FF00' }, content: { type: 'text', text: '绿色高亮' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, highlight: '#00FFFF' }, content: { type: 'text', text: '青色高亮' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, highlight: '#FF00FF', color: '#FFFFFF' }, content: { type: 'text', text: '粉色高亮+白字' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, highlight: '#333333', color: '#FFFFFF' }, content: { type: 'text', text: '深灰高亮+白字' } },
         ]
       } as Paragraph,
       {
         id: 'p-spacing-demo',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, letterSpacing: 40 }, content: { type: 'text', text: '紧凑间距 (40 twips)' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '\n' } },
-          { properties: { fontSize: 24, letterSpacing: 100 }, content: { type: 'text', text: '标准宽间距 (100 twips)' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '\n' } },
-          { properties: { fontSize: 24, letterSpacing: 300 }, content: { type: 'text', text: '超宽间距 (300 twips)' } },
+          { properties: { fontSize: 32, letterSpacing: 40 }, content: { type: 'text', text: '紧凑间距 (40 twips)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '\n' } },
+          { properties: { fontSize: 32, letterSpacing: 100 }, content: { type: 'text', text: '标准宽间距 (100 twips)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '\n' } },
+          { properties: { fontSize: 32, letterSpacing: 300 }, content: { type: 'text', text: '超宽间距 (300 twips)' } },
         ]
       } as Paragraph,
       {
@@ -212,7 +212,7 @@ export const BASIC_STYLES_DOC: Document = {
           { properties: { fontSize: 28 }, content: { type: 'text', text: '\n' } },
           { 
             properties: { 
-              fontSize: 24, 
+              fontSize: 32, 
               smallCaps: true, 
               letterSpacing: 200,
               color: '#4B0082'
@@ -239,9 +239,9 @@ export const BASIC_STYLES_DOC: Document = {
         id: 'p-shading-demo',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, shading: '#E0E7FF' }, content: { type: 'text', text: '文字底纹 (Shading: Indigo 100)' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, shading: '#FEE2E2' }, content: { type: 'text', text: '粉色底纹 (Shading: Red 100)' } },
+          { properties: { fontSize: 32, shading: '#E0E7FF' }, content: { type: 'text', text: '文字底纹 (Shading: Indigo 100)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, shading: '#FEE2E2' }, content: { type: 'text', text: '粉色底纹 (Shading: Red 100)' } },
         ]
       } as Paragraph,
       createSectionHeader('Mixed Styles Combinations'),
@@ -269,11 +269,11 @@ export const BASIC_STYLES_DOC: Document = {
         id: 'p-mixed-complex',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '复杂组合：' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '复杂组合：' } },
           { properties: { fontSize: 36, bold: true, color: '#FF0000', underline: 'single', underlineColor: '#0000FF' }, content: { type: 'text', text: '红字蓝线下划线' } },
-          { properties: { fontSize: 24, vertAlign: 'superscript', bold: true, italic: true, color: '#006400' }, content: { type: 'text', text: '上标加粗斜体' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' 正常 ' } },
-          { properties: { fontSize: 24, vertAlign: 'subscript', doubleStrike: true, color: '#A52A2A' }, content: { type: 'text', text: '下标双删除线' } },
+          { properties: { fontSize: 32, vertAlign: 'superscript', bold: true, italic: true, color: '#006400' }, content: { type: 'text', text: '上标加粗斜体' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' 正常 ' } },
+          { properties: { fontSize: 32, vertAlign: 'subscript', doubleStrike: true, color: '#A52A2A' }, content: { type: 'text', text: '下标双删除线' } },
         ]
       } as Paragraph,
       {
@@ -316,7 +316,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-zh',
         properties: { alignment: 'left' },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: '这是一段中文长段落，用于测试自动换行功能。中文文本的换行处理相对简单，因为每个汉字的宽度基本相同，系统可以根据容器宽度自动计算换行位置。这段文本包含了足够的内容，以确保它会在画布上自动换行显示，从而验证自动换行算法的正确性。' }
         }]
       } as Paragraph,
@@ -324,7 +324,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-en',
         properties: { alignment: 'left' },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: 'This is a long English paragraph for testing word wrap functionality. English text wrap is more complex because words have different lengths, and the system needs to break lines at word boundaries to maintain readability. This paragraph contains enough content to ensure it will wrap automatically on the canvas, thus verifying the correctness of the word wrap algorithm.' }
         }]
       } as Paragraph,
@@ -332,7 +332,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-mixed',
         properties: { alignment: 'left' },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: '这是一段中英混合的长段落，用于测试混合文本的自动换行功能。This paragraph contains both Chinese and English text, which presents unique challenges for word wrap algorithms. 系统需要同时处理汉字和英文单词的换行，确保在适当的位置进行断行，以保持文本的可读性。这种混合文本的换行处理是排版系统的重要功能之一。' }
         }]
       } as Paragraph,
@@ -340,7 +340,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-justified',
         properties: { alignment: 'justify' },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: '这是一段两端对齐的中文长段落，用于测试两端对齐时的自动换行功能。两端对齐会调整单词之间的间距，使每行文本都能在左右边界同时对齐，从而产生更加整洁的视觉效果。这种对齐方式在正式文档中非常常见，需要特殊的换行和间距调整算法。' }
         }]
       } as Paragraph,
@@ -348,7 +348,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-center',
         properties: { alignment: 'center' },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: '这是一段居中对齐的中文长段落，用于测试居中对齐时的自动换行功能。居中对齐的文本会在每行的左右两侧留出相等的空白，使文本块在容器中居中显示。这种对齐方式常用于标题和强调性内容，需要特殊的换行计算。' }
         }]
       } as Paragraph,
@@ -356,7 +356,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-right',
         properties: { alignment: 'right' },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: '这是一段右对齐的中文长段落，用于测试右对齐时的自动换行功能。右对齐的文本会从容器的右侧边界开始向左排列，每行的右侧对齐，左侧可能会有不规则的空白。这种对齐方式常用于文档的日期、签名等部分。' }
         }]
       } as Paragraph,
@@ -364,7 +364,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-with-indent',
         properties: { alignment: 'left', indentation: { left: 200, firstLine: 100 } },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: '这是一段带有缩进的中文长段落，用于测试缩进时的自动换行功能。缩进会影响文本的可用宽度，从而影响换行的位置。首行缩进和左缩进的组合使用可以创建更加结构化的文档布局，需要在换行计算中考虑这些因素。' }
         }]
       } as Paragraph,
@@ -380,7 +380,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-large-font',
         properties: { alignment: 'left' },
         children: [{
-          properties: { fontSize: 32, color: '#666666' },
+          properties: { fontSize: 40, color: '#666666' },
           content: { type: 'text', text: '这是一段大字号的中文长段落，用于测试大字号时的自动换行功能。大字号的文本每行能容纳的字符数量较少，换行会更加频繁。系统需要正确处理这种情况，确保文本能够在画布上完整显示。' }
         }]
       } as Paragraph,
@@ -388,7 +388,7 @@ export const WORD_WRAP_DOC: Document = {
         id: 'p-wrap-special-chars',
         properties: { alignment: 'left' },
         children: [{
-          properties: { fontSize: 24, color: '#666666' },
+          properties: { fontSize: 32, color: '#666666' },
           content: { type: 'text', text: '这是一段包含特殊字符的长段落，用于测试特殊字符对自动换行的影响。特殊字符如标点符号、数字、符号等可能会影响换行的位置，系统需要正确处理这些情况，以确保文本的可读性。例如，标点符号通常不应该出现在行首，数字和符号的处理也需要特殊考虑。' }
         }]
       } as Paragraph
@@ -407,7 +407,7 @@ export const ALIGNMENT_DOC: Document = {
         id: 'p-align-left',
         properties: { alignment: 'left', borders: { 'w:bottom': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' } } },
         children: [{
-          properties: { fontSize: 24, color: '#FF6B6B' },
+          properties: { fontSize: 32, color: '#FF6B6B' },
           content: { type: 'text', text: '左对齐 (Left Alignment): 这是一段左对齐的文本，默认情况下文本会从左边界开始排列。适用于大多数正常文档内容。' }
         }]
       } as Paragraph,
@@ -415,7 +415,7 @@ export const ALIGNMENT_DOC: Document = {
         id: 'p-align-center',
         properties: { alignment: 'center', borders: { 'w:bottom': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' } } },
         children: [{
-          properties: { fontSize: 24, color: '#4ECDC4' },
+          properties: { fontSize: 32, color: '#4ECDC4' },
           content: { type: 'text', text: '居中对齐 (Center Alignment): 这是一段居中对齐的文本，文本会在容器中央显示。适用于标题、署名等需要突出显示的内容。' }
         }]
       } as Paragraph,
@@ -423,7 +423,7 @@ export const ALIGNMENT_DOC: Document = {
         id: 'p-align-right',
         properties: { alignment: 'right', borders: { 'w:bottom': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' } } },
         children: [{
-          properties: { fontSize: 24, color: '#95E1D3' },
+          properties: { fontSize: 32, color: '#95E1D3' },
           content: { type: 'text', text: '右对齐 (Right Alignment): 这是一段右对齐的文本，文本会从右边界开始排列。适用于签名、地址等需要右对齐的内容。' }
         }]
       } as Paragraph,
@@ -431,7 +431,7 @@ export const ALIGNMENT_DOC: Document = {
         id: 'p-align-justify',
         properties: { alignment: 'justify', borders: { 'w:bottom': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' } } },
         children: [{
-          properties: { fontSize: 24, color: '#DDA0DD' },
+          properties: { fontSize: 32, color: '#DDA0DD' },
           content: { type: 'text', text: '两端对齐 (Justify Alignment): 这是一段两端对齐的文本，文本会在左右边界同时对齐，每行的宽度会自动调整以填满整个宽度。适用于正文段落，让页面看起来更加整洁和统一。' }
         }]
       } as Paragraph,
@@ -479,7 +479,7 @@ export const ALIGNMENT_DOC: Document = {
         id: 'p-author-example',
         properties: { alignment: 'right', spacing: { after: 400 } },
         children: [{
-          properties: { fontSize: 24, italic: true, color: '#666666' },
+          properties: { fontSize: 32, italic: true, color: '#666666' },
           content: { type: 'text', text: '作者：AI Assistant' }
         }]
       } as Paragraph,
@@ -558,7 +558,7 @@ export const FONTS_DOC: Document = {
       {
         id: 'p-fallback-desc',
         properties: { alignment: 'left', spacing: { before: 200 } },
-        children: [{ properties: { fontSize: 24, italic: true, color: '#666666' }, content: { type: 'text', text: '注：跨平台环境下，缺失字体将自动回退到系统相似字体（如 macOS 下微软雅黑回退至萍方）。' } }]
+        children: [{ properties: { fontSize: 32, italic: true, color: '#666666' }, content: { type: 'text', text: '注：跨平台环境下，缺失字体将自动回退到系统相似字体（如 macOS 下微软雅黑回退至萍方）。' } }]
       } as Paragraph
     ]
   }]
@@ -639,24 +639,24 @@ export const COLOR_GRADIENT_DOC: Document = {
         id: 'p-red-gradient',
         properties: { alignment: 'left', borders: { 'w:bottom': { 'w:val': 'single', 'w:size': 1, 'w:space': 0, 'w:color': 'auto' } } },
         children: [
-          { properties: { fontSize: 24, color: '#FF0000' }, content: { type: 'text', text: '红色渐变：' } },
-          { properties: { fontSize: 24, color: '#FF4040' }, content: { type: 'text', text: '深红' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, color: '#FF6B6B' }, content: { type: 'text', text: '中红' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, color: '#FF9999' }, content: { type: 'text', text: '浅红' } },
+          { properties: { fontSize: 32, color: '#FF0000' }, content: { type: 'text', text: '红色渐变：' } },
+          { properties: { fontSize: 32, color: '#FF4040' }, content: { type: 'text', text: '深红' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, color: '#FF6B6B' }, content: { type: 'text', text: '中红' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, color: '#FF9999' }, content: { type: 'text', text: '浅红' } },
         ]
       } as Paragraph,
       {
         id: 'p-blue-gradient',
         properties: { alignment: 'left', borders: { 'w:bottom': { 'w:val': 'single', 'w:size': 1, 'w:space': 0, 'w:color': 'auto' } } },
         children: [
-          { properties: { fontSize: 24, color: '#0000FF' }, content: { type: 'text', text: '蓝色渐变：' } },
-          { properties: { fontSize: 24, color: '#1E90FF' }, content: { type: 'text', text: '深蓝' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, color: '#4169E1' }, content: { type: 'text', text: '中蓝' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: ' ' } },
-          { properties: { fontSize: 24, color: '#87CEEB' }, content: { type: 'text', text: '浅蓝' } },
+          { properties: { fontSize: 32, color: '#0000FF' }, content: { type: 'text', text: '蓝色渐变：' } },
+          { properties: { fontSize: 32, color: '#1E90FF' }, content: { type: 'text', text: '深蓝' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, color: '#4169E1' }, content: { type: 'text', text: '中蓝' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: ' ' } },
+          { properties: { fontSize: 32, color: '#87CEEB' }, content: { type: 'text', text: '浅蓝' } },
         ]
       } as Paragraph,
       createSectionHeader('Color Temperature (色彩温度)'),
@@ -785,7 +785,7 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-caps',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24 }, content: { type: 'text', text: 'Emoji 不受全部大写影响 (Caps): ' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: 'Emoji 不受全部大写影响 (Caps): ' } },
           { properties: { fontSize: 28, caps: true }, content: { type: 'text', text: 'Hello World 😊 你好世界' } },
         ]
       } as Paragraph,
@@ -793,7 +793,7 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-smallcaps',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24 }, content: { type: 'text', text: 'Emoji 不受小型大写影响 (Small Caps): ' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: 'Emoji 不受小型大写影响 (Small Caps): ' } },
           { properties: { fontSize: 28, smallCaps: true }, content: { type: 'text', text: 'hello world 🎉 你好世界' } },
         ]
       } as Paragraph,
@@ -801,7 +801,7 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-spacing',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24 }, content: { type: 'text', text: 'Emoji 不应用字符间距 (Letter Spacing): ' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: 'Emoji 不应用字符间距 (Letter Spacing): ' } },
           { properties: { fontSize: 28, letterSpacing: 100 }, content: { type: 'text', text: 'Hello😊World🎉你好' } },
         ]
       } as Paragraph,
@@ -825,7 +825,7 @@ export const EMOJI_DOC: Document = {
         properties: { alignment: 'left' },
         children: [
           { properties: { fontSize: 20 }, content: { type: 'text', text: '20pt: 😊 ' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '24pt: 😊 ' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '24pt: 😊 ' } },
           { properties: { fontSize: 32 }, content: { type: 'text', text: '32pt: 😊 ' } },
           { properties: { fontSize: 48 }, content: { type: 'text', text: '48pt: 😊 ' } },
           { properties: { fontSize: 64 }, content: { type: 'text', text: '64pt: 😊 ' } },
@@ -836,7 +836,7 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-2bytes',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#FF6B6B' }, content: { type: 'text', text: '2 字节 Emoji (Basic Unicode): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#FF6B6B' }, content: { type: 'text', text: '2 字节 Emoji (Basic Unicode): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '🎈 🎉 🎊 🎁 🎄 🎃 🎗️ 🎟️ 🎫 🎭 🎨 🎬 🎤 🎧 🎼 🎹 🥁 🎷 🎺 🎸' } },
         ]
       } as Paragraph,
@@ -844,16 +844,16 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-4bytes',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#4ECDC4' }, content: { type: 'text', text: '4 字节 Emoji (With Skin Tone Modifiers): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#4ECDC4' }, content: { type: 'text', text: '4 字节 Emoji (With Skin Tone Modifiers): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '👍🏻 👍🏼 👍🏽 👍🏾 👍🏿 ' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '(浅色-中等-中等深色-深色-极深色)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '(浅色-中等-中等深色-深色-极深色)' } },
         ]
       } as Paragraph,
       {
         id: 'p-emoji-4bytes-more',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#4ECDC4' }, content: { type: 'text', text: '更多 4 字节 Emoji (Fitzpatrick Modifiers): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#4ECDC4' }, content: { type: 'text', text: '更多 4 字节 Emoji (Fitzpatrick Modifiers): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '👋🏻 👋🏼 👋🏽 👋🏾 👋🏿 ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '👌🏻 👌🏼 👌🏽 👌🏾 👌🏿 ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '🙌🏻 🙌🏼 🙌🏽 🙌🏾 🙌🏿' } },
@@ -863,16 +863,16 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-6bytes',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#95E1D3' }, content: { type: 'text', text: '6 字节 Emoji (Zero Width Joiner Sequences): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#95E1D3' }, content: { type: 'text', text: '6 字节 Emoji (Zero Width Joiner Sequences): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '👨‍👩‍👦 👨‍👩‍👧‍👦 👨‍👨‍👦 👩‍👩‍👧 ' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '(家庭组合)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '(家庭组合)' } },
         ]
       } as Paragraph,
       {
         id: 'p-emoji-6bytes-professions',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#95E1D3' }, content: { type: 'text', text: '更多 6 字节 Emoji (职业 + 性别): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#95E1D3' }, content: { type: 'text', text: '更多 6 字节 Emoji (职业 + 性别): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '👨‍💻 👩‍💻 👨‍🎨 👩‍🎨 👨‍🚀 👩‍🚀 👨‍⚕️ 👩‍⚕️ ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '👨‍🏫 👩‍🏫 👨‍🌾 👩‍🌾 👨‍🔬 👩‍🔬' } },
         ]
@@ -881,25 +881,25 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-multi-bytes',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#DDA0DD' }, content: { type: 'text', text: '多字节复杂 Emoji (Complex Sequences): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#DDA0DD' }, content: { type: 'text', text: '多字节复杂 Emoji (Complex Sequences): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '🏳️‍🌈 🏴‍☠️ 🏁‍☠️ ' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '(彩虹旗、海盗旗、带骷髅的旗)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '(彩虹旗、海盗旗、带骷髅的旗)' } },
         ]
       } as Paragraph,
       {
         id: 'p-emoji-complex',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#DDA0DD' }, content: { type: 'text', text: '超复杂 Emoji 组合: ' } },
+          { properties: { fontSize: 32, bold: true, color: '#DDA0DD' }, content: { type: 'text', text: '超复杂 Emoji 组合: ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '👨‍👩‍👧‍👦 🧑‍🤝‍🧑 🫂 👩‍❤️‍👨 👨‍❤️‍👨 ' } },
-          { properties: { fontSize: 24 }, content: { type: 'text', text: '(完整家庭、手拉手、拥抱、情侣)' } },
+          { properties: { fontSize: 32 }, content: { type: 'text', text: '(完整家庭、手拉手、拥抱、情侣)' } },
         ]
       } as Paragraph,
       {
         id: 'p-emoji-hand-sequence',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#F39C12' }, content: { type: 'text', text: '手势组合 Emoji (Hand Sequences): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#F39C12' }, content: { type: 'text', text: '手势组合 Emoji (Hand Sequences): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '🙏 🙌 🤝 🤞 🤟 🤘 🤙 👌 👍 👎 ✊ ✋ 👊 🖐️ ✋' } },
         ]
       } as Paragraph,
@@ -907,7 +907,7 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-flags',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#3498DB' }, content: { type: 'text', text: '国旗 Emoji (Country Flags - 4 字节): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#3498DB' }, content: { type: 'text', text: '国旗 Emoji (Country Flags - 4 字节): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '🇨🇳 🇺🇸 🇯🇵 🇰🇷 🇬🇧 🇫🇷 🇩🇪 🇮🇹 🇷🇺 🇨🇦 🇦🇺 🇧🇷 🇮🇳' } },
         ]
       } as Paragraph,
@@ -915,7 +915,7 @@ export const EMOJI_DOC: Document = {
         id: 'p-emoji-zodiac',
         properties: { alignment: 'left' },
         children: [
-          { properties: { fontSize: 24, bold: true, color: '#9B59B6' }, content: { type: 'text', text: '生肖 Emoji (Zodiac Signs): ' } },
+          { properties: { fontSize: 32, bold: true, color: '#9B59B6' }, content: { type: 'text', text: '生肖 Emoji (Zodiac Signs): ' } },
           { properties: { fontSize: 28 }, content: { type: 'text', text: '🐭 🐮 🐯 🐰 🐲 🐍 🐴 🐑 🐵 🐔 🐶 🐷' } },
         ]
       } as Paragraph,
