@@ -13,7 +13,8 @@ import {
   WORD_WRAP_DOC,
   FONTS_DOC,
   EMOJI_DOC,
-  ALIGNMENT_DOC
+  ALIGNMENT_DOC,
+  COLOR_GRADIENT_DOC
 } from './examples.js';
 import './styles.css';
 
@@ -186,6 +187,7 @@ const setExample = (doc: any) => {
           <button @click="setExample(FULL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Full Example">Full</button>
           <button @click="setExample(PARAGRAPH_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Paragraph Only">Paragraph</button>
           <button @click="setExample(ALIGNMENT_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Alignment Only">Align</button>
+          <button @click="setExample(COLOR_GRADIENT_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Colors Only">Colors</button>
           <button @click="setExample(BASIC_STYLES_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Styles Only">Styles</button>
           <button @click="setExample(FONTS_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Fonts Only">Fonts</button>
           <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>
@@ -213,6 +215,7 @@ const setExample = (doc: any) => {
             <button @click="setExample(FULL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Full Example">Full</button>
             <button @click="setExample(PARAGRAPH_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Paragraph Only">Paragraph</button>
             <button @click="setExample(ALIGNMENT_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Alignment Only">Align</button>
+            <button @click="setExample(COLOR_GRADIENT_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Colors Only">Colors</button>
             <button @click="setExample(BASIC_STYLES_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Styles Only">Styles</button>
             <button @click="setExample(FONTS_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Fonts Only">Fonts</button>
             <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>
