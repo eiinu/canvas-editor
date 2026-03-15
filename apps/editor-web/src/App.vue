@@ -90,22 +90,42 @@ const renderEditor = () => {
 
   const doc = converterRef.value.fromXml(debouncedXml.value);
 
-  // 估算内容高度（基于段落数量）
-  let paragraphCount = 0;
+  // 首先计算内容的实际高度
+  let contentHeight = 0;
+  let currentY = 100;
+  
+  // 遍历所有段落，计算总高度
   doc.sections.forEach(section => {
-    paragraphCount += section.children.filter(child => 'children' in child).length;
+    section.children.forEach(child => {
+      if ('children' in child) { // Paragraph
+        const el = ModelFactory.createElement(child);
+        // 计算段落的高度
+        const context = { 
+          ctx: renderer.ctx, 
+          dpr: 1, 
+          zoom: 1, 
+          maxWidth: 700 
+        };
+        el.layout(context);
+        // 估算段落高度（基于行数和行高）
+        const lineHeight = 30; // 平均行高
+        const lineCount = el.lines ? el.lines.length : 1;
+        currentY += lineCount * lineHeight + 8; // 加上段落间距
+      }
+    });
   });
-
-  // 每个段落大约 30 像素高，加上一些边距
-  const estimatedHeight = Math.max(1000, 100 + paragraphCount * 30 + 100);
-
+  
+  // 计算最终高度
+  contentHeight = currentY + 100; // 添加底部边距
   const logicalWidth = 800;
-  const logicalHeight = estimatedHeight;
+  const logicalHeight = Math.max(1000, contentHeight); // 至少 1000 像素高
+  
+  // 设置画布尺寸
   renderer.setDimensions(logicalWidth, logicalHeight);
   renderer.clear(logicalWidth, logicalHeight);
 
-  // 渲染内容
-  let currentY = 100;
+  // 重新渲染内容
+  currentY = 100;
   doc.sections.forEach(section => {
     section.children.forEach(child => {
       if ('children' in child) { // Paragraph
