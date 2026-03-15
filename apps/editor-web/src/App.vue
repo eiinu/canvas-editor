@@ -6,6 +6,7 @@ import { xml } from '@codemirror/lang-xml';
 import { CanvasRenderer, ModelFactory } from '@eiinu/editor-core';
 import { BasicXmlConverter } from '@eiinu/editor-xml';
 import { getDevicePixelRatio, debounce } from '@eiinu/editor-utils';
+import JSZip from 'jszip';
 import {
   FULL_DOC,
   PARAGRAPH_DOC,
@@ -257,6 +258,142 @@ const handleMouseDown = (e: MouseEvent) => {
 const setExample = (doc: any) => {
   xmlCode.value = converter.toXml(doc);
 };
+
+// 处理 Word 文档上传
+const handleWordUpload = async () => {
+  // 创建隐藏的文件输入元素
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.docx';
+  
+  input.onchange = async (e) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    
+    try {
+      // 解压 docx 文件
+      const zip = new JSZip();
+      const content = await zip.loadAsync(file);
+      
+      // 读取 document.xml 文件
+      const documentXml = content.files['word/document.xml'];
+      if (!documentXml) {
+        alert('无法找到 document.xml 文件');
+        return;
+      }
+      
+      const xmlContent = await documentXml.async('string');
+      
+      // 设置 XML 内容并触发渲染
+      xmlCode.value = xmlContent;
+      renderEditor();
+    } catch (error) {
+      console.error('处理 Word 文档时出错:', error);
+      alert('处理 Word 文档时出错，请确保文件格式正确');
+    }
+  };
+  
+  // 触发文件选择
+  input.click();
+};
+
+// 格式化 XML 内容
+const formatXml = () => {
+  try {
+    const xml = xmlCode.value;
+    let formatted = '';
+    let indent = 0;
+    const indentSize = 2;
+    
+    // 移除所有现有空白和换行，以便重新格式化
+    const cleanXml = xml.replace(/\s+/g, ' ').trim();
+    
+    let i = 0;
+    while (i < cleanXml.length) {
+      const char = cleanXml[i];
+      
+      if (char === '<') {
+        const nextChar = cleanXml[i + 1];
+        
+        // 检查是否是注释
+        if (nextChar === '!') {
+          // 找到注释结束
+          const commentEnd = cleanXml.indexOf('>', i);
+          if (commentEnd !== -1) {
+            const comment = cleanXml.substring(i, commentEnd + 1);
+            formatted += ' '.repeat(indent * indentSize) + comment + '\n';
+            i = commentEnd + 1;
+          } else {
+            formatted += char;
+            i++;
+          }
+        } 
+        // 检查是否是结束标签
+        else if (nextChar === '/') {
+          // 减少缩进
+          indent--;
+          // 找到标签结束
+          const tagEnd = cleanXml.indexOf('>', i);
+          if (tagEnd !== -1) {
+            const tag = cleanXml.substring(i, tagEnd + 1);
+            formatted += ' '.repeat(indent * indentSize) + tag + '\n';
+            i = tagEnd + 1;
+          } else {
+            formatted += char;
+            i++;
+          }
+        } 
+        // 开始标签
+        else {
+          // 找到标签结束
+          const tagEnd = cleanXml.indexOf('>', i);
+          if (tagEnd !== -1) {
+            const tag = cleanXml.substring(i, tagEnd + 1);
+            formatted += ' '.repeat(indent * indentSize) + tag + '\n';
+            
+            // 检查是否是自闭合标签
+            if (cleanXml[tagEnd - 1] !== '/') {
+              // 不是自闭合标签，增加缩进
+              indent++;
+            }
+            
+            i = tagEnd + 1;
+          } else {
+            formatted += char;
+            i++;
+          }
+        }
+      } 
+      // 文本内容
+      else if (char.trim() !== '') {
+        // 找到下一个标签的开始
+        const nextTag = cleanXml.indexOf('<', i);
+        if (nextTag !== -1) {
+          const text = cleanXml.substring(i, nextTag).trim();
+          if (text) {
+            formatted += ' '.repeat(indent * indentSize) + text + '\n';
+          }
+          i = nextTag;
+        } else {
+          const text = cleanXml.substring(i).trim();
+          if (text) {
+            formatted += ' '.repeat(indent * indentSize) + text + '\n';
+          }
+          break;
+        }
+      } 
+      else {
+        i++;
+      }
+    }
+    
+    xmlCode.value = formatted;
+  } catch (error) {
+    console.error('格式化 XML 时出错:', error);
+    alert('格式化 XML 时出错，请确保 XML 格式正确');
+  }
+};
 </script>
 
 <template>
@@ -275,6 +412,7 @@ const setExample = (doc: any) => {
           <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
           <button @click="setExample(INTERNATIONAL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="International Languages">i18n</button>
           <button @click="setExample(TABLE_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Table Only">Table</button>
+          <button @click="handleWordUpload" style="font-size: 10px; padding: 2px 4px; cursor: pointer; background-color: #e3f2fd; color: #1976d2" title="Upload Word Document">Upload Word</button>
         </div>
       </div>
       <div class="editor-wrapper" ref="editorRef"></div>
@@ -304,6 +442,7 @@ const setExample = (doc: any) => {
             <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
             <button @click="setExample(INTERNATIONAL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="International Languages">i18n</button>
             <button @click="setExample(TABLE_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Table Only">Table</button>
+            <button @click="handleWordUpload" style="font-size: 10px; padding: 2px 4px; cursor: pointer; background-color: #e3f2fd; color: #1976d2" title="Upload Word Document">Upload Word</button>
           </div>
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%;">
             <div style="font-size: 12px; color: #64748b">
@@ -318,6 +457,7 @@ const setExample = (doc: any) => {
               </select>
             </div>
             <button @click="renderEditor" style="font-size: 12px; padding: 2px 8px; cursor: pointer">Refresh</button>
+            <button @click="formatXml" style="font-size: 12px; padding: 2px 8px; cursor: pointer; background-color: #e8f5e8; color: #2e7d32" title="Format XML">Format XML</button>
           </div>
         </div>
       </div>
