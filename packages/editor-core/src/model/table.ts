@@ -10,12 +10,9 @@ export class TableElement extends DocumentElement<Table> {
 
   constructor(data: Table) {
     super(data.id, data);
-    console.log('Table data:', data);
     this.rows = data.rows.map((row, index) => {
-      console.log('Table row:', row);
       return new TableRowElement(row, index);
     });
-    console.log('Table rows:', this.rows);
   }
 
   /**
@@ -242,10 +239,8 @@ class TableCellElement {
   constructor(data: TableCell, index: number) {
     this.data = data;
     this.index = index;
-    console.log('TableCell data:', data);
     // 只取第一个子元素
     const firstChild = data.children[0];
-    console.log('TableCell first child:', firstChild);
     if (firstChild) {
       if ('rows' in firstChild) {
         // 处理表格类型的子元素
@@ -259,31 +254,25 @@ class TableCellElement {
     } else {
       this.child = null;
     }
-    console.log('TableCell child:', this.child);
   }
 
   /**
    * 布局计算
    */
   layout(context: RenderContext, width: number): number {
-    console.log('TableCell layout width:', width);
     let totalHeight = 0;
 
     // 应用单元格边距
     const margin = this.data.properties?.margin || {};
     const contentWidth = width - (margin.left || 0) - (margin.right || 0);
-    console.log('TableCell content width:', contentWidth);
 
     // 布局子元素
     if (this.child) {
-      console.log('TableCell child layout:', this.child);
       const childHeight = this.child.layout({ ...context, maxWidth: contentWidth });
-      console.log('TableCell child height:', childHeight);
       totalHeight = childHeight;
     }
 
     this.height = totalHeight;
-    console.log('TableCell total height:', totalHeight);
     return totalHeight;
   }
 
