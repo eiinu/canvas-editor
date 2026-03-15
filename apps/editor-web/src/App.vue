@@ -90,11 +90,21 @@ const renderEditor = () => {
 
   const doc = converterRef.value.fromXml(debouncedXml.value);
 
+  // 估算内容高度（基于段落数量）
+  let paragraphCount = 0;
+  doc.sections.forEach(section => {
+    paragraphCount += section.children.filter(child => 'children' in child).length;
+  });
+
+  // 每个段落大约 30 像素高，加上一些边距
+  const estimatedHeight = Math.max(1000, 100 + paragraphCount * 30 + 100);
+
   const logicalWidth = 800;
-  const logicalHeight = 1000;
+  const logicalHeight = estimatedHeight;
   renderer.setDimensions(logicalWidth, logicalHeight);
   renderer.clear(logicalWidth, logicalHeight);
 
+  // 渲染内容
   let currentY = 100;
   doc.sections.forEach(section => {
     section.children.forEach(child => {
