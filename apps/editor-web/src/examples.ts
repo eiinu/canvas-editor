@@ -436,7 +436,14 @@ export const FONTS_DOC: Document = {
         children: [
           { properties: { fontSize: 32, fontFamily: 'Arial' }, content: { type: 'text', text: 'Arial: The quick brown fox jumps over the lazy dog.' } },
           { properties: { fontSize: 32, fontFamily: 'Times New Roman' }, content: { type: 'text', text: 'Times New Roman: The quick brown fox jumps over the lazy dog.' } },
-          { properties: { fontSize: 32, fontFamily: 'Courier New' }, content: { type: 'text', text: 'Courier New: The quick brown fox jumps over the lazy dog.' } }
+          { properties: { fontSize: 32, fontFamily: 'Courier New' }, content: { type: 'text', text: 'Courier New: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Georgia' }, content: { type: 'text', text: 'Georgia: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Verdana' }, content: { type: 'text', text: 'Verdana: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Tahoma' }, content: { type: 'text', text: 'Tahoma: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Helvetica' }, content: { type: 'text', text: 'Helvetica: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Impact' }, content: { type: 'text', text: 'Impact: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Comic Sans MS' }, content: { type: 'text', text: 'Comic Sans MS: The quick brown fox jumps over the lazy dog.' } },
+          { properties: { fontSize: 32, fontFamily: 'Arial Black' }, content: { type: 'text', text: 'Arial Black: The quick brown fox jumps over the lazy dog.' } }
         ]
       } as Paragraph,
       {
@@ -446,7 +453,13 @@ export const FONTS_DOC: Document = {
           { properties: { fontSize: 32, fontFamily: 'Microsoft YaHei' }, content: { type: 'text', text: '微软雅黑：前端开发是一个充满挑战的领域。' } },
           { properties: { fontSize: 32, fontFamily: 'SimSun' }, content: { type: 'text', text: '宋体：前端开发是一个充满挑战的领域。' } },
           { properties: { fontSize: 32, fontFamily: 'KaiTi' }, content: { type: 'text', text: '楷体：前端开发是一个充满挑战的领域。' } },
-          { properties: { fontSize: 32, fontFamily: 'SimHei' }, content: { type: 'text', text: '黑体：前端开发是一个充满挑战的领域。' } }
+          { properties: { fontSize: 32, fontFamily: 'SimHei' }, content: { type: 'text', text: '黑体：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'FangSong' }, content: { type: 'text', text: '仿宋：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'STSong' }, content: { type: 'text', text: '华文宋体：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'STHeiti' }, content: { type: 'text', text: '华文黑体：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'STKaiti' }, content: { type: 'text', text: '华文楷体：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'STFangsong' }, content: { type: 'text', text: '华文仿宋：前端开发是一个充满挑战的领域。' } },
+          { properties: { fontSize: 32, fontFamily: 'PingFang SC' }, content: { type: 'text', text: '萍方：前端开发是一个充满挑战的领域。' } }
         ]
       } as Paragraph,
       createSectionHeader('Mixed Fonts (ASCII vs EastAsia)'),
