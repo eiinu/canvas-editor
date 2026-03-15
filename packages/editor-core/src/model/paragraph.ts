@@ -196,13 +196,15 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
     // 计算内容高度 (行高 * 1.2)
     const contentHeight = this.lines.reduce((acc, line) => acc + line.height * 1.2, 0);
     
-    // 绘制段落底纹
+    // 绘制段落底纹 - 暂时注释掉
+    /*
     if (this.data.properties.shading) {
       ctx.save();
       ctx.fillStyle = this.data.properties.shading;
       ctx.fillRect(x + indentLeft, y + spacingBefore, maxWidth - indentLeft - indentRight, contentHeight);
       ctx.restore();
     }
+    */
 
     this.lines.forEach((line, index) => {
       let offsetX = 0;
@@ -385,7 +387,8 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
     // 计算最终的底部位置，包括段后距
     const finalBottom = currentY + spacingAfter;
     
-    // 绘制段落边框
+    // 绘制段落边框 - 暂时注释掉
+    /*
     if (this.data.properties.borders) {
       ctx.save();
       ctx.lineWidth = 1;
@@ -431,6 +434,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       
       ctx.restore();
     }
+    */
 
     return finalBottom;
   }
