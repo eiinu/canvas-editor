@@ -185,19 +185,46 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
     const { ctx, maxWidth } = context;
     const spacingBefore = (this.data.properties.spacing?.before || 0) * 0.05;
     const spacingAfter = (this.data.properties.spacing?.after || 0) * 0.05;
+    const indentLeft = (this.data.properties.indentation?.left || 0) * 0.05;
+    const indentRight = (this.data.properties.indentation?.right || 0) * 0.05;
+    const firstLineIndent = (this.data.properties.indentation?.firstLine || 0) * 0.05;
+    const hangingIndent = (this.data.properties.indentation?.hanging || 0) * 0.05;
     
     let currentY = y + spacingBefore;
     const lineSpacing = 1.2;
+    
+    // 计算内容高度 (行高 * 1.2)
+    const contentHeight = this.lines.reduce((acc, line) => acc + line.height * 1.2, 0);
+    
+    // 绘制段落底纹
+    if (this.data.properties.shading) {
+      ctx.save();
+      ctx.fillStyle = this.data.properties.shading;
+      ctx.fillRect(x + indentLeft, y + spacingBefore, maxWidth - indentLeft - indentRight, contentHeight);
+      ctx.restore();
+    }
 
-    this.lines.forEach(line => {
+    this.lines.forEach((line, index) => {
       let offsetX = 0;
       if (this.data.properties.alignment === 'center') {
-        offsetX = (maxWidth - line.width) / 2;
+        offsetX = (maxWidth - indentLeft - indentRight - line.width) / 2;
       } else if (this.data.properties.alignment === 'right') {
-        offsetX = maxWidth - line.width;
+        offsetX = maxWidth - indentLeft - indentRight - line.width;
       }
 
-      let drawX = x + offsetX;
+      // 应用缩进
+      let drawX = x + indentLeft + offsetX;
+      
+      // 首行缩进或悬挂缩进
+      if (index === 0) {
+        if (firstLineIndent > 0) {
+          drawX += firstLineIndent;
+        } else if (hangingIndent > 0) {
+          drawX -= hangingIndent;
+        }
+      } else if (hangingIndent > 0) {
+        drawX += hangingIndent;
+      }
 
       line.fragments.forEach(frag => {
         // 每个 fragment 的样式完全独立，使用 save/restore 包裹整个绘制过程
@@ -354,6 +381,52 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
       currentY += line.height * lineSpacing;
     });
+
+    // 绘制段落边框
+    if (this.data.properties.borders) {
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#000000';
+      
+      const borderRectX = x + indentLeft;
+      const borderRectY = y + spacingBefore;
+      const borderRectWidth = maxWidth - indentLeft - indentRight;
+      const borderRectHeight = contentHeight;
+      
+      // 绘制上边框
+      if (this.data.properties.borders['w:top'] || this.data.properties.borders.top) {
+        ctx.beginPath();
+        ctx.moveTo(borderRectX, borderRectY);
+        ctx.lineTo(borderRectX + borderRectWidth, borderRectY);
+        ctx.stroke();
+      }
+      
+      // 绘制下边框
+      if (this.data.properties.borders['w:bottom'] || this.data.properties.borders.bottom) {
+        ctx.beginPath();
+        ctx.moveTo(borderRectX, borderRectY + borderRectHeight);
+        ctx.lineTo(borderRectX + borderRectWidth, borderRectY + borderRectHeight);
+        ctx.stroke();
+      }
+      
+      // 绘制左边框
+      if (this.data.properties.borders['w:left'] || this.data.properties.borders.left) {
+        ctx.beginPath();
+        ctx.moveTo(borderRectX, borderRectY);
+        ctx.lineTo(borderRectX, borderRectY + borderRectHeight);
+        ctx.stroke();
+      }
+      
+      // 绘制右边框
+      if (this.data.properties.borders['w:right'] || this.data.properties.borders.right) {
+        ctx.beginPath();
+        ctx.moveTo(borderRectX + borderRectWidth, borderRectY);
+        ctx.lineTo(borderRectX + borderRectWidth, borderRectY + borderRectHeight);
+        ctx.stroke();
+      }
+      
+      ctx.restore();
+    }
 
     return currentY + spacingAfter;
   }
