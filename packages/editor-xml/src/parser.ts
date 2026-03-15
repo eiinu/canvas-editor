@@ -80,7 +80,7 @@ export class BasicXmlConverter implements XmlConverter {
               if (props.bold) rPr['w:b'] = {};
               if (props.italic) rPr['w:i'] = {};
               if (props.underline) {
-                const u: any = { 'w:val': typeof props.underline === 'string' ? props.underline : 'single' };
+                const u: any = { 'w:val': props.underlineType || (typeof props.underline === 'string' ? props.underline : 'single') };
                 if (props.underlineColor) {
                   u['w:color'] = props.underlineColor.replace('#', '');
                 }
@@ -193,6 +193,7 @@ export class BasicXmlConverter implements XmlConverter {
             bold: b !== undefined,
             italic: i !== undefined,
             underline: u !== undefined,
+            underlineType: u ? (u.val || u['w:val'] || 'single') : undefined,
             underlineColor: u && (u.color || u['w:color']) ? `#${u.color || u['w:color']}` : undefined,
             strike: strike !== undefined,
               doubleStrike: dstrike !== undefined,
