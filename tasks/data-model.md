@@ -16,7 +16,47 @@
   - [x] `rPr` (运行块属性)
   - [x] `t` (文本内容)
 - [ ] **Table** (`w:tbl`) - *规划中*
+  - [ ] `tblPr` (表格属性)
+  - [ ] `tblGrid` (表格网格)
+  - [ ] `tr` (表格行)
+  - [ ] `tc` (表格单元格)
 - [ ] **Hyperlink** (`w:hyperlink`) - *规划中*
+- [ ] **Picture** (`w:drawing`) - *规划中*
+  - [ ] `inline` (内联图片)
+  - [ ] `anchor` (锚定图片)
+- [ ] **Shape** (`w:drawing`) - *规划中*
+  - [ ] `sp` (形状)
+  - [ ] `nvSpPr` (形状非视觉属性)
+  - [ ] `spPr` (形状属性)
+- [ ] **Footnote** (`w:footnote`) - *规划中*
+  - [ ] `id` (脚注 ID)
+  - [ ] `p` (脚注内容)
+- [ ] **Endnote** (`w:endnote`) - *规划中*
+  - [ ] `id` (尾注 ID)
+  - [ ] `p` (尾注内容)
+- [ ] **Header** (`w:hdr`) - *规划中*
+  - [ ] `id` (页眉 ID)
+  - [ ] `p` (页眉内容)
+- [ ] **Footer** (`w:ftr`) - *规划中*
+  - [ ] `id` (页脚 ID)
+  - [ ] `p` (页脚内容)
+- [ ] **TableOfContents** (`w:toc`) - *规划中*
+  - [ ] `tocPr` (目录属性)
+  - [ ] `p` (目录项)
+- [ ] **Field** (`w:fldChar`) - *规划中*
+  - [ ] `fldCharType` (字段类型)
+  - [ ] `instrText` (字段指令)
+  - [ ] `result` (字段结果)
+- [ ] **Bookmark** (`w:bookmarkStart`/`w:bookmarkEnd`) - *规划中*
+  - [ ] `id` (书签 ID)
+  - [ ] `name` (书签名称)
+- [ ] **TextBox** (`w:txbxContent`) - *规划中*
+  - [ ] `p` (文本框内容)
+- [ ] **Comment** (`w:comment`) - *规划中*
+  - [ ] `id` (评论 ID)
+  - [ ] `author` (作者)
+  - [ ] `date` (日期)
+  - [ ] `p` (评论内容)
 
 ---
 
@@ -31,7 +71,27 @@
 | **borders** | `w:pBdr` | 段落边框 | ✅ 已实现 |
 | **shading** | `w:shd` | 段落底纹/背景 | ✅ 已实现 |
 | **keepNext** | `w:keepNext` | 与下段同页 | 📅 待处理 |
+| **keepLines** | `w:keepLines` | 段落内文字保持在同一页 | 📅 待处理 |
 | **pageBreakBefore**| `w:pageBreakBefore` | 段前分页 | 📅 待处理 |
+| **widowControl** | `w:widowControl` | 孤行控制 | 📅 待处理 |
+| **contextualSpacing** | `w:contextualSpacing` | 上下文间距 | 📅 待处理 |
+| **textDirection** | `w:textDirection` | 文本方向 | 📅 待处理 |
+| **bidi** | `w:bidi` | 双向文本 | 📅 待处理 |
+| **numPr** | `w:numPr` | 编号属性 | 📅 待处理 |
+| **tabs** | `w:tabs` | 制表符设置 | 📅 待处理 |
+| **suppressLineNumbers** | `w:suppressLineNumbers` | 禁止行号 | 📅 待处理 |
+| **autoSpaceDE** | `w:autoSpaceDE` | 自动调整德语间距 | 📅 待处理 |
+| **autoSpaceDN** | `w:autoSpaceDN` | 自动调整日语间距 | 📅 待处理 |
+| **adjustRightInd** | `w:adjustRightInd` | 调整右缩进 | 📅 待处理 |
+| **snapToGrid** | `w:snapToGrid` | 对齐到网格 | 📅 待处理 |
+| **noHyphenation** | `w:noHyphenation` | 禁止断字 | 📅 待处理 |
+| **kinsoku** | `w:kinsoku` | 日文换行规则 | 📅 待处理 |
+| **wordWrap** | `w:wordWrap` | 单词换行 | 📅 待处理 |
+| **overflowPunct** | `w:overflowPunct` | 标点溢出 | 📅 待处理 |
+| **topLinePunct** | `w:topLinePunct` | 行首标点 | 📅 待处理 |
+| **autoHyphenation** | `w:autoHyphenation` | 自动断字 | 📅 待处理 |
+| **hyphenationZone** | `w:hyphenationZone` | 断字区域 | 📅 待处理 |
+| **suppressAutoHyphens** | `w:suppressAutoHyphens` | 禁止自动断字 | 📅 待处理 |
 
 ---
 
@@ -58,6 +118,17 @@
 | **outline** | `w:outline` | 轮廓/空心 | ✅ 已实现 |
 | **emboss** | `w:emboss` | 阳文/浮雕 | ✅ 已实现 |
 | **imprint** | `w:imprint` | 阴文/雕刻 | ✅ 已实现 |
+| **rtl** | `w:rtl` | 从右到左文本 | 📅 待处理 |
+| **cs** | `w:cs` | 复杂脚本 | 📅 待处理 |
+| **em** | `w:em` | 强调标记 | 📅 待处理 |
+| **lang** | `w:lang` | 语言设置 | 📅 待处理 |
+| **noProof** | `w:noProof` | 不拼写检查 | 📅 待处理 |
+| **webHidden** | `w:webHidden` | Web 隐藏 | 📅 待处理 |
+| **specVanish** | `w:specVanish` | 特殊隐藏 | 📅 待处理 |
+| **oMath** | `w:oMath` | 数学公式 | 📅 待处理 |
+| **highlight** | `w:highlight` | 突出显示 | 📅 待处理 |
+| **szCs** | `w:szCs` | 复杂脚本字号 | 📅 待处理 |
+| **rtlGlyph** | `w:rtlGlyph` | 从右到左字形 | 📅 待处理 |
 
 ---
 
@@ -68,6 +139,20 @@
 - [x] **嵌套标签解析** (`w:pPr -> w:jc`)
 - [x] **反向序列化** (`Document -> XML`)
 - [ ] **复杂字段解析** (`w:fldChar`)
+- [ ] **表格解析与序列化** (`w:tbl`)
+- [ ] **图片解析与序列化** (`w:drawing`)
+- [ ] **超链接解析与序列化** (`w:hyperlink`)
+- [ ] **脚注和尾注解析与序列化** (`w:footnote`, `w:endnote`)
+- [ ] **页眉和页脚解析与序列化** (`w:hdr`, `w:ftr`)
+- [ ] **目录解析与序列化** (`w:toc`)
+- [ ] **书签解析与序列化** (`w:bookmarkStart`, `w:bookmarkEnd`)
+- [ ] **文本框解析与序列化** (`w:txbxContent`)
+- [ ] **评论解析与序列化** (`w:comment`)
+- [ ] **样式表解析与序列化** (`w:styles`)
+- [ ] **编号列表解析与序列化** (`w:numPr`)
+- [ ] **制表符解析与序列化** (`w:tabs`)
+- [ ] **双向文本解析与序列化** (`w:bidi`, `w:rtl`)
+- [ ] **数学公式解析与序列化** (`w:oMath`)
 
 ---
 
