@@ -2,7 +2,9 @@
   "extends": "../../configs/tsconfig/service.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "isolatedModules": true
   },
   "include": ["src/**/*"]
 }

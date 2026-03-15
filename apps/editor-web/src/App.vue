@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, shallowRef, onBeforeUnmount, computed } from 'vue';
+import { ref, onMounted, watch, shallowRef, onBeforeUnmount } from 'vue';
 import { EditorView, basicSetup } from 'codemirror';
 import { EditorState } from '@codemirror/state';
 import { xml } from '@codemirror/lang-xml';
@@ -17,7 +17,7 @@ import {
   COLOR_GRADIENT_DOC,
   INTERNATIONAL_DOC,
   TABLE_DOC
-} from './examples.js';
+} from './examples';
 import './styles.css';
 
 const converter = new BasicXmlConverter();
@@ -92,42 +92,22 @@ watch(xmlCode, (newVal) => {
 
     const doc = converterRef.value.fromXml(debouncedXml.value);
 
-    // 首先计算内容的实际高度
-    let contentHeight = 0;
-    let currentY = 100;
-    const elements = [];
-    
-    // 遍历所有元素，计算总高度并保存元素实例
-    doc.sections.forEach(section => {
-      section.children.forEach(child => {
-        const el = ModelFactory.createElement(child);
-        elements.push(el);
-        // 计算元素的高度
-        const context = { 
-          ctx: renderer.ctx, 
-          dpr: 1, 
-          zoom: 1, 
-          maxWidth: 700 
-        };
-        const elementHeight = el.layout(context);
-        currentY += elementHeight + 8; // 加上元素间距
-      });
-    });
-    
     // 计算最终高度
-    contentHeight = currentY + 100; // 添加底部边距
     const logicalWidth = 800;
-    const logicalHeight = Math.max(1000, contentHeight); // 至少 1000 像素高
+    const logicalHeight = 1000; // 至少 1000 像素高
     
     // 设置画布尺寸
     renderer.setDimensions(logicalWidth, logicalHeight);
     renderer.clear(logicalWidth, logicalHeight);
 
-    // 重新渲染内容
-    currentY = 100;
-    elements.forEach(el => {
-      currentY = renderer.renderElement(el, 50, currentY, logicalWidth - 100);
-      currentY += 8;
+    // 渲染内容
+    let currentY = 100;
+    doc.sections.forEach(section => {
+      section.children.forEach(child => {
+        const el = ModelFactory.createElement(child);
+        currentY = renderer.renderElement(el, 50, currentY, logicalWidth - 100);
+        currentY += 8; // 加上元素间距
+      });
     });
 
     // 更新 canvas-wrapper 的宽度，确保它不会被压缩
