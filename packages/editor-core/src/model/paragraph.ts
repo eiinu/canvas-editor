@@ -62,9 +62,14 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
    * 布局计算 (自动换行 + 混合字体处理)
    */
   layout(context: RenderContext): number {
-    const { ctx, maxWidth } = context;
+    const { ctx, maxWidth, cellOptions } = context;
     this.lines = [];
     let currentLine: RenderLine = { fragments: [], width: 0, height: 0 };
+    
+    // 检查是否需要禁止换行
+    const noWrap = cellOptions?.noWrap || false;
+    // 检查是否需要文本自适应单元格
+    const fitText = cellOptions?.fitText || false;
 
     for (const run of this.runs) {
       const data = run.getData();
@@ -121,7 +126,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           const nonEmojiCount = subtext.length - emojiCount;
           const w = this.fontManager.measureText(ctx, subtext, currentFont) + (nonEmojiCount * letterSpacing);
 
-          if (currentLine.width + w > maxWidth) {
+          if (!noWrap && currentLine.width + w > maxWidth) {
             // 需要换行
             if (i > segmentStart + 1) {
               const finalSubtext = segmentText.substring(segmentStart, i - 1);

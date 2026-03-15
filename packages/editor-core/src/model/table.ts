@@ -50,11 +50,24 @@ export class TableElement extends DocumentElement<Table> {
     const tableWidth = Math.min(this.data.properties.width || maxWidth, maxWidth);
     let tableX = x;
 
+    // 应用表格缩进
+    if (this.data.properties.indent) {
+      tableX += this.data.properties.indent;
+    }
+
     // 表格对齐
     if (this.data.properties.alignment === 'center') {
       tableX = x + (maxWidth - tableWidth) / 2;
+      // 对齐后再应用缩进
+      if (this.data.properties.indent) {
+        tableX += this.data.properties.indent;
+      }
     } else if (this.data.properties.alignment === 'right') {
       tableX = x + maxWidth - tableWidth;
+      // 对齐后再应用缩进
+      if (this.data.properties.indent) {
+        tableX += this.data.properties.indent;
+      }
     }
 
     // 计算列宽
@@ -299,7 +312,17 @@ class TableCellElement {
 
     // 渲染子元素
     if (this.child) {
-      this.child.render({ ...context, maxWidth: contentWidth }, contentX, contentY);
+      // 应用单元格文本属性
+      const cellContext = {
+        ...context,
+        maxWidth: contentWidth,
+        // 添加单元格特定的渲染选项
+        cellOptions: {
+          noWrap: this.data.properties?.noWrap,
+          fitText: this.data.properties?.fitText
+        }
+      };
+      this.child.render(cellContext, contentX, contentY);
     }
   }
 

@@ -251,6 +251,18 @@ export interface TableProperties {
   layout?: 'fixed' | 'autofit';
   /** 表格样式 - 对应 <w:tblStyle> */
   styleId?: string;
+  /** 表格标题 - 对应 <w:tblCaption> */
+  caption?: string;
+  /** 表格描述 - 对应 <w:tblDescription> */
+  description?: string;
+  /** 表格样式外观 - 对应 <w:tblLook> */
+  look?: string;
+  /** 表格缩进 - 对应 <w:tblInd> */
+  indent?: number;
+  /** 行带大小 - 对应 <w:tblStyleRowBandSize> */
+  rowBandSize?: number;
+  /** 列带大小 - 对应 <w:tblStyleColBandSize> */
+  colBandSize?: number;
 }
 
 /**
@@ -311,6 +323,10 @@ export interface TableRowProperties {
   heightRule?: 'auto' | 'exact' | 'atLeast';
   /** 边框 - 对应 <w:trBorders> */
   borders?: TableRowBorders;
+  /** 禁止行拆分 - 对应 <w:cantSplit> */
+  cantSplit?: boolean;
+  /** 表头行 - 对应 <w:tblHeader> */
+  header?: boolean;
 }
 
 /**
@@ -339,6 +355,8 @@ export interface TableCell extends DocumentBase {
 export interface TableCellProperties {
   /** 单元格宽度 - 对应 <w:tcW> */
   width?: number;
+  /** 单元格宽度类型 - 对应 <w:tcW w:type> */
+  widthType?: 'dxa' | 'pct' | 'auto';
   /** 单元格边距 - 对应 <w:tcMar> */
   margin?: TableCellMargin;
   /** 单元格合并 - 对应 <w:gridSpan> */
@@ -351,6 +369,12 @@ export interface TableCellProperties {
   borders?: TableCellBorders;
   /** 底纹 - 对应 <w:shd> */
   shading?: string;
+  /** 文本自适应单元格 - 对应 <w:tcFitText> */
+  fitText?: boolean;
+  /** 禁止文本换行 - 对应 <w:noWrap> */
+  noWrap?: boolean;
+  /** 隐藏标记 - 对应 <w:hideMark> */
+  hideMark?: boolean;
 }
 
 /**

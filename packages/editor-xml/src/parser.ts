@@ -147,6 +147,24 @@ export class BasicXmlConverter implements XmlConverter {
           if (table.properties.shading) {
             tblPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': table.properties.shading.replace('#', '') };
           }
+          if (table.properties.caption) {
+            tblPr['w:tblCaption'] = { 'w:val': table.properties.caption };
+          }
+          if (table.properties.description) {
+            tblPr['w:tblDescription'] = { 'w:val': table.properties.description };
+          }
+          if (table.properties.look) {
+            tblPr['w:tblLook'] = { 'w:val': table.properties.look };
+          }
+          if (table.properties.indent) {
+            tblPr['w:tblInd'] = { 'w:val': table.properties.indent, 'w:type': 'dxa' };
+          }
+          if (table.properties.rowBandSize) {
+            tblPr['w:tblStyleRowBandSize'] = { 'w:val': table.properties.rowBandSize };
+          }
+          if (table.properties.colBandSize) {
+            tblPr['w:tblStyleColBandSize'] = { 'w:val': table.properties.colBandSize };
+          }
 
           const tblGrid = table.grid ? {
             'w:gridCol': table.grid.columns.map(col => ({
@@ -159,11 +177,17 @@ export class BasicXmlConverter implements XmlConverter {
             if (row.properties?.height) {
               trPr['w:trHeight'] = { 'w:val': row.properties.height, 'w:hRule': row.properties.heightRule || 'auto' };
             }
+            if (row.properties?.cantSplit) {
+              trPr['w:cantSplit'] = {};
+            }
+            if (row.properties?.header) {
+              trPr['w:tblHeader'] = {};
+            }
 
             const cells = row.cells.map(cell => {
               const tcPr: any = {};
               if (cell.properties?.width) {
-                tcPr['w:tcW'] = { 'w:val': cell.properties.width, 'w:type': 'dxa' };
+                tcPr['w:tcW'] = { 'w:val': cell.properties.width, 'w:type': cell.properties.widthType || 'dxa' };
               }
               if (cell.properties?.gridSpan) {
                 tcPr['w:gridSpan'] = { 'w:val': cell.properties.gridSpan };
@@ -179,6 +203,15 @@ export class BasicXmlConverter implements XmlConverter {
               }
               if (cell.properties?.shading) {
                 tcPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': cell.properties.shading.replace('#', '') };
+              }
+              if (cell.properties?.fitText) {
+                tcPr['w:tcFitText'] = {};
+              }
+              if (cell.properties?.noWrap) {
+                tcPr['w:noWrap'] = {};
+              }
+              if (cell.properties?.hideMark) {
+                tcPr['w:hideMark'] = {};
               }
 
               const cellChildren: any[] = [];
@@ -372,12 +405,24 @@ export class BasicXmlConverter implements XmlConverter {
         const jc = getVal(tblPr, 'jc');
         const tblBorders = getVal(tblPr, 'tblBorders');
         const shd = getVal(tblPr, 'shd');
+        const tblCaption = getVal(tblPr, 'tblCaption');
+        const tblDescription = getVal(tblPr, 'tblDescription');
+        const tblLook = getVal(tblPr, 'tblLook');
+        const tblInd = getVal(tblPr, 'tblInd');
+        const tblStyleRowBandSize = getVal(tblPr, 'tblStyleRowBandSize');
+        const tblStyleColBandSize = getVal(tblPr, 'tblStyleColBandSize');
 
         const tblProps = {
           width: tblW ? parseInt(tblW.val || tblW['w:val']) : undefined,
           alignment: jc ? (jc.val || jc['w:val']) : undefined,
           borders: tblBorders || undefined,
           shading: shd ? `#${shd.fill || shd['w:fill']}` : undefined,
+          caption: tblCaption ? (tblCaption.val || tblCaption['w:val']) : undefined,
+          description: tblDescription ? (tblDescription.val || tblDescription['w:val']) : undefined,
+          look: tblLook ? (tblLook.val || tblLook['w:val']) : undefined,
+          indent: tblInd ? parseInt(tblInd.val || tblInd['w:val']) : undefined,
+          rowBandSize: tblStyleRowBandSize ? parseInt(tblStyleRowBandSize.val || tblStyleRowBandSize['w:val']) : undefined,
+          colBandSize: tblStyleColBandSize ? parseInt(tblStyleColBandSize.val || tblStyleColBandSize['w:val']) : undefined,
         };
 
         // 处理表格网格
@@ -398,10 +443,14 @@ export class BasicXmlConverter implements XmlConverter {
         rawRows.forEach((tr: any) => {
           const trPr = getVal(tr, 'trPr') || {};
           const trHeight = getVal(trPr, 'trHeight');
+          const cantSplit = getVal(trPr, 'cantSplit');
+          const tblHeader = getVal(trPr, 'tblHeader');
 
           const rowProps = {
             height: trHeight ? parseInt(trHeight.val || trHeight['w:val']) : undefined,
             heightRule: trHeight ? (trHeight.hRule || trHeight['w:hRule']) : undefined,
+            cantSplit: cantSplit !== undefined,
+            header: tblHeader !== undefined,
           };
 
           // 处理表格单元格
@@ -416,14 +465,21 @@ export class BasicXmlConverter implements XmlConverter {
             const vAlign = getVal(tcPr, 'vAlign');
             const tcBorders = getVal(tcPr, 'tcBorders');
             const tcShd = getVal(tcPr, 'shd');
+            const tcFitText = getVal(tcPr, 'tcFitText');
+            const noWrap = getVal(tcPr, 'noWrap');
+            const hideMark = getVal(tcPr, 'hideMark');
 
             const cellProps = {
               width: tcW ? parseInt(tcW.val || tcW['w:val']) : undefined,
+              widthType: tcW ? (tcW.type || tcW['w:type']) : undefined,
               gridSpan: gridSpan ? parseInt(gridSpan.val || gridSpan['w:val']) : undefined,
               vMerge: vMerge ? (vMerge.val || vMerge['w:val']) : undefined,
               verticalAlignment: vAlign ? (vAlign.val || vAlign['w:val']) : undefined,
               borders: tcBorders || undefined,
               shading: tcShd ? `#${tcShd.fill || tcShd['w:fill']}` : undefined,
+              fitText: tcFitText !== undefined,
+              noWrap: noWrap !== undefined,
+              hideMark: hideMark !== undefined,
             };
 
             // 处理单元格内的段落

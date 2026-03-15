@@ -1,4 +1,12 @@
 /**
+ * 单元格选项接口
+ */
+export interface CellOptions {
+  noWrap?: boolean;
+  fitText?: boolean;
+}
+
+/**
  * 渲染上下文接口
  */
 export interface RenderContext {
@@ -6,6 +14,7 @@ export interface RenderContext {
   dpr: number;
   zoom: number;
   maxWidth: number;
+  cellOptions?: CellOptions;
 }
 
 /**
