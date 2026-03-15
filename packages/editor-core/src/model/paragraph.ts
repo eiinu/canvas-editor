@@ -382,6 +382,9 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       currentY += line.height * lineSpacing;
     });
 
+    // 计算最终的底部位置，包括段后距
+    const finalBottom = currentY + spacingAfter;
+    
     // 绘制段落边框
     if (this.data.properties.borders) {
       ctx.save();
@@ -392,7 +395,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       let minX = x + indentLeft;
       let maxX = x + maxWidth - indentRight;
       let minY = y + spacingBefore;
-      let maxY = currentY;
+      let maxY = finalBottom;
       
       // 绘制上边框
       if (this.data.properties.borders['w:top'] || this.data.properties.borders.top) {
@@ -429,6 +432,6 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       ctx.restore();
     }
 
-    return currentY + spacingAfter;
+    return finalBottom;
   }
 }
