@@ -25,11 +25,11 @@
 | 属性名 | OpenXML 标签 | 描述 | 状态 |
 | :--- | :--- | :--- | :--- |
 | **alignment** | `w:jc` | 对齐方式 (left, center, right, justify) | ✅ 已实现 |
-| **indentation** | `w:ind` | 缩进 (left, right, firstLine, hanging) | ⏳ 接口已定义 |
+| **indentation** | `w:ind` | 缩进 (left, right, firstLine, hanging) | ✅ 已实现 |
 | **spacing** | `w:spacing` | 间距 (before, after, line, lineRule) | ✅ 已实现 |
 | **styleId** | `w:pStyle` | 关联的段落样式 ID | ✅ 已实现 |
-| **borders** | `w:pBdr` | 段落边框 | 📅 待处理 |
-| **shading** | `w:shd` | 段落底纹/背景 | 📅 待处理 |
+| **borders** | `w:pBdr` | 段落边框 | ✅ 已实现 |
+| **shading** | `w:shd` | 段落底纹/背景 | ✅ 已实现 |
 | **keepNext** | `w:keepNext` | 与下段同页 | 📅 待处理 |
 | **pageBreakBefore**| `w:pageBreakBefore` | 段前分页 | 📅 待处理 |
 
@@ -68,3 +68,73 @@
 - [x] **嵌套标签解析** (`w:pPr -> w:jc`)
 - [x] **反向序列化** (`Document -> XML`)
 - [ ] **复杂字段解析** (`w:fldChar`)
+
+---
+
+## 5. 段落样式实现详情
+
+### 5.1 缩进 (Indentation)
+实现 OpenXML 标准的段落缩进属性 (`w:ind`)：
+
+- `w:left` - 左缩进（单位：磅或半点）
+- `w:right` - 右缩进
+- `w:firstLine` - 首行缩进（正值表示缩进，负值表示悬挂缩进）
+- `w:hanging` - 悬挂缩进（单位：磅或半点）
+
+**实现要点**：
+- 支持单位转换（twips → pixels）
+- 自动计算文本区域的实际宽度
+- 正确处理首行缩进与悬挂缩进的相互影响
+- 缩进值参与段落总高度和宽度的计算
+
+### 5.2 边框 (Borders)
+实现 OpenXML 标准的段落边框属性 (`w:pBdr`)：
+
+支持的边框位置：
+- `w:top` - 上边框
+- `w:bottom` - 下边框
+- `w:left` - 左边框
+- `w:right` - 右边框
+
+每个边框支持的属性：
+- `w:val` - 边框样式（single、double、dotted 等）
+- `w:sz` - 边框粗细（单位：eighth-points）
+- `w:color` - 边框颜色（Hex）
+
+**实现要点**：
+- 边框宽度参与段落高度计算
+- 边框与文本之间保留适当的间距
+- 支持不同边框的独立样式设置
+- 正确处理边框与缩进的相互影响
+
+### 5.3 底纹 (Shading)
+实现 OpenXML 标准的段落底纹属性 (`w:shd`)：
+
+支持的属性：
+- `w:fill` - 背景填充色（Hex）
+- `w:color` - 前景色（用于图案模式）
+- `w:val` - 底纹模式（clear、solid 等）
+
+**实现要点**：
+- 背景色应用于整个段落区域
+- 底纹与边框配合使用时的层次处理
+- 文本可读性优化（根据背景色自动调整文本颜色）
+- 底纹与其他段落属性的协同渲染
+
+---
+
+## 6. 编辑器用户体验优化
+
+### 6.1 横向滚动支持
+- Canvas 预览区域支持横向滚动
+- 当 canvas 宽度超过容器宽度时自动显示滚动条
+- 支持缩放比例动态调整
+- 自定义滚动条样式优化
+
+### 6.2 移动端响应式设计
+- 自动检测移动端设备（屏幕宽度 < 768px）
+- 移动端隐藏 XML 编辑器面板
+- 将 demo 切换按钮移到右侧面板头部
+- 优化移动端布局和间距
+- Canvas 预览在移动端占据全屏宽度
+- 保持缩放和刷新功能的可用性
