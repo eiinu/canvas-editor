@@ -92,16 +92,37 @@ watch(xmlCode, (newVal) => {
 
     const doc = converterRef.value.fromXml(debouncedXml.value);
 
-    // 计算最终高度
+    // 计算内容高度
     const logicalWidth = 800;
-    const logicalHeight = 1000; // 至少 1000 像素高
+    let contentHeight = 0;
+    let currentY = 100;
+    
+    // 先计算所有元素的总高度
+    doc.sections.forEach(section => {
+      section.children.forEach(child => {
+        const el = ModelFactory.createElement(child);
+        // 计算元素的布局高度
+        const context = { 
+          ctx: canvas.getContext('2d')!,
+          dpr: 1,
+          zoom: 1,
+          maxWidth: logicalWidth - 100
+        };
+        const elementHeight = el.layout(context);
+        currentY += elementHeight + 8; // 加上元素间距
+      });
+    });
+    
+    // 计算最终高度
+    contentHeight = currentY + 100; // 添加底部边距
+    const logicalHeight = Math.max(1000, contentHeight); // 至少 1000 像素高
     
     // 设置画布尺寸
     renderer.setDimensions(logicalWidth, logicalHeight);
     renderer.clear(logicalWidth, logicalHeight);
 
-    // 渲染内容
-    let currentY = 100;
+    // 重新渲染内容
+    currentY = 100;
     doc.sections.forEach(section => {
       section.children.forEach(child => {
         const el = ModelFactory.createElement(child);

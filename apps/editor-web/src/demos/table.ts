@@ -1,18 +1,5 @@
-import { Document, Paragraph, Table } from '@eiinu/editor-protocol';
-
-/**
- * 辅助函数：创建功能模块标题
- */
-const createSectionHeader = (title: string): Paragraph => ({
-  id: `header-${title.replace(/\s+/g, '-').toLowerCase()}`,
-  properties: { alignment: 'left', spacing: { before: 400, after: 200 } },
-  children: [
-    {
-      properties: { fontSize: 32, bold: true, color: '#312E81', underline: 'single' },
-      content: { type: 'text', text: `Section: ${title}` }
-    }
-  ]
-} as Paragraph);
+import { Document, Table } from '@eiinu/editor-protocol';
+import { createSectionHeader } from './paragraph';
 
 /** 表格示例数据 */
 export const TABLE_DOC: Document = {
