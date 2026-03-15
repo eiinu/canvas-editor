@@ -5,10 +5,10 @@
 ## 核心任务清单
 
 | **数据模型** | OpenXML 风格的元素与属性定义 | [data-model.md](./data-model.md) | 🟢 50% |
-| **渲染引擎** | Canvas 布局、测量、换行与高清绘制 | - | 🟢 65% |
+| **渲染引擎** | Canvas 布局、测量、换行与高清绘制 | [rendering-engine.md](./rendering-engine.md) | 🟢 65% |
 | **字体管理** | 跨平台字体映射与回退逻辑处理 | [font-management.md](./font-management.md) | 🟢 100% |
-| **交互逻辑** | 选区、光标、输入拦截、快捷键 | - | ⚪️ 0% |
-| **XML 转换** | OOXML 与内部模型的高效转换 | - | 🟡 35% |
+| **交互逻辑** | 选区、光标、输入拦截、快捷键 | [interaction-logic.md](./interaction-logic.md) | ⚪️ 0% |
+| **XML 转换** | OOXML 与内部模型的高效转换 | [xml-conversion.md](./xml-conversion.md) | 🟡 35% |
 | **协同系统** | OT/CRDT 与服务端同步 | - | ⚪️ 0% |
 
 ## 最近完成 (Milestones)
