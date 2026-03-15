@@ -1202,6 +1202,9 @@ export const FULL_DOC: Document = {
 
       // 7. 自动换行
       ...WORD_WRAP_DOC.sections[0].children,
+
+      // 8. 国际化多语言
+      ...INTERNATIONAL_DOC.sections[0].children,
     ]
   }]
 };
