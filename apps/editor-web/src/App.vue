@@ -14,7 +14,8 @@ import {
   FONTS_DOC,
   EMOJI_DOC,
   ALIGNMENT_DOC,
-  COLOR_GRADIENT_DOC
+  COLOR_GRADIENT_DOC,
+  INTERNATIONAL_DOC
 } from './examples.js';
 import './styles.css';
 
@@ -278,6 +279,7 @@ const setExample = (doc: any) => {
           <button @click="setExample(FONTS_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Fonts Only">Fonts</button>
           <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>
           <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
+          <button @click="setExample(INTERNATIONAL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="International Languages">i18n</button>
         </div>
       </div>
       <div class="editor-wrapper" ref="editorRef"></div>
@@ -305,6 +307,7 @@ const setExample = (doc: any) => {
             <button @click="setExample(FONTS_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Fonts Only">Fonts</button>
             <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>
             <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
+            <button @click="setExample(INTERNATIONAL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="International Languages">i18n</button>
           </div>
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%;">
             <div style="font-size: 12px; color: #64748b">
