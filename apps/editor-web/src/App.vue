@@ -269,8 +269,7 @@ const setExample = (doc: any) => {
     <!-- 左侧：XML 编辑器 -->
     <div v-if="!isMobile" class="left-panel" :style="{ width: `${leftWidth}px` }">
       <div class="panel-header">
-        <span>XML Editor (CodeMirror 6)</span>
-        <div style="display: flex; gap: 4px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 4px;">
           <button @click="setExample(FULL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Full Example">Full</button>
           <button @click="setExample(PARAGRAPH_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Paragraph Only">Paragraph</button>
           <button @click="setExample(ALIGNMENT_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Alignment Only">Align</button>
@@ -295,10 +294,9 @@ const setExample = (doc: any) => {
     <!-- 右侧：Canvas 预览 -->
     <div class="right-panel">
       <div class="panel-header">
-        <span>Canvas Preview</span>
-        <div :style="{ display: 'flex', gap: isMobile ? '8px' : '12px', alignItems: 'center', flexWrap: 'wrap' }">
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%;">
           <!-- 移动端显示的 demo 按钮 -->
-          <div v-if="isMobile" style="display: flex; gap: 4px; margin-right: 8px;">
+          <div v-if="isMobile" style="display: flex; flex-wrap: wrap; gap: 4px; width: 100%;">
             <button @click="setExample(FULL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Full Example">Full</button>
             <button @click="setExample(PARAGRAPH_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Paragraph Only">Paragraph</button>
             <button @click="setExample(ALIGNMENT_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Alignment Only">Align</button>
@@ -308,18 +306,20 @@ const setExample = (doc: any) => {
             <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>
             <button @click="setExample(WORD_WRAP_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Wrap Only">Wrap</button>
           </div>
-          <div style="font-size: 12px; color: #64748b">
-            Zoom: 
-            <select v-model="zoom" style="margin-left: 4px; padding: 2px 4px">
-              <option :value="0.5">50%</option>
-              <option :value="0.8">80%</option>
-              <option :value="1">100%</option>
-              <option :value="1.2">120%</option>
-              <option :value="1.5">150%</option>
-              <option :value="2">200%</option>
-            </select>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%;">
+            <div style="font-size: 12px; color: #64748b">
+              Zoom: 
+              <select v-model="zoom" style="margin-left: 4px; padding: 2px 4px">
+                <option :value="0.5">50%</option>
+                <option :value="0.8">80%</option>
+                <option :value="1">100%</option>
+                <option :value="1.2">120%</option>
+                <option :value="1.5">150%</option>
+                <option :value="2">200%</option>
+              </select>
+            </div>
+            <button @click="renderEditor" style="font-size: 12px; padding: 2px 8px; cursor: pointer">Refresh</button>
           </div>
-          <button @click="renderEditor" style="font-size: 12px; padding: 2px 8px; cursor: pointer">Refresh</button>
         </div>
       </div>
       <div class="canvas-scroll-container">
