@@ -388,40 +388,41 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       ctx.lineWidth = 1;
       ctx.strokeStyle = '#000000';
       
-      const borderRectX = x + indentLeft;
-      const borderRectY = y + spacingBefore;
-      const borderRectWidth = maxWidth - indentLeft - indentRight;
-      const borderRectHeight = contentHeight;
+      // 计算实际内容边界
+      let minX = x + indentLeft;
+      let maxX = x + maxWidth - indentRight;
+      let minY = y + spacingBefore;
+      let maxY = currentY;
       
       // 绘制上边框
       if (this.data.properties.borders['w:top'] || this.data.properties.borders.top) {
         ctx.beginPath();
-        ctx.moveTo(borderRectX, borderRectY);
-        ctx.lineTo(borderRectX + borderRectWidth, borderRectY);
+        ctx.moveTo(minX, minY);
+        ctx.lineTo(maxX, minY);
         ctx.stroke();
       }
       
       // 绘制下边框
       if (this.data.properties.borders['w:bottom'] || this.data.properties.borders.bottom) {
         ctx.beginPath();
-        ctx.moveTo(borderRectX, borderRectY + borderRectHeight);
-        ctx.lineTo(borderRectX + borderRectWidth, borderRectY + borderRectHeight);
+        ctx.moveTo(minX, maxY);
+        ctx.lineTo(maxX, maxY);
         ctx.stroke();
       }
       
       // 绘制左边框
       if (this.data.properties.borders['w:left'] || this.data.properties.borders.left) {
         ctx.beginPath();
-        ctx.moveTo(borderRectX, borderRectY);
-        ctx.lineTo(borderRectX, borderRectY + borderRectHeight);
+        ctx.moveTo(minX, minY);
+        ctx.lineTo(minX, maxY);
         ctx.stroke();
       }
       
       // 绘制右边框
       if (this.data.properties.borders['w:right'] || this.data.properties.borders.right) {
         ctx.beginPath();
-        ctx.moveTo(borderRectX + borderRectWidth, borderRectY);
-        ctx.lineTo(borderRectX + borderRectWidth, borderRectY + borderRectHeight);
+        ctx.moveTo(maxX, minY);
+        ctx.lineTo(maxX, maxY);
         ctx.stroke();
       }
       
