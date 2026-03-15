@@ -8,7 +8,7 @@ import { BasicXmlConverter } from '@eiinu/editor-xml';
 import { getDevicePixelRatio, debounce } from '@eiinu/editor-utils';
 import { 
   FULL_DOC, 
-  TITLE_DOC, 
+  PARAGRAPH_DOC, 
   BASIC_STYLES_DOC, 
   WORD_WRAP_DOC,
   FONTS_DOC,
@@ -167,7 +167,7 @@ const setExample = (doc: any) => {
         <span>XML Editor (CodeMirror 6)</span>
         <div style="display: flex; gap: 4px;">
           <button @click="setExample(FULL_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Full Example">Full</button>
-          <button @click="setExample(TITLE_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Title Only">Title</button>
+          <button @click="setExample(PARAGRAPH_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Paragraph Only">Paragraph</button>
           <button @click="setExample(BASIC_STYLES_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Styles Only">Styles</button>
           <button @click="setExample(FONTS_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Fonts Only">Fonts</button>
           <button @click="setExample(EMOJI_DOC)" style="font-size: 10px; padding: 2px 4px; cursor: pointer" title="Emoji Only">Emoji</button>

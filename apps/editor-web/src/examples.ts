@@ -19,18 +19,117 @@ const createSectionHeader = (title: string): Paragraph => ({
  * 使用标准的 Document 对象定义，不再使用字符串拼接
  */
 
-/** 标题示例数据 */
-export const TITLE_DOC: Document = {
-  id: 'title-doc',
+/** 段落示例数据 */
+export const PARAGRAPH_DOC: Document = {
+  id: 'paragraph-doc',
   sections: [{
     properties: {},
     children: [
+      createSectionHeader('Paragraph Styles'),
       {
         id: 'p-title',
         properties: { alignment: 'center', spacing: { after: 600 } },
         children: [{
           properties: { fontSize: 60, bold: true, color: '#4F46E5' },
           content: { type: 'text', text: 'EIINU Editor (Elegant Objects)' }
+        }]
+      } as Paragraph,
+      createSectionHeader('Paragraph Indentation'),
+      {
+        id: 'p-indent-left',
+        properties: { alignment: 'left', indentation: { left: 1000 } },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '左缩进 1000 twips 的段落' }
+        }]
+      } as Paragraph,
+      {
+        id: 'p-indent-first-line',
+        properties: { alignment: 'left', indentation: { firstLine: 500 } },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '首行缩进 500 twips 的段落' }
+        }]
+      } as Paragraph,
+      {
+        id: 'p-indent-hanging',
+        properties: { alignment: 'left', indentation: { hanging: 500 } },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '悬挂缩进 500 twips 的段落' }
+        }]
+      } as Paragraph,
+      {
+        id: 'p-indent-both',
+        properties: { alignment: 'left', indentation: { left: 500, right: 500 } },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '左右各缩进 500 twips 的段落' }
+        }]
+      } as Paragraph,
+      createSectionHeader('Paragraph Borders'),
+      {
+        id: 'p-border-all',
+        properties: {
+          alignment: 'left',
+          borders: {
+            'w:top': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
+            'w:bottom': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
+            'w:left': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
+            'w:right': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' }
+          }
+        },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '带四边边框的段落' }
+        }]
+      } as Paragraph,
+      {
+        id: 'p-border-top-bottom',
+        properties: {
+          alignment: 'left',
+          borders: {
+            'w:top': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
+            'w:bottom': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' }
+          }
+        },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '只带上下边边框的段落' }
+        }]
+      } as Paragraph,
+      createSectionHeader('Paragraph Shading'),
+      {
+        id: 'p-shading-light',
+        properties: { alignment: 'left', shading: '#F0F0F0' },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '带浅灰色底纹的段落' }
+        }]
+      } as Paragraph,
+      {
+        id: 'p-shading-colorful',
+        properties: { alignment: 'left', shading: '#E0F7FA' },
+        children: [{
+          properties: { fontSize: 24, color: '#006064' },
+          content: { type: 'text', text: '带青色底纹和深青色文字的段落' }
+        }]
+      } as Paragraph,
+      createSectionHeader('Combined Paragraph Styles'),
+      {
+        id: 'p-combined',
+        properties: {
+          alignment: 'left',
+          indentation: { left: 500, firstLine: 300 },
+          borders: {
+            'w:top': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' },
+            'w:bottom': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' }
+          },
+          shading: '#FFF3E0'
+        },
+        children: [{
+          properties: { fontSize: 24 },
+          content: { type: 'text', text: '组合了缩进、边框和底纹的段落' }
         }]
       } as Paragraph
     ]
@@ -491,113 +590,7 @@ export const EMOJI_DOC: Document = {
   }]
 };
 
-/** 段落样式示例数据 */
-export const PARAGRAPH_STYLES_DOC: Document = {
-  id: 'paragraph-styles-doc',
-  sections: [{
-    properties: {},
-    children: [
-      createSectionHeader('Paragraph Indentation'),
-      {
-        id: 'p-indent-left',
-        properties: { alignment: 'left', indentation: { left: 1000 } },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '左缩进 1000 twips 的段落' }
-        }]
-      } as Paragraph,
-      {
-        id: 'p-indent-first-line',
-        properties: { alignment: 'left', indentation: { firstLine: 500 } },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '首行缩进 500 twips 的段落' }
-        }]
-      } as Paragraph,
-      {
-        id: 'p-indent-hanging',
-        properties: { alignment: 'left', indentation: { hanging: 500 } },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '悬挂缩进 500 twips 的段落' }
-        }]
-      } as Paragraph,
-      {
-        id: 'p-indent-both',
-        properties: { alignment: 'left', indentation: { left: 500, right: 500 } },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '左右各缩进 500 twips 的段落' }
-        }]
-      } as Paragraph,
-      createSectionHeader('Paragraph Borders'),
-      {
-        id: 'p-border-all',
-        properties: {
-          alignment: 'left',
-          borders: {
-            'w:top': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
-            'w:bottom': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
-            'w:left': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
-            'w:right': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' }
-          }
-        },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '带四边边框的段落' }
-        }]
-      } as Paragraph,
-      {
-        id: 'p-border-top-bottom',
-        properties: {
-          alignment: 'left',
-          borders: {
-            'w:top': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' },
-            'w:bottom': { 'w:val': 'single', 'w:size': 4, 'w:space': 0, 'w:color': 'auto' }
-          }
-        },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '只带上下边边框的段落' }
-        }]
-      } as Paragraph,
-      createSectionHeader('Paragraph Shading'),
-      {
-        id: 'p-shading-light',
-        properties: { alignment: 'left', shading: '#F0F0F0' },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '带浅灰色底纹的段落' }
-        }]
-      } as Paragraph,
-      {
-        id: 'p-shading-colorful',
-        properties: { alignment: 'left', shading: '#E0F7FA' },
-        children: [{
-          properties: { fontSize: 24, color: '#006064' },
-          content: { type: 'text', text: '带青色底纹和深青色文字的段落' }
-        }]
-      } as Paragraph,
-      createSectionHeader('Combined Paragraph Styles'),
-      {
-        id: 'p-combined',
-        properties: {
-          alignment: 'left',
-          indentation: { left: 500, firstLine: 300 },
-          borders: {
-            'w:top': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' },
-            'w:bottom': { 'w:val': 'single', 'w:size': 2, 'w:space': 0, 'w:color': 'auto' }
-          },
-          shading: '#FFF3E0'
-        },
-        children: [{
-          properties: { fontSize: 24 },
-          content: { type: 'text', text: '组合了缩进、边框和底纹的段落' }
-        }]
-      } as Paragraph
-    ]
-  }]
-};
+
 
 /** 全量示例数据 */
 export const FULL_DOC: Document = {
@@ -605,8 +598,8 @@ export const FULL_DOC: Document = {
   sections: [{
     properties: {},
     children: [
-      // 1. 标题
-      ...TITLE_DOC.sections[0].children,
+      // 1. 段落
+      ...PARAGRAPH_DOC.sections[0].children,
 
       // 2. 基础文本样式
       ...BASIC_STYLES_DOC.sections[0].children,
@@ -619,9 +612,6 @@ export const FULL_DOC: Document = {
 
       // 5. 自动换行
       ...WORD_WRAP_DOC.sections[0].children,
-
-      // 6. 段落样式
-      ...PARAGRAPH_STYLES_DOC.sections[0].children,
     ]
   }]
 };
