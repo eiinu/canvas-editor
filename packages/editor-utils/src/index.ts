@@ -103,6 +103,100 @@ export const UnicodeRange = {
       // 补充符号
       (code >= 0x2B00 && code <= 0x2BFF)
     );
+  },
+
+  /**
+   * 是否为 RTL (从右到左) 字符
+   */
+  isRTL(char: string): boolean {
+    const code = this.getCodePoint(char);
+    return (
+      // Arabic
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Arabic Supplement
+      (code >= 0x0750 && code <= 0x077F) ||
+      // Arabic Extended-A
+      (code >= 0x08A0 && code <= 0x08FF) ||
+      // Hebrew
+      (code >= 0x0590 && code <= 0x05FF) ||
+      // Yiddish
+      (code >= 0x0590 && code <= 0x05FF) ||
+      // Persian (Farsi)
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Urdu
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Kurdish (Arabic script)
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Pashto
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Sindhi
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Balochi
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Ottoman Turkish
+      (code >= 0x0600 && code <= 0x06FF) ||
+      // Thaana (Maldivian)
+      (code >= 0x0780 && code <= 0x07BF) ||
+      // N'Ko
+      (code >= 0x07C0 && code <= 0x07FF) ||
+      // Samaritan
+      (code >= 0x0800 && code <= 0x083F) ||
+      // Mandaic
+      (code >= 0x0840 && code <= 0x085F) ||
+      // Syriac
+      (code >= 0x0700 && code <= 0x074F) ||
+      // Phoenician
+      (code >= 0x10900 && code <= 0x1091F) ||
+      // Aramaic
+      (code >= 0x0860 && code <= 0x089F) ||
+      // Hebrew (Extended)
+      (code >= 0xFB1D && code <= 0xFB4F)
+    );
+  }
+};
+
+/**
+ * 语言方向检测工具
+ */
+export const TextDirection = {
+  /**
+   * 检测文本的主要方向
+   * @param text 要检测的文本
+   * @returns 'ltr' 或 'rtl'
+   */
+  detectDirection(text: string): 'ltr' | 'rtl' {
+    if (!text) return 'ltr';
+    
+    let rtlCount = 0;
+    let ltrCount = 0;
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (UnicodeRange.isRTL(char)) {
+        rtlCount++;
+      } else if (!UnicodeRange.isEmoji(char) && char.trim() !== '') {
+        ltrCount++;
+      }
+    }
+    
+    return rtlCount > ltrCount ? 'rtl' : 'ltr';
+  },
+
+  /**
+   * 检查文本是否包含 RTL 字符
+   * @param text 要检查的文本
+   * @returns 是否包含 RTL 字符
+   */
+  containsRTL(text: string): boolean {
+    if (!text) return false;
+    
+    for (let i = 0; i < text.length; i++) {
+      if (UnicodeRange.isRTL(text[i])) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 };
 

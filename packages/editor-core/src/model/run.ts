@@ -1,6 +1,7 @@
 import type { Run, TextContent } from '@eiinu/editor-protocol';
 import { DocumentElement, RenderContext } from './base.js';
 import { FontManager } from '../fonts/font-manager.js';
+import { TextDirection } from '@eiinu/editor-utils';
 
 /**
  * 文本运行块元素
@@ -146,7 +147,7 @@ export class RunElement extends DocumentElement<Run> {
    * 应用样式
    */
   public applyStyles(ctx: CanvasRenderingContext2D) {
-    const { properties } = this.data;
+    const { properties, content } = this.data;
     const originalFontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
     const vertAlign = properties.vertAlign || 'baseline';
     
@@ -161,5 +162,14 @@ export class RunElement extends DocumentElement<Run> {
     ctx.font = `${style} ${weight} ${fontSize}px ${fontFamily}`;
     ctx.fillStyle = properties.color || '#000000';
     ctx.textBaseline = 'alphabetic';
+    
+    // 设置文本方向
+    if (content.type === 'text') {
+      const text = (content as TextContent).text;
+      if (text) {
+        const direction = TextDirection.detectDirection(text);
+        ctx.direction = direction;
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 import type { Paragraph, TextContent } from '@eiinu/editor-protocol';
-import { UnicodeRange } from '@eiinu/editor-utils';
+import { UnicodeRange, TextDirection } from '@eiinu/editor-utils';
 import { DocumentElement, RenderContext } from './base.js';
 import { RunElement } from './run.js';
 import { FontManager } from '../fonts/font-manager.js';
@@ -206,11 +206,24 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
     }
     */
 
+    // 检测段落的主要文本方向
+    let isRTL = false;
+    for (const run of this.runs) {
+      const data = run.getData();
+      if (data.content.type === 'text') {
+        const text = (data.content as TextContent).text;
+        if (TextDirection.containsRTL(text)) {
+          isRTL = true;
+          break;
+        }
+      }
+    }
+
     this.lines.forEach((line, index) => {
       let offsetX = 0;
       if (this.data.properties.alignment === 'center') {
         offsetX = (maxWidth - indentLeft - indentRight - line.width) / 2;
-      } else if (this.data.properties.alignment === 'right') {
+      } else if (this.data.properties.alignment === 'right' || (isRTL && this.data.properties.alignment !== 'left')) {
         offsetX = maxWidth - indentLeft - indentRight - line.width;
       }
 
@@ -220,12 +233,12 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
       // 首行缩进或悬挂缩进
       if (index === 0) {
         if (firstLineIndent > 0) {
-          drawX += firstLineIndent;
+          drawX += isRTL ? -firstLineIndent : firstLineIndent;
         } else if (hangingIndent > 0) {
-          drawX -= hangingIndent;
+          drawX += isRTL ? hangingIndent : -hangingIndent;
         }
       } else if (hangingIndent > 0) {
-        drawX += hangingIndent;
+        drawX += isRTL ? -hangingIndent : hangingIndent;
       }
 
       line.fragments.forEach(frag => {
