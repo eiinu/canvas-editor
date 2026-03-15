@@ -62,7 +62,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
    * 布局计算 (自动换行 + 混合字体处理)
    */
   layout(context: RenderContext): number {
-    const { ctx, maxWidth, cellOptions } = context;
+    const { ctx, maxWidth, cellOptions, dpr } = context;
     this.lines = [];
     let currentLine: RenderLine = { fragments: [], width: 0, height: 0 };
     
@@ -90,7 +90,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         }).join('');
       }
 
-      const originalFontSize = props.fontSize ? (props.fontSize / 2) : 12;
+      const originalFontSize = props.fontSize ? (props.fontSize * (4/3) / dpr) : 12;
       const vertAlign = data.properties.vertAlign || 'baseline';
       
       // 上下标缩放比例 (通常为 0.6-0.7)
@@ -187,7 +187,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
    * 渲染段落
    */
   render(context: RenderContext, x: number, y: number): number {
-    const { ctx, maxWidth } = context;
+    const { ctx, maxWidth, dpr } = context;
     const spacingBefore = (this.data.properties.spacing?.before || 0) * 0.05;
     const spacingAfter = (this.data.properties.spacing?.after || 0) * 0.05;
     const indentLeft = (this.data.properties.indentation?.left || 0) * 0.05;
@@ -263,7 +263,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
         // 处理上下标偏移
         let drawY = currentY;
-        const originalFontSize = props.fontSize ? (props.fontSize / 2) : 12;
+        const originalFontSize = props.fontSize ? (props.fontSize * (4/3) / dpr) : 12;
         if (props.vertAlign === 'superscript') {
           drawY -= originalFontSize * 0.35; // 向上偏移
         } else if (props.vertAlign === 'subscript') {
@@ -324,7 +324,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
             if (isLower && !isEmoji) {
               // 如果是小写字母且不是 emoji，则渲染为较小字号的大写字母
-              const smallFontSize = (props.fontSize ? (props.fontSize / 2) : 12) * 0.85;
+              const smallFontSize = (props.fontSize ? (props.fontSize * (4/3) / dpr) : 12) * 0.85;
               const weight = props.bold ? 'bold' : 'normal';
               const style = props.italic ? 'italic' : 'normal';
               const fontFamily = ctx.font.split(' ').pop();
@@ -358,7 +358,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
         // 渲染装饰线
         if (props.underline || props.strike || props.doubleStrike) {
-          const fontSize = props.fontSize ? (props.fontSize / 2) : 12;
+          const fontSize = props.fontSize ? (props.fontSize * (4/3) / dpr) : 12;
           // 装饰线也需要跟随上下标缩放和偏移
           const decorFontSize = props.vertAlign !== 'baseline' ? fontSize * 0.65 : fontSize;
 

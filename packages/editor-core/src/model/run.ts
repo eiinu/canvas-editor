@@ -33,7 +33,7 @@ export class RunElement extends DocumentElement<Run> {
       text = text.toUpperCase();
     }
     
-    this.applyStyles(ctx);
+    this.applyStyles(ctx, dpr);
     return this.fontManager.measureText(ctx, text, ctx.font);
   }
 
@@ -41,13 +41,13 @@ export class RunElement extends DocumentElement<Run> {
    * 渲染 Run
    */
   render(context: RenderContext, x: number, y: number): number {
-    const { ctx } = context;
+    const { ctx, dpr } = context;
     const { properties, content } = this.data;
 
     if (content.type !== 'text') return x;
     const textContent = content as TextContent;
 
-    this.applyStyles(ctx);
+    this.applyStyles(ctx, dpr);
     
     // 异步检查字体加载 (不阻塞当前渲染，但加载后会触发重绘)
     const rawFontFamily = properties.fontFamily || 'Arial';
@@ -56,7 +56,7 @@ export class RunElement extends DocumentElement<Run> {
 
     // 处理上下标偏移
     let drawY = y;
-    const originalFontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
+    const originalFontSize = properties.fontSize ? (properties.fontSize * (4/3) / dpr) : 12;
     if (properties.vertAlign === 'superscript') {
       drawY -= originalFontSize * 0.35;
     } else if (properties.vertAlign === 'subscript') {
@@ -81,7 +81,7 @@ export class RunElement extends DocumentElement<Run> {
         const charLayoutWidth = ctx.measureText(char).width;
 
         if (isLower) {
-          const smallFontSize = (properties.fontSize ? (properties.fontSize / 2) : 12) * 0.85;
+          const smallFontSize = (properties.fontSize ? (properties.fontSize * (4/3) / dpr) : 12) * 0.85;
           const weight = properties.bold ? 'bold' : 'normal';
           const style = properties.italic ? 'italic' : 'normal';
           const fontFamily = ctx.font.split(' ').pop();
@@ -92,7 +92,7 @@ export class RunElement extends DocumentElement<Run> {
         }
         
         currentX += charLayoutWidth;
-        this.applyStyles(ctx); // 恢复字体并重置
+        this.applyStyles(ctx, dpr); // 恢复字体并重置
       }
       ctx.restore();
     } else {
@@ -103,7 +103,7 @@ export class RunElement extends DocumentElement<Run> {
 
     // 绘制装饰线
     if (properties.underline || properties.strike || properties.doubleStrike) {
-      const fontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
+      const fontSize = properties.fontSize ? (properties.fontSize * (4/3) / dpr) : 12;
       const decorFontSize = properties.vertAlign !== 'baseline' ? fontSize * 0.65 : fontSize;
 
       ctx.save(); // 保存当前状态
@@ -146,9 +146,9 @@ export class RunElement extends DocumentElement<Run> {
   /**
    * 应用样式
    */
-  public applyStyles(ctx: CanvasRenderingContext2D) {
+  public applyStyles(ctx: CanvasRenderingContext2D, dpr: number = 1) {
     const { properties, content } = this.data;
-    const originalFontSize = properties.fontSize ? (properties.fontSize / 2) : 12;
+    const originalFontSize = properties.fontSize ? (properties.fontSize * (4/3) / dpr) : 12;
     const vertAlign = properties.vertAlign || 'baseline';
     
     // 上下标缩放
