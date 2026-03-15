@@ -131,11 +131,68 @@ onMounted(() => {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  rendererRef.value = new CanvasRenderer(ctx, {
+  rendererRef.value = new CanvasRenderer(ctx, { 
     dpr: getDevicePixelRatio(),
-    zoom: zoom.value
+    zoom: zoom.value 
   });
   renderEditor();
+
+  // 添加双指缩放支持（包括触控板和触摸屏幕）
+  
+  // 触摸屏幕双指缩放
+  let lastDistance = 0;
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      lastDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+    }
+  });
+
+  canvas.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const touch1 = e.touches[0];
+      const touch2 = e.touches[1];
+      const currentDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      );
+
+      if (lastDistance > 0) {
+        const scaleFactor = currentDistance / lastDistance;
+        const newZoom = zoom.value * scaleFactor;
+        // 限制缩放范围
+        if (newZoom >= 0.1 && newZoom <= 5) {
+          zoom.value = newZoom;
+        }
+      }
+
+      lastDistance = currentDistance;
+    }
+  });
+
+  canvas.addEventListener('touchend', () => {
+    lastDistance = 0;
+  });
+
+  // MacOS 触控板双指缩放
+  canvas.addEventListener('wheel', (e) => {
+    // 检测是否是带有 Ctrl 键的滚轮事件（通常是触控板的双指缩放）
+    if (e.ctrlKey) {
+      e.preventDefault();
+      // deltaY 为负表示放大，为正表示缩小
+      const scaleFactor = 1 - e.deltaY * 0.01;
+      const newZoom = zoom.value * scaleFactor;
+      // 限制缩放范围
+      if (newZoom >= 0.1 && newZoom <= 5) {
+        zoom.value = newZoom;
+      }
+    }
+  });
 });
 
 onBeforeUnmount(() => {
