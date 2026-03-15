@@ -44,6 +44,14 @@ export class BasicXmlConverter implements XmlConverter {
           if (p.properties.alignment) {
             pPr['w:jc'] = { 'w:val': p.properties.alignment };
           }
+          if (p.properties.indentation) {
+            const ind: any = {};
+            if (p.properties.indentation.left !== undefined) ind['w:left'] = p.properties.indentation.left;
+            if (p.properties.indentation.right !== undefined) ind['w:right'] = p.properties.indentation.right;
+            if (p.properties.indentation.firstLine !== undefined) ind['w:firstLine'] = p.properties.indentation.firstLine;
+            if (p.properties.indentation.hanging !== undefined) ind['w:hanging'] = p.properties.indentation.hanging;
+            pPr['w:ind'] = ind;
+          }
           if (p.properties.spacing) {
             const spacing: any = {};
             if (p.properties.spacing.before !== undefined) spacing['w:before'] = p.properties.spacing.before;
@@ -51,6 +59,12 @@ export class BasicXmlConverter implements XmlConverter {
             if (p.properties.spacing.line !== undefined) spacing['w:line'] = p.properties.spacing.line;
             if (p.properties.spacing.lineRule) spacing['w:lineRule'] = p.properties.spacing.lineRule;
             pPr['w:spacing'] = spacing;
+          }
+          if (p.properties.borders) {
+            pPr['w:pBdr'] = p.properties.borders;
+          }
+          if (p.properties.shading) {
+            pPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': p.properties.shading.replace('#', '') };
           }
 
           return {
@@ -143,16 +157,27 @@ export class BasicXmlConverter implements XmlConverter {
       rawPs.forEach((p: any, idx: number) => {
         const pPr = getVal(p, 'pPr') || {};
         const jc = getVal(pPr, 'jc');
+        const ind = getVal(pPr, 'ind');
         const spacing = getVal(pPr, 'spacing');
+        const pBdr = getVal(pPr, 'pBdr');
+        const shd = getVal(pPr, 'shd');
         
         const pProps: ParagraphProperties = {
           alignment: jc?.val || jc?.['w:val'] || 'left',
+          indentation: ind ? {
+            left: ind.left || ind['w:left'] ? parseInt(ind.left || ind['w:left']) : undefined,
+            right: ind.right || ind['w:right'] ? parseInt(ind.right || ind['w:right']) : undefined,
+            firstLine: ind.firstLine || ind['w:firstLine'] ? parseInt(ind.firstLine || ind['w:firstLine']) : undefined,
+            hanging: ind.hanging || ind['w:hanging'] ? parseInt(ind.hanging || ind['w:hanging']) : undefined,
+          } : undefined,
           spacing: spacing ? {
             before: spacing.before || spacing['w:before'] ? parseInt(spacing.before || spacing['w:before']) : undefined,
             after: spacing.after || spacing['w:after'] ? parseInt(spacing.after || spacing['w:after']) : undefined,
             line: spacing.line || spacing['w:line'] ? parseInt(spacing.line || spacing['w:line']) : undefined,
             lineRule: spacing.lineRule || spacing['w:lineRule'] || undefined,
           } : undefined,
+          borders: pBdr || undefined,
+          shading: shd ? `#${shd.fill || shd['w:fill']}` : undefined,
         };
 
         const runs: Run[] = [];
