@@ -9,7 +9,11 @@
 | **字体管理** | 跨平台字体映射与回退逻辑处理 | [font-management.md](./font-management.md) | 🟢 100% |
 | **交互逻辑** | 选区、光标、输入拦截、快捷键 | [interaction-logic.md](./interaction-logic.md) | ⚪️ 0% |
 | **XML 转换** | OOXML 与内部模型的高效转换 | [xml-conversion.md](./xml-conversion.md) | 🟡 35% |
-| **协同系统** | OT/CRDT 与服务端同步 | - | ⚪️ 0% |
+| **协同系统** | OT/CRDT 与服务端同步 | [collab-system.md](./collab-system.md) | ⚪️ 0% |
+| **文档导出** | PDF、图片等格式导出功能 | [export-features.md](./export-features.md) | ⚪️ 0% |
+| **测试计划** | 各模块测试策略与用例 | [testing-plan.md](./testing-plan.md) | ⚪️ 0% |
+| **性能优化** | 各模块性能优化策略 | [performance-optimization.md](./performance-optimization.md) | ⚪️ 0% |
+| **兼容性测试** | 跨浏览器兼容性测试 | [compatibility.md](./compatibility.md) | ⚪️ 0% |
 
 ## 最近完成 (Milestones)
 
@@ -30,6 +34,11 @@
 - [x] 创建段落样式演示 Demo，展示缩进、边框和底纹效果。
 - [x] 为 editor-web 添加横向滚动支持，允许查看完整 canvas 内容。
 - [x] 实现移动端响应式设计，在移动端隐藏 XML 编辑器，优化渲染体验。
+- [x] 创建协同系统任务文件 (collab-system.md)。
+- [x] 创建文档导出功能任务文件 (export-features.md)。
+- [x] 创建测试计划任务文件 (testing-plan.md)。
+- [x] 创建性能优化计划任务文件 (performance-optimization.md)。
+- [x] 创建跨浏览器兼容性测试计划文件 (compatibility.md)。
 
 ## 下一步计划
 
@@ -38,3 +47,8 @@
 3. 实现 Table 表格元素的基础渲染。
 4. 添加更多段落样式支持（如 keepNext、pageBreakBefore）。
 5. 完善文档的导出功能（生成 PDF/图片）。
+6. 开始实现协同系统的基础架构。
+7. 建立完整的测试体系，包括单元测试和端到端测试。
+8. 实施性能优化策略，提升编辑器的响应速度。
+9. 进行跨浏览器兼容性测试，确保在主流浏览器中正常运行。
+10. 完善 XML 转换模块，支持更多复杂元素的解析和序列化。

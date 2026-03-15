@@ -15,11 +15,11 @@
 - [x] **Run** (`w:r`)
   - [x] `rPr` (运行块属性)
   - [x] `t` (文本内容)
-- [ ] **Table** (`w:tbl`) - *规划中*
-  - [ ] `tblPr` (表格属性)
-  - [ ] `tblGrid` (表格网格)
-  - [ ] `tr` (表格行)
-  - [ ] `tc` (表格单元格)
+- [x] **Table** (`w:tbl`) - *已实现*
+  - [x] `tblPr` (表格属性)
+  - [x] `tblGrid` (表格网格)
+  - [x] `tr` (表格行)
+  - [x] `tc` (表格单元格)
 - [ ] **Hyperlink** (`w:hyperlink`) - *规划中*
 - [ ] **Picture** (`w:drawing`) - *规划中*
   - [ ] `inline` (内联图片)
@@ -92,6 +92,10 @@
 | **autoHyphenation** | `w:autoHyphenation` | 自动断字 | 📅 待处理 |
 | **hyphenationZone** | `w:hyphenationZone` | 断字区域 | 📅 待处理 |
 | **suppressAutoHyphens** | `w:suppressAutoHyphens` | 禁止自动断字 | 📅 待处理 |
+| **outlineLvl** | `w:outlineLvl` | 大纲级别 | 📅 待处理 |
+| **divId** | `w:divId` | 分区 ID | 📅 待处理 |
+| **cnfStyle** | `w:cnfStyle` | 条件样式 | 📅 待处理 |
+| **rPr** | `w:rPr` | 段落级文本属性 | 📅 待处理 |
 
 ---
 
@@ -126,9 +130,15 @@
 | **webHidden** | `w:webHidden` | Web 隐藏 | 📅 待处理 |
 | **specVanish** | `w:specVanish` | 特殊隐藏 | 📅 待处理 |
 | **oMath** | `w:oMath` | 数学公式 | 📅 待处理 |
-| **highlight** | `w:highlight` | 突出显示 | 📅 待处理 |
 | **szCs** | `w:szCs` | 复杂脚本字号 | 📅 待处理 |
 | **rtlGlyph** | `w:rtlGlyph` | 从右到左字形 | 📅 待处理 |
+| **kerning** | `w:kern` | 字间距调整 | 📅 待处理 |
+| **position** | `w:position` | 文本垂直位置调整 | 📅 待处理 |
+| **fonts** | `w:rFonts` | 字体设置 | 📅 待处理 |
+| **effect** | `w:effect` | 文本效果 | 📅 待处理 |
+| **bdr** | `w:bdr` | 文本边框 | 📅 待处理 |
+| **noProof** | `w:noProof` | 不进行拼写检查 | 📅 待处理 |
+| **webHidden** | `w:webHidden` | 在 Web 中隐藏 | 📅 待处理 |
 
 ---
 
@@ -139,7 +149,7 @@
 - [x] **嵌套标签解析** (`w:pPr -> w:jc`)
 - [x] **反向序列化** (`Document -> XML`)
 - [ ] **复杂字段解析** (`w:fldChar`)
-- [ ] **表格解析与序列化** (`w:tbl`)
+- [x] **表格解析与序列化** (`w:tbl`)
 - [ ] **图片解析与序列化** (`w:drawing`)
 - [ ] **超链接解析与序列化** (`w:hyperlink`)
 - [ ] **脚注和尾注解析与序列化** (`w:footnote`, `w:endnote`)
@@ -153,6 +163,57 @@
 - [ ] **制表符解析与序列化** (`w:tabs`)
 - [ ] **双向文本解析与序列化** (`w:bidi`, `w:rtl`)
 - [ ] **数学公式解析与序列化** (`w:oMath`)
+
+---
+
+## 4. 表格属性 (Table Properties)
+
+### 4.1 表格属性 (`w:tblPr`)
+
+| 属性名 | OpenXML 标签 | 描述 | 状态 |
+| :--- | :--- | :--- | :--- |
+| **width** | `w:tblW` | 表格宽度 | ✅ 已实现 |
+| **alignment** | `w:jc` | 表格对齐方式 (left, center, right) | ✅ 已实现 |
+| **borders** | `w:tblBorders` | 表格边框 | ✅ 已实现 |
+| **shading** | `w:shd` | 表格底纹/背景 | ✅ 已实现 |
+| **cellMargin** | `w:tblCellMar` | 单元格边距 | ✅ 已实现 |
+| **layout** | `w:tblLayout` | 表格布局 (fixed, autofit) | ✅ 已实现 |
+| **styleId** | `w:tblStyle` | 关联的表格样式 ID | ✅ 已实现 |
+| **tblCaption** | `w:tblCaption` | 表格标题 | 📅 待处理 |
+| **tblDescription** | `w:tblDescription` | 表格描述 | 📅 待处理 |
+| **tblLook** | `w:tblLook` | 表格样式外观 | 📅 待处理 |
+| **tblInd** | `w:tblInd` | 表格缩进 | 📅 待处理 |
+| **tblStyleRowBandSize** | `w:tblStyleRowBandSize` | 行带大小 | 📅 待处理 |
+| **tblStyleColBandSize** | `w:tblStyleColBandSize` | 列带大小 | 📅 待处理 |
+| **tblW** | `w:tblW` | 表格宽度设置 | 📅 待处理 |
+| **jc** | `w:jc` | 表格对齐 | 📅 待处理 |
+
+### 4.2 表格行属性 (`w:trPr`)
+
+| 属性名 | OpenXML 标签 | 描述 | 状态 |
+| :--- | :--- | :--- | :--- |
+| **height** | `w:trHeight` | 行高 | ✅ 已实现 |
+| **heightRule** | `w:trHeight w:hRule` | 行高规则 (auto, exact, atLeast) | ✅ 已实现 |
+| **borders** | `w:trBorders` | 行边框 | ✅ 已实现 |
+| **cantSplit** | `w:cantSplit` | 禁止行拆分 | 📅 待处理 |
+| **tblHeader** | `w:tblHeader` | 表头行 | 📅 待处理 |
+| **trHeight** | `w:trHeight w:hRule="exact"` | 精确行高 | 📅 待处理 |
+
+### 4.3 表格单元格属性 (`w:tcPr`)
+
+| 属性名 | OpenXML 标签 | 描述 | 状态 |
+| :--- | :--- | :--- | :--- |
+| **width** | `w:tcW` | 单元格宽度 | ✅ 已实现 |
+| **margin** | `w:tcMar` | 单元格边距 | ✅ 已实现 |
+| **gridSpan** | `w:gridSpan` | 单元格合并 (列跨度) | ✅ 已实现 |
+| **vMerge** | `w:vMerge` | 垂直合并 (行跨度) | ✅ 已实现 |
+| **verticalAlignment** | `w:vAlign` | 垂直对齐 (top, center, bottom) | ✅ 已实现 |
+| **borders** | `w:tcBorders` | 单元格边框 | ✅ 已实现 |
+| **shading** | `w:shd` | 单元格底纹/背景 | ✅ 已实现 |
+| **tcFitText** | `w:tcFitText` | 文本自适应单元格 | 📅 待处理 |
+| **noWrap** | `w:noWrap` | 禁止文本换行 | 📅 待处理 |
+| **hideMark** | `w:hideMark` | 隐藏标记 | 📅 待处理 |
+| **tcW** | `w:tcW w:type="pct"` | 百分比宽度 | 📅 待处理 |
 
 ---
 
