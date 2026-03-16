@@ -72,6 +72,12 @@ export class BasicXmlConverter implements XmlConverter {
           if (p.properties.shading) {
             pPr['w:shd'] = { 'w:val': 'clear', 'w:color': 'auto', 'w:fill': p.properties.shading.replace('#', '') };
           }
+          if (p.properties.widowControl !== undefined) {
+            pPr['w:widowControl'] = p.properties.widowControl ? {} : { 'w:val': '0' };
+          }
+          if (p.properties.hyphenation !== undefined) {
+            pPr['w:hyphenation'] = p.properties.hyphenation ? {} : { 'w:val': '0' };
+          }
 
           elements.push({
             'w:p': {
@@ -302,6 +308,8 @@ export class BasicXmlConverter implements XmlConverter {
         const spacing = getVal(pPr, 'spacing');
         const pBdr = getVal(pPr, 'pBdr');
         const shd = getVal(pPr, 'shd');
+        const widowControl = getVal(pPr, 'widowControl');
+        const hyphenation = getVal(pPr, 'hyphenation');
         
         const pProps: ParagraphProperties = {
           alignment: jc?.val || jc?.['w:val'] || 'left',
@@ -319,6 +327,8 @@ export class BasicXmlConverter implements XmlConverter {
           } : undefined,
           borders: pBdr || undefined,
           shading: shd ? `#${shd.fill || shd['w:fill']}` : undefined,
+          widowControl: widowControl === undefined ? undefined : widowControl?.val !== '0' && widowControl?.['w:val'] !== '0',
+          hyphenation: hyphenation === undefined ? undefined : hyphenation?.val !== '0' && hyphenation?.['w:val'] !== '0',
         };
 
         const runs: Run[] = [];

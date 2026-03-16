@@ -9,12 +9,16 @@ interface LineFragment {
   text: string;
   width: number;
   font: string; // 每个片段使用的具体字体
+  ascent: number;
+  descent: number;
 }
 
 interface RenderLine {
   fragments: LineFragment[];
   width: number;
   height: number;
+  maxAscent: number;
+  maxDescent: number;
 }
 
 /**
@@ -58,19 +62,72 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
     }
   }
 
+
+  private isWordChar(char: string): boolean {
+    return /^[A-Za-z0-9_-]$/.test(char);
+  }
+
+  private isLeadingPunctuation(char: string): boolean {
+    return /^[,.;:!?，。！？、；：）】》」』〕］〉》”’]$/.test(char);
+  }
+
+  private canBreakBetween(prev: string, next: string): boolean {
+    if (!prev || !next) return true;
+    if (this.isLeadingPunctuation(next)) return false;
+    if (this.isWordChar(prev) && this.isWordChar(next)) return false;
+    if (/\s/.test(prev)) return true;
+    return true;
+  }
+
+  private getLetterSpacingCount(text: string): number {
+    const chars = Array.from(text);
+    if (chars.length <= 1) return 0;
+
+    let count = 0;
+    for (let i = 1; i < chars.length; i++) {
+      if (!UnicodeRange.isEmoji(chars[i - 1]) && !UnicodeRange.isEmoji(chars[i])) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  private measureFragment(ctx: CanvasRenderingContext2D, text: string, font: string, letterSpacing: number): { width: number; ascent: number; descent: number; height: number } {
+    ctx.font = font;
+    const width = this.fontManager.measureText(ctx, text, font) + this.getLetterSpacingCount(text) * letterSpacing;
+    const metrics = ctx.measureText(text || 'M');
+
+    const fontSizeMatch = font.match(/(\d+(?:\.\d+)?)px/);
+    const fallbackSize = fontSizeMatch ? Number(fontSizeMatch[1]) : 12;
+    const ascent = metrics.actualBoundingBoxAscent || fallbackSize * 0.8;
+    const descent = metrics.actualBoundingBoxDescent || fallbackSize * 0.2;
+
+    return {
+      width,
+      ascent,
+      descent,
+      height: ascent + descent
+    };
+  }
+
+  private pushFragment(line: RenderLine, fragment: LineFragment) {
+    line.fragments.push(fragment);
+    line.width += fragment.width;
+    line.maxAscent = Math.max(line.maxAscent, fragment.ascent);
+    line.maxDescent = Math.max(line.maxDescent, fragment.descent);
+    line.height = Math.max(line.height, line.maxAscent + line.maxDescent);
+  }
+
   /**
    * 布局计算 (自动换行 + 混合字体处理)
    */
   layout(context: RenderContext): number {
     const { ctx, maxWidth, cellOptions, dpr } = context;
     this.lines = [];
-    let currentLine: RenderLine = { fragments: [], width: 0, height: 0 };
+    let currentLine: RenderLine = { fragments: [], width: 0, height: 0, maxAscent: 0, maxDescent: 0 };
     
     // 检查是否需要禁止换行
     const noWrap = cellOptions?.noWrap || false;
-    // 检查是否需要文本自适应单元格
-    const fitText = cellOptions?.fitText || false;
-
     for (const run of this.runs) {
       const data = run.getData();
       if (data.content.type !== 'text' || data.properties.vanish) continue;
@@ -117,51 +174,71 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         const segmentText = text.substring(start, end);
         ctx.font = currentFont;
         
-        // 3. 对该文本块进行换行处理
+        // 3. 对该文本块进行换行处理（西文单词保护 + 标点避免行首）
+        const chars = Array.from(segmentText);
         let segmentStart = 0;
-        for (let i = 1; i <= segmentText.length; i++) {
-          const subtext = segmentText.substring(segmentStart, i);
-          // 计算宽度，emoji 字符不应用字符间距
-          const emojiCount = subtext.split('').filter(c => UnicodeRange.isEmoji(c)).length;
-          const nonEmojiCount = subtext.length - emojiCount;
-          const w = this.fontManager.measureText(ctx, subtext, currentFont) + (nonEmojiCount * letterSpacing);
 
-          if (!noWrap && currentLine.width + w > maxWidth) {
-            // 需要换行
-            if (i > segmentStart + 1) {
-              const finalSubtext = segmentText.substring(segmentStart, i - 1);
-              const finalEmojiCount = finalSubtext.split('').filter(c => UnicodeRange.isEmoji(c)).length;
-              const finalNonEmojiCount = finalSubtext.length - finalEmojiCount;
-              const finalW = this.fontManager.measureText(ctx, finalSubtext, currentFont) + (finalNonEmojiCount * letterSpacing);
-              currentLine.fragments.push({ run, text: finalSubtext, width: finalW, font: currentFont });
-              currentLine.width += finalW;
-              currentLine.height = Math.max(currentLine.height, fontSize);
-              this.lines.push(currentLine);
+        while (segmentStart < chars.length) {
+          let lastFit = -1;
+          let bestBreak = -1;
 
-              currentLine = { fragments: [], width: 0, height: 0 };
-              segmentStart = i - 1;
-              i--;
-            } else {
-              // 单个字符就超过了宽度 (或者当前行已有内容)
-              if (currentLine.fragments.length > 0) {
-                this.lines.push(currentLine);
-                currentLine = { fragments: [], width: 0, height: 0 };
-              }
-              const singleChar = segmentText.substring(segmentStart, i);
-              const isEmoji = UnicodeRange.isEmoji(singleChar);
-              const singleW = this.fontManager.measureText(ctx, singleChar, currentFont) + (isEmoji ? 0 : letterSpacing);
-              currentLine.width = singleW;
-              currentLine.height = fontSize;
-              currentLine.fragments.push({ run, text: singleChar, width: singleW, font: currentFont });
-              this.lines.push(currentLine);
-              currentLine = { fragments: [], width: 0, height: 0 };
-              segmentStart = i;
+          for (let i = segmentStart; i < chars.length; i++) {
+            const candidate = chars.slice(segmentStart, i + 1).join('');
+            const measured = this.measureFragment(ctx, candidate, currentFont, letterSpacing);
+
+            if (!noWrap && currentLine.width + measured.width > maxWidth) {
+              break;
             }
-          } else if (i === segmentText.length) {
-            // 文本块结束，加入当前行
-            currentLine.fragments.push({ run, text: subtext, width: w, font: currentFont });
-            currentLine.width += w;
-            currentLine.height = Math.max(currentLine.height, fontSize);
+
+            lastFit = i;
+            if (i < chars.length - 1 && this.canBreakBetween(chars[i], chars[i + 1])) {
+              bestBreak = i;
+            }
+          }
+
+          if (lastFit < segmentStart) {
+            // 单字符都无法放入当前行：若当前行有内容先换行，再强制放入单字符
+            if (currentLine.fragments.length > 0) {
+              this.lines.push(currentLine);
+              currentLine = { fragments: [], width: 0, height: 0, maxAscent: 0, maxDescent: 0 };
+              continue;
+            }
+
+            const singleChar = chars[segmentStart];
+            const singleMeasured = this.measureFragment(ctx, singleChar, currentFont, letterSpacing);
+            this.pushFragment(currentLine, {
+              run,
+              text: singleChar,
+              width: singleMeasured.width,
+              font: currentFont,
+              ascent: singleMeasured.ascent,
+              descent: singleMeasured.descent
+            });
+            this.lines.push(currentLine);
+            currentLine = { fragments: [], width: 0, height: 0, maxAscent: 0, maxDescent: 0 };
+            segmentStart += 1;
+            continue;
+          }
+
+          const breakAt = bestBreak >= segmentStart ? bestBreak + 1 : lastFit + 1;
+          const finalText = chars.slice(segmentStart, breakAt).join('');
+          const finalMeasured = this.measureFragment(ctx, finalText, currentFont, letterSpacing);
+
+          this.pushFragment(currentLine, {
+            run,
+            text: finalText,
+            width: finalMeasured.width,
+            font: currentFont,
+            ascent: finalMeasured.ascent,
+            descent: finalMeasured.descent
+          });
+
+          segmentStart = breakAt;
+
+          // 还有剩余文本时先提交当前行
+          if (segmentStart < chars.length) {
+            this.lines.push(currentLine);
+            currentLine = { fragments: [], width: 0, height: 0, maxAscent: 0, maxDescent: 0 };
           }
         }
         
@@ -171,6 +248,22 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
     if (currentLine.fragments.length > 0) {
       this.lines.push(currentLine);
+    }
+
+    // 简化孤行控制：最后一行过短时尝试并入上一行
+    const widowControl = (this.data.properties as Paragraph['properties'] & { widowControl?: boolean }).widowControl !== false;
+    if (widowControl && this.lines.length >= 2) {
+      const last = this.lines[this.lines.length - 1];
+      const prev = this.lines[this.lines.length - 2];
+      const lastChars = last.fragments.reduce((acc, frag) => acc + Array.from(frag.text).length, 0);
+      if (lastChars > 0 && lastChars <= 2 && prev.width + last.width <= maxWidth) {
+        prev.fragments.push(...last.fragments);
+        prev.width += last.width;
+        prev.maxAscent = Math.max(prev.maxAscent, last.maxAscent);
+        prev.maxDescent = Math.max(prev.maxDescent, last.maxDescent);
+        prev.height = Math.max(prev.height, prev.maxAscent + prev.maxDescent);
+        this.lines.pop();
+      }
     }
 
     // 计算内容高度 (行高 * 1.2)
@@ -261,8 +354,9 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           drawText = drawText.toUpperCase();
         }
 
-        // 处理上下标偏移
-        let drawY = currentY;
+        // 处理上下标偏移（按行基线对齐）
+        const lineBaselineY = currentY + line.maxAscent;
+        let drawY = lineBaselineY;
         const originalFontSize = props.fontSize ? (props.fontSize * (4/3) / dpr) : 12;
         if (props.vertAlign === 'superscript') {
           drawY -= originalFontSize * 0.35; // 向上偏移
@@ -274,7 +368,7 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
         if (props.highlight || props.shading) {
           ctx.fillStyle = (props.highlight || props.shading) as string;
           // 高亮/底纹高度通常覆盖整个行高
-          ctx.fillRect(drawX, currentY - line.height, frag.width, line.height * lineSpacing);
+          ctx.fillRect(drawX, currentY, frag.width, line.height * lineSpacing);
           // 恢复原来的 fillStyle
           ctx.fillStyle = props.color || '#000000';
         }
@@ -310,16 +404,16 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
         // 处理小型大写字母渲染
         if (props.smallCaps) {
-          const rawText = frag.text;
+          const rawChars = Array.from(frag.text);
           let currentX = drawX;
-          for (let i = 0; i < rawText.length; i++) {
-            const char = rawText[i];
+          for (let i = 0; i < rawChars.length; i++) {
+            const char = rawChars[i];
+            const next = rawChars[i + 1];
             const isLower = char === char.toLowerCase() && char !== char.toUpperCase();
             const isEmoji = UnicodeRange.isEmoji(char);
 
-            // 记录原始字符的测量宽度 (排版宽度，已包含 letterSpacing)
-            // 注意：emoji 通常不应用字符间距
-            const applyLetterSpacing = !isEmoji;
+            // 记录原始字符的测量宽度（字符间距仅作用于字符之间）
+            const applyLetterSpacing = !!next && !isEmoji && !UnicodeRange.isEmoji(next);
             const charLayoutWidth = ctx.measureText(char).width + (applyLetterSpacing ? letterSpacing : 0);
 
             if (isLower && !isEmoji) {
@@ -344,12 +438,14 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
           // 如果有字符间距，需要逐个字符绘制或使用更现代的 Canvas API (如果支持)
           if (letterSpacing !== 0) {
             let currentX = drawX;
-            for (const char of drawText) {
-              // emoji 不应用字符间距
-              const isEmoji = UnicodeRange.isEmoji(char);
+            const drawChars = Array.from(drawText);
+            for (let i = 0; i < drawChars.length; i++) {
+              const char = drawChars[i];
+              const next = drawChars[i + 1];
               ctx.fillText(char, currentX, drawY);
               const charWidth = ctx.measureText(char).width;
-              currentX += charWidth + (isEmoji ? 0 : letterSpacing);
+              const addSpacing = !!next && !UnicodeRange.isEmoji(char) && !UnicodeRange.isEmoji(next);
+              currentX += charWidth + (addSpacing ? letterSpacing : 0);
             }
           } else {
             ctx.fillText(drawText, drawX, drawY);

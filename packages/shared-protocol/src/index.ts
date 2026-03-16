@@ -99,6 +99,10 @@ export interface ParagraphProperties {
   };
   /** 样式引用 - 对应 <w:pStyle> */
   styleId?: string;
+  /** 孤行控制 - 对应 <w:widowControl> */
+  widowControl?: boolean;
+  /** 连字符断行 - 对应 <w:hyphenation> */
+  hyphenation?: boolean;
   /** 边框 - 对应 <w:pBdr> */
   borders?: any;
   /** 背景填充 - 对应 <w:shd> */
