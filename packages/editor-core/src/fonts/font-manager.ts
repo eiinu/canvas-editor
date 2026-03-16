@@ -16,6 +16,7 @@ export class FontManager {
   private static instance: FontManager;
   private currentOS: OSType;
   private measurementCache: Map<string, number> = new Map();
+  private textMeasurementCache: Map<string, number> = new Map();
   private loadingFonts: Set<string> = new Set();
 
   /**
@@ -116,6 +117,7 @@ export class FontManager {
         await document.fonts.load(`12px ${fontFamily}`);
         this.loadingFonts.delete(fontFamily);
         this.measurementCache.clear(); // 字体加载后，旧的宽度缓存失效
+        this.textMeasurementCache.clear();
         return true; // 触发重新渲染
       }
     } catch (e) {
@@ -131,23 +133,24 @@ export class FontManager {
   public measureText(ctx: CanvasRenderingContext2D, text: string, font: string): number {
     if (!text) return 0;
 
-    const chars = Array.from(text);
-    let width = 0;
+    // Canvas 对整段文本宽度计算会考虑 kerning，优先使用整段测量确保排版准确
+    if (Array.from(text).length > 1) {
+      const textCacheKey = `${font}:${text}`;
+      const cachedWidth = this.textMeasurementCache.get(textCacheKey);
+      if (cachedWidth !== undefined) return cachedWidth;
 
-    for (const char of chars) {
-      const cacheKey = this.getMeasurementCacheKey(font, char);
-      const cached = this.measurementCache.get(cacheKey);
-      if (cached !== undefined) {
-        width += cached;
-        continue;
-      }
-
-      const charWidth = ctx.measureText(char).width;
-      this.measurementCache.set(cacheKey, charWidth);
-      width += charWidth;
+      const measuredWidth = ctx.measureText(text).width;
+      this.textMeasurementCache.set(textCacheKey, measuredWidth);
+      return measuredWidth;
     }
 
-    return width;
+    const cacheKey = this.getMeasurementCacheKey(font, text);
+    const cached = this.measurementCache.get(cacheKey);
+    if (cached !== undefined) return cached;
+
+    const charWidth = ctx.measureText(text).width;
+    this.measurementCache.set(cacheKey, charWidth);
+    return charWidth;
   }
 
   /**
@@ -173,5 +176,6 @@ export class FontManager {
    */
   public clearCache() {
     this.measurementCache.clear();
+    this.textMeasurementCache.clear();
   }
 }

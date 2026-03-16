@@ -33,7 +33,7 @@ export class RunElement extends DocumentElement<Run> {
       text = text.toUpperCase();
     }
     
-    this.applyStyles(ctx, dpr);
+    this.applyStyles(ctx);
     return this.fontManager.measureText(ctx, text, ctx.font);
   }
 
@@ -99,7 +99,7 @@ export class RunElement extends DocumentElement<Run> {
       ctx.fillText(drawText, x, drawY);
     }
 
-    const width = this.fontManager.measureText(ctx, textContent.text, ctx.font);
+    const width = this.fontManager.measureText(ctx, drawText, ctx.font);
 
     // 绘制装饰线
     if (properties.underline || properties.strike || properties.doubleStrike) {
