@@ -21,6 +21,20 @@ import {
 } from './examples';
 import './styles.css';
 
+type EditorDebugApi = {
+  get renderer(): CanvasRenderer | null;
+  get codeMirror(): EditorView | null;
+  get xml(): string;
+  setXml: (xml: string) => void;
+  render: () => void;
+};
+
+declare global {
+  interface Window {
+    __canvasEditor?: EditorDebugApi;
+  }
+}
+
 const converter = new BasicXmlConverter();
 const xmlCode = ref(converter.toXml(FULL_DOC));
 const debouncedXml = ref(xmlCode.value);
@@ -161,6 +175,23 @@ onMounted(() => {
     dpr: getDevicePixelRatio(),
     zoom: zoom.value 
   });
+
+  window.__canvasEditor = {
+    get renderer() {
+      return rendererRef.value;
+    },
+    get codeMirror() {
+      return viewRef.value;
+    },
+    get xml() {
+      return xmlCode.value;
+    },
+    setXml(xml: string) {
+      xmlCode.value = xml;
+    },
+    render: renderEditor
+  };
+
   renderEditor();
 
   // 添加双指缩放支持（包括触控板和触摸屏幕）
@@ -223,6 +254,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', checkMobile);
+  delete window.__canvasEditor;
   if (viewRef.value) {
     viewRef.value.destroy();
   }
