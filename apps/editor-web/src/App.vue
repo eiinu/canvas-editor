@@ -5,6 +5,7 @@ import { EditorState } from '@codemirror/state';
 import { xml } from '@codemirror/lang-xml';
 import { CanvasRenderer, ModelFactory } from '@eiinu/editor-core';
 import { BasicXmlConverter } from '@eiinu/editor-xml';
+import type { Document } from '@eiinu/editor-protocol';
 import { getDevicePixelRatio, debounce } from '@eiinu/editor-utils';
 import JSZip from 'jszip';
 import {
@@ -24,8 +25,16 @@ import './styles.css';
 type EditorDebugApi = {
   get renderer(): CanvasRenderer | null;
   get codeMirror(): EditorView | null;
+  get converter(): BasicXmlConverter;
+  get modelFactory(): typeof ModelFactory;
   get xml(): string;
+  get documentModel(): Document;
+  get zoom(): number;
   setXml: (xml: string) => void;
+  setDocumentModel: (doc: Document) => void;
+  setZoom: (value: number) => void;
+  parseXml: (xml?: string) => Document;
+  toXml: (doc: Document) => string;
   render: () => void;
 };
 
@@ -183,11 +192,37 @@ onMounted(() => {
     get codeMirror() {
       return viewRef.value;
     },
+    get converter() {
+      return converterRef.value;
+    },
+    get modelFactory() {
+      return ModelFactory;
+    },
     get xml() {
       return xmlCode.value;
     },
+    get documentModel() {
+      return converterRef.value.fromXml(xmlCode.value);
+    },
+    get zoom() {
+      return zoom.value;
+    },
     setXml(xml: string) {
       xmlCode.value = xml;
+    },
+    setDocumentModel(doc: Document) {
+      xmlCode.value = converterRef.value.toXml(doc);
+    },
+    setZoom(value: number) {
+      if (value >= 0.1 && value <= 5) {
+        zoom.value = value;
+      }
+    },
+    parseXml(xml?: string) {
+      return converterRef.value.fromXml(xml ?? xmlCode.value);
+    },
+    toXml(doc: Document) {
+      return converterRef.value.toXml(doc);
     },
     render: renderEditor
   };
