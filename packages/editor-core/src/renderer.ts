@@ -1,5 +1,5 @@
-import { getDevicePixelRatio } from '@eiinu/editor-utils';
-import { DocumentElement, RenderContext } from './model/base.js';
+import { getDevicePixelRatio } from "@eiinu/editor-utils";
+import { DocumentElement, type RenderContext } from "./model/base.js";
 
 /**
  * 简单的 Canvas 渲染器
@@ -39,11 +39,11 @@ export class CanvasRenderer {
   setDimensions(width: number, height: number) {
     const { canvas } = this.ctx;
     const scale = this.scale;
-    
+
     // 物理像素尺寸
     canvas.width = width * scale;
     canvas.height = height * scale;
-    
+
     // 逻辑像素尺寸 (CSS)
     canvas.style.width = `${width * this.zoom}px`;
     canvas.style.height = `${height * this.zoom}px`;
@@ -67,12 +67,12 @@ export class CanvasRenderer {
       ctx: this.ctx,
       dpr: this.dpr,
       zoom: this.zoom,
-      maxWidth
+      maxWidth,
     };
 
     // 1. 布局
     el.layout(context);
-    
+
     // 2. 渲染
     return el.render(context, x, y);
   }

@@ -415,4 +415,3 @@ Input Event -> Command -> Operation[] -> Apply(Model)
 1. 建立 monorepo（`editor-core` / `editor-web` / `collab-service` / `shared-protocol`）。
 2. 编写最小可运行原型：支持段落输入、光标、选区、撤销重做。
 3. 定义 Operation Schema 与 WS 协议，先打通“单文档双人协同”链路。
-

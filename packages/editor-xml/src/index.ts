@@ -1,4 +1,4 @@
-import { Document } from '@eiinu/editor-protocol';
+import { type Document } from "@eiinu/editor-protocol";
 
 /**
  * XML 转换器接口定义
@@ -30,4 +30,4 @@ export interface XmlConvertOptions {
   declaration?: boolean;
 }
 
-export * from './parser.js';
+export * from "./parser.js";

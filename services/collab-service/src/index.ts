@@ -1,4 +1,4 @@
-import type { OperationEnvelope } from '@eiinu/editor-protocol';
+import type { OperationEnvelope } from "@eiinu/editor-protocol";
 
 export interface CollabServiceContext {
   serviceName: string;
@@ -6,13 +6,13 @@ export interface CollabServiceContext {
 }
 
 export const bootstrapCollabService = (
-  _initialOps: OperationEnvelope[] = []
+  _initialOps: OperationEnvelope[] = [],
 ): CollabServiceContext => ({
-  serviceName: '@eiinu/editor-collab',
-  acceptedOps: ['insert_text', 'delete_range', 'set_mark']
+  serviceName: "@eiinu/editor-collab",
+  acceptedOps: ["insert_text", "delete_range", "set_mark"],
 });
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
   const context = bootstrapCollabService();
   console.log(`[boot] ${context.serviceName} ready`);
 }

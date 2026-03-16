@@ -1,6 +1,6 @@
-import type { Table, TableRow, TableCell, Paragraph, DocumentBase } from '@eiinu/editor-protocol';
-import { DocumentElement, RenderContext } from './base.js';
-import { ParagraphElement } from './paragraph.js';
+import type { Table, TableRow, TableCell, Paragraph } from "@eiinu/editor-protocol";
+import { DocumentElement, type RenderContext } from "./base.js";
+import { ParagraphElement } from "./paragraph.js";
 
 /**
  * 表格元素
@@ -53,13 +53,13 @@ export class TableElement extends DocumentElement<Table> {
     }
 
     // 表格对齐
-    if (this.data.properties.alignment === 'center') {
+    if (this.data.properties.alignment === "center") {
       tableX = x + (maxWidth - tableWidth) / 2;
       // 对齐后再应用缩进
       if (this.data.properties.indent) {
         tableX += this.data.properties.indent;
       }
-    } else if (this.data.properties.alignment === 'right') {
+    } else if (this.data.properties.alignment === "right") {
       tableX = x + maxWidth - tableWidth;
       // 对齐后再应用缩进
       if (this.data.properties.indent) {
@@ -71,7 +71,7 @@ export class TableElement extends DocumentElement<Table> {
     const columnWidths = this.calculateColumnWidths(tableWidth);
 
     // 确保列宽不为 0
-    const validColumnWidths = columnWidths.map(width => Math.max(width, 10));
+    const validColumnWidths = columnWidths.map((width) => Math.max(width, 10));
 
     // 绘制表格边框
     const totalHeight = this.calculateTotalHeight();
@@ -97,7 +97,7 @@ export class TableElement extends DocumentElement<Table> {
       // 使用表格网格定义的列宽
       const totalGridWidth = grid.columns.reduce((sum, col) => sum + col.width, 0);
       if (totalGridWidth > 0) {
-        return grid.columns.map(col => (col.width / totalGridWidth) * tableWidth);
+        return grid.columns.map((col) => (col.width / totalGridWidth) * tableWidth);
       }
     }
 
@@ -126,7 +126,13 @@ export class TableElement extends DocumentElement<Table> {
   /**
    * 绘制表格边框
    */
-  private drawTableBorders(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+  private drawTableBorders(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) {
     const { borders } = this.data.properties;
     if (!borders) return;
 
@@ -152,8 +158,15 @@ export class TableElement extends DocumentElement<Table> {
   /**
    * 绘制边框
    */
-  private drawBorder(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, border: any) {
-    ctx.strokeStyle = border.color || '#000000';
+  private drawBorder(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    border: any,
+  ) {
+    ctx.strokeStyle = border.color || "#000000";
     ctx.lineWidth = border.size || 1;
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -167,13 +180,13 @@ export class TableElement extends DocumentElement<Table> {
  */
 class TableRowElement {
   private data: TableRow;
-  private index: number;
+  // private index: number;
   private cells: TableCellElement[];
   private height: number = 0;
 
   constructor(data: TableRow, index: number) {
     this.data = data;
-    this.index = index;
+    // this.index = index;
     this.cells = data.cells.map((cell, cellIndex) => new TableCellElement(cell, cellIndex));
   }
 
@@ -192,7 +205,7 @@ class TableRowElement {
 
     // 应用行高设置
     const rowHeight = this.data.properties?.height || maxCellHeight;
-    this.height = rowHeight;
+    // this.height = rowHeight;
     return rowHeight;
   }
 
@@ -232,20 +245,20 @@ class TableRowElement {
  */
 class TableCellElement {
   private data: TableCell;
-  private index: number;
+  // private index: number;
   private child: DocumentElement | null;
-  private height: number = 0;
+  // private height: number = 0;
 
   constructor(data: TableCell, index: number) {
     this.data = data;
-    this.index = index;
+    // this.index = index;
     // 只取第一个子元素
     const firstChild = data.children[0];
     if (firstChild) {
-      if ('rows' in firstChild) {
+      if ("rows" in firstChild) {
         // 处理表格类型的子元素
         this.child = new TableElement(firstChild as Table);
-      } else if ('properties' in firstChild) {
+      } else if ("properties" in firstChild) {
         // 处理段落类型的子元素
         this.child = new ParagraphElement(firstChild as Paragraph);
       } else {
@@ -272,7 +285,7 @@ class TableCellElement {
       totalHeight = childHeight;
     }
 
-    this.height = totalHeight;
+    // this.height = totalHeight;
     return totalHeight;
   }
 
@@ -308,8 +321,8 @@ class TableCellElement {
         // 添加单元格特定的渲染选项
         cellOptions: {
           noWrap: this.data.properties?.noWrap,
-          fitText: this.data.properties?.fitText
-        }
+          fitText: this.data.properties?.fitText,
+        },
       };
       this.child.render(cellContext, contentX, contentY);
     }
@@ -318,7 +331,13 @@ class TableCellElement {
   /**
    * 绘制单元格边框
    */
-  private drawCellBorders(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+  private drawCellBorders(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ) {
     const { borders } = this.data.properties || {};
     if (!borders) return;
 
@@ -344,8 +363,15 @@ class TableCellElement {
   /**
    * 绘制边框
    */
-  private drawBorder(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, border: any) {
-    ctx.strokeStyle = border.color || '#000000';
+  private drawBorder(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    border: any,
+  ) {
+    ctx.strokeStyle = border.color || "#000000";
     ctx.lineWidth = border.size || 1;
     ctx.beginPath();
     ctx.moveTo(x, y);

@@ -2,4 +2,27 @@ packages:
   - apps/*
   - packages/*
   - services/*
-  - configs/*
+
+catalogMode: prefer
+
+catalog:
+  "@types/node": ^24
+  typescript: ^5
+  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  vite-plus: latest
+  vue: latest
+  "@vitejs/plugin-vue": latest
+  vue-tsc: latest
+  "@typescript/native-preview": 7.0.0-dev.20260316.1
+
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"

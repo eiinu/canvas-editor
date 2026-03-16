@@ -1,7 +1,7 @@
-import type { 
-  OperationEnvelope, 
-  Paragraph, 
-  Run, 
+import type {
+  OperationEnvelope,
+  Paragraph,
+  Run,
   TextContent,
   ParagraphProperties,
   RunProperties,
@@ -10,15 +10,15 @@ import type {
   TableCell,
   TableProperties,
   TableRowProperties,
-  TableCellProperties
-} from '@eiinu/editor-protocol';
+  TableCellProperties,
+} from "@eiinu/editor-protocol";
 
-export * from './renderer.js';
-export * from './model/base.js';
-export * from './model/paragraph.js';
-export * from './model/run.js';
-export * from './model/table.js';
-export * from './fonts/font-manager.js';
+export * from "./renderer.js";
+export * from "./model/base.js";
+export * from "./model/paragraph.js";
+export * from "./model/run.js";
+export * from "./model/table.js";
+export * from "./fonts/font-manager.js";
 
 export interface EditorCoreBootstrapResult {
   initialized: true;
@@ -26,18 +26,18 @@ export interface EditorCoreBootstrapResult {
 }
 
 export const bootstrapEditorCore = (
-  _operations: OperationEnvelope[] = []
+  _operations: OperationEnvelope[] = [],
 ): EditorCoreBootstrapResult => {
   // 暂时不处理 operations
   void _operations;
   return {
     initialized: true,
-    acceptedOperationTypes: ['insert_text', 'delete_range', 'set_mark']
+    acceptedOperationTypes: ["insert_text", "delete_range", "set_mark"],
   };
 };
 
-import { ParagraphElement } from './model/paragraph.js';
-import { TableElement } from './model/table.js';
+import { ParagraphElement } from "./model/paragraph.js";
+import { TableElement } from "./model/table.js";
 
 /**
  * 文档模型工厂函数
@@ -50,7 +50,7 @@ export const ModelFactory = {
     return {
       properties,
       content: {
-        type: 'text',
+        type: "text",
         text,
       } as TextContent,
     };
@@ -70,7 +70,12 @@ export const ModelFactory = {
   /**
    * 创建一个包含初始文本的段落
    */
-  createParagraphWithText(id: string, text: string, pPr: ParagraphProperties = {}, rPr: RunProperties = {}): Paragraph {
+  createParagraphWithText(
+    id: string,
+    text: string,
+    pPr: ParagraphProperties = {},
+    rPr: RunProperties = {},
+  ): Paragraph {
     const p = this.createParagraph(id, pPr);
     if (text) {
       p.children.push(this.createRun(text, rPr));
@@ -81,7 +86,10 @@ export const ModelFactory = {
   /**
    * 创建一个表格单元格 (TableCell)
    */
-  createTableCell(children: (Paragraph | Table)[] = [], properties: TableCellProperties = {}): TableCell {
+  createTableCell(
+    children: (Paragraph | Table)[] = [],
+    properties: TableCellProperties = {},
+  ): TableCell {
     return {
       properties,
       children,
@@ -113,9 +121,9 @@ export const ModelFactory = {
    * 将普通数据转换为元素实例
    */
   createElement(data: Paragraph | Table): ParagraphElement | TableElement {
-    if ('rows' in data) {
+    if ("rows" in data) {
       return new TableElement(data as Table);
     }
     return new ParagraphElement(data as Paragraph);
-  }
+  },
 };

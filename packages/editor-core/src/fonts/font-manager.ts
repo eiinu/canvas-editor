@@ -1,4 +1,4 @@
-import { detectOS, OSType } from '@eiinu/editor-utils';
+import { detectOS, type OSType } from "@eiinu/editor-utils";
 
 /**
  * 字体管理模块
@@ -22,42 +22,42 @@ export class FontManager {
    * 预定义的字体映射表
    */
   private fontMappings: Record<string, FontMapping> = {
-    'Microsoft YaHei': {
+    "Microsoft YaHei": {
       windows: '"Microsoft YaHei", sans-serif',
       macos: '"PingFang SC", "Hiragino Sans GB", sans-serif',
       linux: '"Droid Sans Fallback", sans-serif',
-      generic: 'sans-serif'
+      generic: "sans-serif",
     },
-    'SimSun': {
+    SimSun: {
       windows: 'SimSun, "NSimSun", serif',
       macos: '"STSong", "Songti SC", serif',
       linux: '"AR PL UMing CN", serif',
-      generic: 'serif'
+      generic: "serif",
     },
-    'SimHei': {
-      windows: 'SimHei, sans-serif',
+    SimHei: {
+      windows: "SimHei, sans-serif",
       macos: '"STHeiti", "Heiti SC", sans-serif',
       linux: '"WenQuanYi Zen Hei", sans-serif',
-      generic: 'sans-serif'
+      generic: "sans-serif",
     },
-    'KaiTi': {
+    KaiTi: {
       windows: 'KaiTi, "STKaiti", cursive',
       macos: '"STKaiti", "Kaiti SC", cursive',
       linux: '"AR PL UKai CN", cursive',
-      generic: 'cursive'
+      generic: "cursive",
     },
-    'FangSong': {
+    FangSong: {
       windows: 'FangSong, "STFangsong", serif',
       macos: '"STFangsong", "FangSong SC", serif',
-      linux: 'serif',
-      generic: 'serif'
+      linux: "serif",
+      generic: "serif",
     },
-    'Apple Color Emoji': {
+    "Apple Color Emoji": {
       windows: '"Segoe UI Emoji", "Segoe UI Symbol", emoji',
       macos: '"Apple Color Emoji", emoji',
       linux: '"Noto Color Emoji", emoji',
-      generic: '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", emoji'
-    }
+      generic: '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", emoji',
+    },
   };
 
   private constructor() {
@@ -80,10 +80,14 @@ export class FontManager {
     const mapping = this.fontMappings[fontName];
     if (mapping) {
       switch (this.currentOS) {
-        case 'windows': return mapping.windows;
-        case 'macos': return mapping.macos;
-        case 'linux': return mapping.linux;
-        default: return mapping.generic;
+        case "windows":
+          return mapping.windows;
+        case "macos":
+          return mapping.macos;
+        case "linux":
+          return mapping.linux;
+        default:
+          return mapping.generic;
       }
     }
 
@@ -104,7 +108,7 @@ export class FontManager {
    * @param fontFamily 映射后的 Web 字体名称
    */
   public async ensureFontLoaded(fontFamily: string): Promise<boolean> {
-    if (typeof document === 'undefined' || !document.fonts) return true;
+    if (typeof document === "undefined" || !document.fonts) return true;
 
     // 如果已经在加载中，直接返回
     if (this.loadingFonts.has(fontFamily)) return false;

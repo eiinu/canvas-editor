@@ -20,10 +20,10 @@
 
 ## 映射规则规划 (Draft)
 
-| OpenXML 字体 | Windows (Web) | macOS Fallback | Linux Fallback | 通用回退 |
-| :--- | :--- | :--- | :--- | :--- |
-| **Microsoft YaHei** | "Microsoft YaHei" | "PingFang SC" | "Droid Sans Fallback" | sans-serif |
-| **SimSun** | "SimSun" | "STSong" | "AR PL UMing CN" | serif |
-| **SimHei** | "SimHei" | "STHeiti" | "WenQuanYi Zen Hei" | sans-serif |
-| **KaiTi** | "KaiTi" | "STKaiti" | "AR PL UKai CN" | cursive |
-| **FangSong** | "FangSong" | "STFangsong" | - | serif |
+| OpenXML 字体        | Windows (Web)     | macOS Fallback | Linux Fallback        | 通用回退   |
+| :------------------ | :---------------- | :------------- | :-------------------- | :--------- |
+| **Microsoft YaHei** | "Microsoft YaHei" | "PingFang SC"  | "Droid Sans Fallback" | sans-serif |
+| **SimSun**          | "SimSun"          | "STSong"       | "AR PL UMing CN"      | serif      |
+| **SimHei**          | "SimHei"          | "STHeiti"      | "WenQuanYi Zen Hei"   | sans-serif |
+| **KaiTi**           | "KaiTi"           | "STKaiti"      | "AR PL UKai CN"       | cursive    |
+| **FangSong**        | "FangSong"        | "STFangsong"   | -                     | serif      |

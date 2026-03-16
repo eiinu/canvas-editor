@@ -1,17 +1,27 @@
 {
-  "extends": "../../configs/tsconfig/app.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "module": "es2022",
+    "target": "ES2023",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
     "moduleResolution": "bundler",
-    "paths": {
-      "@eiinu/editor-core": ["../../packages/editor-core/src/index.ts"],
-      "@eiinu/editor-utils": ["../../packages/editor-utils/src/index.ts"],
-      "@eiinu/editor-xml": ["../../packages/editor-xml/src/index.ts"],
-      "@eiinu/editor-protocol": ["../../packages/shared-protocol/src/index.ts"]
-    }
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts"]
+  "include": ["src"]
 }

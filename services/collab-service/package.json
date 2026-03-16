@@ -2,23 +2,25 @@
   "name": "@eiinu/editor-collab",
   "version": "0.1.0",
   "private": true,
+  "files": [
+    "dist"
+  ],
   "type": "module",
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsdown",
-    "start": "node dist/index.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint src --ext .ts",
-    "test": "vitest run",
-    "clean": "rm -rf dist"
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "test": "vp test",
+    "check": "vp check",
+    "prepublishOnly": "vp run build"
   },
   "dependencies": {
     "@eiinu/editor-protocol": "workspace:*"
-  },
-  "devDependencies": {
-    "tsx": "^4.21.0"
   }
 }

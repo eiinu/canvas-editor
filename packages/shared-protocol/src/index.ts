@@ -49,7 +49,7 @@ export interface Section extends DocumentBase {
 export interface SectionProperties {
   /** 纸张大小 - 对应 <w:pgSz> */
   pageSize?: {
-    width: number;  // 单位: twips (1/1440 英寸) 或像素，建议内部统一为像素
+    width: number; // 单位: twips (1/1440 英寸) 或像素，建议内部统一为像素
     height: number;
   };
   /** 页边距 - 对应 <w:pgMar> */
@@ -82,20 +82,20 @@ export interface Paragraph {
  */
 export interface ParagraphProperties {
   /** 对齐方式 - 对应 <w:jc> */
-  alignment?: 'left' | 'center' | 'right' | 'both' | 'distribute';
+  alignment?: "left" | "center" | "right" | "both" | "distribute";
   /** 缩进 - 对应 <w:ind> */
   indentation?: {
-    left?: number;      // 左缩进
-    right?: number;     // 右缩进
+    left?: number; // 左缩进
+    right?: number; // 右缩进
     firstLine?: number; // 首行缩进
-    hanging?: number;   // 悬挂缩进
+    hanging?: number; // 悬挂缩进
   };
   /** 间距 - 对应 <w:spacing> */
   spacing?: {
-    before?: number;    // 段前距
-    after?: number;     // 段后距
-    line?: number;      // 行间距
-    lineRule?: 'auto' | 'exact' | 'atLeast'; // 行高规则
+    before?: number; // 段前距
+    after?: number; // 段后距
+    line?: number; // 行间距
+    lineRule?: "auto" | "exact" | "atLeast"; // 行高规则
   };
   /** 样式引用 - 对应 <w:pStyle> */
   styleId?: string;
@@ -133,7 +133,7 @@ export interface RunProperties {
     /** Emoji 字体 - 用于显示 emoji 字符 */
     emoji?: string;
     /** 提示字体 - 对应 <w:hint> (eastAsia | default) */
-    hint?: 'eastAsia' | 'default';
+    hint?: "eastAsia" | "default";
   };
   /** 兼容性字段：字体名称 - 对应 <w:rFonts w:val="..."> */
   fontFamily?: string;
@@ -158,7 +158,7 @@ export interface RunProperties {
   /** 突出显示/高亮 - 对应 <w:highlight> */
   highlight?: string;
   /** 垂直对齐 - 对应 <w:vertAlign> (上标、下标) */
-  vertAlign?: 'baseline' | 'superscript' | 'subscript';
+  vertAlign?: "baseline" | "superscript" | "subscript";
   /** 全部大写 - 对应 <w:caps> */
   caps?: boolean;
   /** 小型大写字母 - 对应 <w:smallCaps> */
@@ -184,7 +184,7 @@ export interface RunProperties {
  */
 export type RunContent = TextContent | ImageContent | FieldContent | DrawingContent;
 
-export type ContentType = 'text' | 'image' | 'field' | 'drawing';
+export type ContentType = "text" | "image" | "field" | "drawing";
 
 export interface BaseContent {
   type: ContentType;
@@ -192,7 +192,7 @@ export interface BaseContent {
 
 /** 文本内容 - 对应 <w:t> */
 export interface TextContent extends BaseContent {
-  type: 'text';
+  type: "text";
   text: string;
   /** 是否保留空白字符 - 对应 xml:space="preserve" */
   preserveSpace?: boolean;
@@ -200,7 +200,7 @@ export interface TextContent extends BaseContent {
 
 /** 图片内容 - 对应 <w:drawing> 中的内联图片 */
 export interface ImageContent extends BaseContent {
-  type: 'image';
+  type: "image";
   src: string;
   width: number;
   height: number;
@@ -208,14 +208,14 @@ export interface ImageContent extends BaseContent {
 
 /** 域/复杂指令 - 对应 <w:fldChar> (如页码、目录) */
 export interface FieldContent extends BaseContent {
-  type: 'field';
+  type: "field";
   fieldCode: string;
   result?: string;
 }
 
 /** 图形/形状 - 对应 <w:drawing> */
 export interface DrawingContent extends BaseContent {
-  type: 'drawing';
+  type: "drawing";
   data: any;
 }
 
@@ -244,11 +244,11 @@ export interface TableProperties {
   /** 表格宽度 - 对应 <w:tblW> */
   width?: number;
   /** 表格对齐 - 对应 <w:jc> */
-  alignment?: 'left' | 'center' | 'right';
+  alignment?: "left" | "center" | "right";
   /** 单元格边距 - 对应 <w:tblCellMar> */
   cellMargin?: TableCellMargin;
   /** 表格布局 - 对应 <w:tblLayout> */
-  layout?: 'fixed' | 'autofit';
+  layout?: "fixed" | "autofit";
   /** 表格样式 - 对应 <w:tblStyle> */
   styleId?: string;
   /** 表格标题 - 对应 <w:tblCaption> */
@@ -320,7 +320,7 @@ export interface TableRowProperties {
   /** 行高 - 对应 <w:trHeight> */
   height?: number;
   /** 行高规则 - 对应 <w:trHeight w:hRule="..."> */
-  heightRule?: 'auto' | 'exact' | 'atLeast';
+  heightRule?: "auto" | "exact" | "atLeast";
   /** 边框 - 对应 <w:trBorders> */
   borders?: TableRowBorders;
   /** 禁止行拆分 - 对应 <w:cantSplit> */
@@ -356,15 +356,15 @@ export interface TableCellProperties {
   /** 单元格宽度 - 对应 <w:tcW> */
   width?: number;
   /** 单元格宽度类型 - 对应 <w:tcW w:type> */
-  widthType?: 'dxa' | 'pct' | 'auto';
+  widthType?: "dxa" | "pct" | "auto";
   /** 单元格边距 - 对应 <w:tcMar> */
   margin?: TableCellMargin;
   /** 单元格合并 - 对应 <w:gridSpan> */
   gridSpan?: number;
   /** 垂直合并 - 对应 <w:vMerge> */
-  vMerge?: 'restart' | 'continue';
+  vMerge?: "restart" | "continue";
   /** 垂直对齐 - 对应 <w:vAlign> */
-  verticalAlignment?: 'top' | 'center' | 'bottom';
+  verticalAlignment?: "top" | "center" | "bottom";
   /** 边框 - 对应 <w:tcBorders> */
   borders?: TableCellBorders;
   /** 底纹 - 对应 <w:shd> */

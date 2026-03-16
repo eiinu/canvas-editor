@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@eiinu/editor-core": ["./packages/editor-core/src"],
+      "@eiinu/editor-xml": ["./packages/editor-xml/src"],
+      "@eiinu/editor-utils": ["./packages/editor-utils/src"],
+      "@eiinu/editor-protocol": ["./packages/shared-protocol/src"],
+      "@eiinu/editor-collab": ["./services/collab-service/src"]
+    }
+  }
+}
