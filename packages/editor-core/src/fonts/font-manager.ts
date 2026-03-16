@@ -129,13 +129,43 @@ export class FontManager {
    * 测量文本宽度 (带缓存)
    */
   public measureText(ctx: CanvasRenderingContext2D, text: string, font: string): number {
-    const cacheKey = `${font}:${text}`;
-    const cached = this.measurementCache.get(cacheKey);
-    if (cached !== undefined) return cached;
+    if (!text) return 0;
 
-    const width = ctx.measureText(text).width;
-    this.measurementCache.set(cacheKey, width);
+    const chars = Array.from(text);
+    let width = 0;
+
+    for (const char of chars) {
+      const cacheKey = this.getMeasurementCacheKey(font, char);
+      const cached = this.measurementCache.get(cacheKey);
+      if (cached !== undefined) {
+        width += cached;
+        continue;
+      }
+
+      const charWidth = ctx.measureText(char).width;
+      this.measurementCache.set(cacheKey, charWidth);
+      width += charWidth;
+    }
+
     return width;
+  }
+
+  /**
+   * 生成字符宽度缓存 Key
+   * 结构: 粗体(0/1)-斜体(0/1)-映射后的字体名-字符
+   */
+  private getMeasurementCacheKey(font: string, char: string): string {
+    const isBold = /(\bbold\b|\b[5-9]00\b)/i.test(font) ? 1 : 0;
+    const isItalic = /(\bitalic\b|\boblique\b)/i.test(font) ? 1 : 0;
+
+    const fontMatch = font.match(/\d+(?:\.\d+)?px\s+(.+)$/i);
+    const fontFamily = fontMatch ? fontMatch[1] : font;
+    const mappedFontName = fontFamily
+      .split(',')[0]
+      .trim()
+      .replace(/^['"]|['"]$/g, '');
+
+    return `${isBold}-${isItalic}-${mappedFontName}-${char}`;
   }
 
   /**
