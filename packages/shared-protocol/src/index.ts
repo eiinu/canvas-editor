@@ -201,10 +201,8 @@ export interface TextContent extends BaseContent {
 /** 数学公式内容 - 对应 <m:oMath> */
 export interface MathContent extends BaseContent {
   type: "math";
-  /** 公式的线性文本表示，用于渲染与回退 */
+  /** 公式的线性文本表示（由 OpenXML/OMML 结构化节点提取） */
   text: string;
-  /** 可选 LaTeX 源，便于后续高级排版 */
-  latex?: string;
 }
 
 /** 图片内容 - 对应 <w:drawing> 中的内联图片 */

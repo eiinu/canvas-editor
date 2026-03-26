@@ -26,7 +26,7 @@ export const MATH_DOC: Document = {
             { properties: { fontSize: 30 }, content: { type: "text", text: "欧拉公式：" } },
             {
               properties: { fontSize: 30, italic: true },
-              content: { type: "math", text: "e^{iπ} + 1 = 0", latex: "e^{i\\pi} + 1 = 0" },
+              content: { type: "math", text: "e^{iπ} + 1 = 0" },
             },
           ],
         } as Paragraph,
