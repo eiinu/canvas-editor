@@ -30,6 +30,28 @@ export const MATH_DOC: Document = {
             },
           ],
         } as Paragraph,
+        {
+          id: "p-math-3",
+          properties: { alignment: "left" },
+          children: [
+            { properties: { fontSize: 30 }, content: { type: "text", text: "上下标组合：" } },
+            {
+              properties: { fontSize: 30, italic: true },
+              content: { type: "math", text: "x_(i)^(2)" },
+            },
+          ],
+        } as Paragraph,
+        {
+          id: "p-math-4",
+          properties: { alignment: "left" },
+          children: [
+            { properties: { fontSize: 30 }, content: { type: "text", text: "分式：" } },
+            {
+              properties: { fontSize: 30, italic: true },
+              content: { type: "math", text: "(a+b)/(c+d)" },
+            },
+          ],
+        } as Paragraph,
       ],
     },
   ],

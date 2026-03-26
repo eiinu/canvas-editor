@@ -203,6 +203,8 @@ export interface MathContent extends BaseContent {
   type: "math";
   /** 公式的线性文本表示（由 OpenXML/OMML 结构化节点提取） */
   text: string;
+  /** 原始 OMML 结构（可选），用于保留复杂公式结构并支持回写 */
+  omml?: Record<string, unknown>;
 }
 
 /** 图片内容 - 对应 <w:drawing> 中的内联图片 */

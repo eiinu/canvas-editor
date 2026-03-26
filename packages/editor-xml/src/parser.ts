@@ -148,11 +148,15 @@ export class BasicXmlConverter implements XmlConverter {
 
             if (r.content.type === "math") {
               const math = r.content as MathContent;
-              mathRuns.push({
-                "m:r": {
-                  "m:t": math.text,
-                },
-              });
+              mathRuns.push(
+                math.omml
+                  ? this.normalizeOmmlForBuilder(math.omml)
+                  : {
+                      "m:r": {
+                        "m:t": math.text,
+                      },
+                    },
+              );
             } else {
               textRuns.push({
                 "w:rPr": Object.keys(rPr).length > 0 ? rPr : undefined,
@@ -288,9 +292,11 @@ export class BasicXmlConverter implements XmlConverter {
                       })),
                     "m:oMath": p.children
                       .filter((r) => r.content.type === "math")
-                      .map((r) => ({
-                        "m:r": { "m:t": (r.content as MathContent).text },
-                      })),
+                      .map((r) =>
+                        (r.content as MathContent).omml
+                          ? this.normalizeOmmlForBuilder((r.content as MathContent).omml)
+                          : { "m:r": { "m:t": (r.content as MathContent).text } },
+                      ),
                   });
                 }
               });
@@ -341,13 +347,70 @@ export class BasicXmlConverter implements XmlConverter {
   private extractTextFromMathNode(node: any): string {
     if (node == null) return "";
     if (typeof node === "string" || typeof node === "number") return String(node);
-    if (Array.isArray(node)) return node.map((item) => this.extractTextFromMathNode(item)).join("");
+    if (Array.isArray(node)) return node.map((item) => this.extractMathElement(item)).join("");
+    return this.extractMathElement(node);
+  }
+
+  private normalizeOmmlForBuilder(node: any): any {
+    if (node == null) return node;
+    if (Array.isArray(node)) return node.map((item) => this.normalizeOmmlForBuilder(item));
+    if (typeof node !== "object") return node;
+
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(node)) {
+      if (
+        (key === "m:t" || key === "t") &&
+        (typeof value === "string" || typeof value === "number")
+      ) {
+        result[key] = { "#text": String(value) };
+      } else {
+        result[key] = this.normalizeOmmlForBuilder(value);
+      }
+    }
+    return result;
+  }
+
+  private extractMathElement(node: any): string {
+    if (node == null) return "";
+    if (typeof node === "string" || typeof node === "number") return String(node);
+    if (Array.isArray(node)) return node.map((item) => this.extractMathElement(item)).join("");
 
     const directText = node["m:t"] || node.t || node["#text"];
     if (typeof directText === "string") return directText;
 
+    const first = (value: any) => (Array.isArray(value) ? value[0] : value);
+
+    const sSup = first(node["m:sSup"] || node.sSup);
+    if (sSup) {
+      const base = this.extractMathElement(first(sSup["m:e"] || sSup.e));
+      const sup = this.extractMathElement(first(sSup["m:sup"] || sSup.sup));
+      return `${base}^(${sup})`;
+    }
+
+    const sSub = first(node["m:sSub"] || node.sSub);
+    if (sSub) {
+      const base = this.extractMathElement(first(sSub["m:e"] || sSub.e));
+      const sub = this.extractMathElement(first(sSub["m:sub"] || sSub.sub));
+      return `${base}_(${sub})`;
+    }
+
+    const sSubSup = first(node["m:sSubSup"] || node.sSubSup);
+    if (sSubSup) {
+      const base = this.extractMathElement(first(sSubSup["m:e"] || sSubSup.e));
+      const sub = this.extractMathElement(first(sSubSup["m:sub"] || sSubSup.sub));
+      const sup = this.extractMathElement(first(sSubSup["m:sup"] || sSubSup.sup));
+      return `${base}_(${sub})^(${sup})`;
+    }
+
+    const frac = first(node["m:f"] || node.f);
+    if (frac) {
+      const num = this.extractMathElement(first(frac["m:num"] || frac.num));
+      const den = this.extractMathElement(first(frac["m:den"] || frac.den));
+      return `(${num})/(${den})`;
+    }
+
     return Object.values(node)
-      .map((value) => this.extractTextFromMathNode(value))
+      .map((value) => this.extractMathElement(value))
       .join("");
   }
 
@@ -531,6 +594,7 @@ export class BasicXmlConverter implements XmlConverter {
             content: {
               type: "math",
               text: String(mathText),
+              omml: mathNode,
             } as MathContent,
           });
         };
