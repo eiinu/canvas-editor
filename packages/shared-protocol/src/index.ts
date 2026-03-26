@@ -182,9 +182,9 @@ export interface RunProperties {
 /**
  * 运行块内的内容类型
  */
-export type RunContent = TextContent | ImageContent | FieldContent | DrawingContent;
+export type RunContent = TextContent | MathContent | ImageContent | FieldContent | DrawingContent;
 
-export type ContentType = "text" | "image" | "field" | "drawing";
+export type ContentType = "text" | "math" | "image" | "field" | "drawing";
 
 export interface BaseContent {
   type: ContentType;
@@ -196,6 +196,15 @@ export interface TextContent extends BaseContent {
   text: string;
   /** 是否保留空白字符 - 对应 xml:space="preserve" */
   preserveSpace?: boolean;
+}
+
+/** 数学公式内容 - 对应 <m:oMath> */
+export interface MathContent extends BaseContent {
+  type: "math";
+  /** 公式的线性文本表示，用于渲染与回退 */
+  text: string;
+  /** 可选 LaTeX 源，便于后续高级排版 */
+  latex?: string;
 }
 
 /** 图片内容 - 对应 <w:drawing> 中的内联图片 */

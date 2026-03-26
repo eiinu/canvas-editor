@@ -6,6 +6,7 @@ import type {
   RunProperties,
   ParagraphProperties,
   TextContent,
+  MathContent,
   Table,
   TableRow,
   TableCell,
@@ -145,10 +146,22 @@ export class BasicXmlConverter implements XmlConverter {
                 if (props.vanish) rPr["w:vanish"] = {};
                 if (props.color) rPr["w:color"] = { "w:val": props.color.replace("#", "") };
 
-                return {
+                const baseRun: any = {
                   "w:rPr": Object.keys(rPr).length > 0 ? rPr : undefined,
-                  "w:t": (r.content as TextContent).text,
                 };
+
+                if (r.content.type === "math") {
+                  const math = r.content as MathContent;
+                  baseRun["m:oMath"] = {
+                    "m:r": {
+                      "m:t": math.text,
+                    },
+                  };
+                } else {
+                  baseRun["w:t"] = (r.content as TextContent).text;
+                }
+
+                return baseRun;
               }),
             },
           });
@@ -264,10 +277,20 @@ export class BasicXmlConverter implements XmlConverter {
 
                   cellChildren.push({
                     "w:pPr": Object.keys(pPr).length > 0 ? pPr : undefined,
-                    "w:r": p.children.map((r) => ({
-                      "w:rPr": {}, // 简化处理
-                      "w:t": (r.content as TextContent).text,
-                    })),
+                    "w:r": p.children.map((r) => {
+                      if (r.content.type === "math") {
+                        return {
+                          "w:rPr": {},
+                          "m:oMath": {
+                            "m:r": { "m:t": (r.content as MathContent).text },
+                          },
+                        };
+                      }
+                      return {
+                        "w:rPr": {}, // 简化处理
+                        "w:t": (r.content as TextContent).text,
+                      };
+                    }),
                   });
                 }
               });
@@ -307,11 +330,25 @@ export class BasicXmlConverter implements XmlConverter {
     const xmlObj = {
       "w:document": {
         "@xmlns:w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "@xmlns:m": "http://schemas.openxmlformats.org/officeDocument/2006/math",
         "w:body": body,
       },
     };
 
     return this.builder.build(xmlObj);
+  }
+
+  private extractTextFromMathNode(node: any): string {
+    if (node == null) return "";
+    if (typeof node === "string" || typeof node === "number") return String(node);
+    if (Array.isArray(node)) return node.map((item) => this.extractTextFromMathNode(item)).join("");
+
+    const directText = node["m:t"] || node.t || node["#text"];
+    if (typeof directText === "string") return directText;
+
+    return Object.values(node)
+      .map((value) => this.extractTextFromMathNode(value))
+      .join("");
   }
 
   fromXml(xml: string): Document {
@@ -453,15 +490,28 @@ export class BasicXmlConverter implements XmlConverter {
           };
 
           const t = getVal(r, "t");
-          const text = typeof t === "string" ? t : t?.["#text"] || t?.["w:t"] || "";
+          const oMath = r["m:oMath"] || r.oMath || getVal(r, "oMath");
 
-          runs.push({
-            properties: rProps,
-            content: {
-              type: "text",
-              text: String(text),
-            } as TextContent,
-          });
+          if (oMath) {
+            const mathText = this.extractTextFromMathNode(oMath);
+            runs.push({
+              properties: rProps,
+              content: {
+                type: "math",
+                text: String(mathText),
+              } as MathContent,
+            });
+          } else {
+            const text = typeof t === "string" ? t : t?.["#text"] || t?.["w:t"] || "";
+
+            runs.push({
+              properties: rProps,
+              content: {
+                type: "text",
+                text: String(text),
+              } as TextContent,
+            });
+          }
         });
 
         elements.push({

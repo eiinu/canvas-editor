@@ -7,6 +7,7 @@ import { EMOJI_DOC } from "./demos/emoji";
 import { FONTS_DOC } from "./demos/fonts";
 import { INTERNATIONAL_DOC } from "./demos/international";
 import { TABLE_DOC } from "./demos/table";
+import { MATH_DOC } from "./demos/math";
 import { WORD_WRAP_DOC } from "./demos/wordWrap";
 
 /**
@@ -47,6 +48,9 @@ export const FULL_DOC: Document = {
 
         // 9. 表格
         ...TABLE_DOC.sections[0].children,
+
+        // 10. 数学公式
+        ...MATH_DOC.sections[0].children,
       ],
     },
   ],
@@ -62,5 +66,6 @@ export {
   FONTS_DOC,
   INTERNATIONAL_DOC,
   TABLE_DOC,
+  MATH_DOC,
   WORD_WRAP_DOC,
 };
