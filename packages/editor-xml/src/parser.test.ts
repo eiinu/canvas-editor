@@ -28,6 +28,7 @@ describe("BasicXmlConverter math support", () => {
 
     expect(xml).toContain("m:oMath");
     expect(xml).toContain("x^2+y^2=z^2");
+    expect(xml).not.toContain("<w:r><m:oMath>");
   });
 
   it("parses m:oMath into math run", () => {
@@ -36,13 +37,11 @@ describe("BasicXmlConverter math support", () => {
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
   <w:body>
     <w:p>
-      <w:r>
-        <m:oMath>
-          <m:r>
-            <m:t>e^{iπ}+1=0</m:t>
-          </m:r>
-        </m:oMath>
-      </w:r>
+      <m:oMath>
+        <m:r>
+          <m:t>e^{iπ}+1=0</m:t>
+        </m:r>
+      </m:oMath>
     </w:p>
   </w:body>
 </w:document>`;

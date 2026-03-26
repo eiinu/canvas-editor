@@ -86,83 +86,86 @@ export class BasicXmlConverter implements XmlConverter {
             };
           }
 
+          const textRuns: any[] = [];
+          const mathRuns: any[] = [];
+
+          p.children.forEach((r) => {
+            const rPr: any = {};
+            const props = r.properties;
+
+            // 处理字体 (优先使用 fonts 集合)
+            if (props.fonts) {
+              const rFonts: any = {};
+              if (props.fonts.ascii) rFonts["w:ascii"] = props.fonts.ascii;
+              if (props.fonts.eastAsia) rFonts["w:eastAsia"] = props.fonts.eastAsia;
+              if (props.fonts.hAnsi) rFonts["w:hAnsi"] = props.fonts.hAnsi;
+              if (props.fonts.cs) rFonts["w:cs"] = props.fonts.cs;
+              if (props.fonts.hint) rFonts["w:hint"] = props.fonts.hint;
+              rPr["w:rFonts"] = rFonts;
+            } else if (props.fontFamily) {
+              rPr["w:rFonts"] = {
+                "w:ascii": props.fontFamily,
+                "w:hAnsi": props.fontFamily,
+                "w:eastAsia": props.fontFamily,
+              };
+            }
+
+            if (props.fontSize) rPr["w:sz"] = { "w:val": props.fontSize };
+            if (props.bold) rPr["w:b"] = {};
+            if (props.italic) rPr["w:i"] = {};
+            if (props.underline) {
+              const u: any = {
+                "w:val":
+                  props.underlineType ||
+                  (typeof props.underline === "string" ? props.underline : "single"),
+              };
+              if (props.underlineColor) {
+                u["w:color"] = props.underlineColor.replace("#", "");
+              }
+              rPr["w:u"] = u;
+            }
+            if (props.strike) rPr["w:strike"] = {};
+            if (props.doubleStrike) rPr["w:dstrike"] = {};
+            if (props.vertAlign && props.vertAlign !== "baseline") {
+              rPr["w:vertAlign"] = { "w:val": props.vertAlign };
+            }
+            if (props.caps) rPr["w:caps"] = {};
+            if (props.smallCaps) rPr["w:smallCaps"] = {};
+            if (props.highlight) rPr["w:highlight"] = { "w:val": props.highlight };
+            if (props.shading)
+              rPr["w:shd"] = {
+                "w:val": "clear",
+                "w:color": "auto",
+                "w:fill": props.shading.replace("#", ""),
+              };
+            if (props.shadow) rPr["w:shadow"] = {};
+            if (props.outline) rPr["w:outline"] = {};
+            if (props.emboss) rPr["w:emboss"] = {};
+            if (props.imprint) rPr["w:imprint"] = {};
+            if (props.letterSpacing) rPr["w:spacing"] = { "w:val": props.letterSpacing };
+            if (props.vanish) rPr["w:vanish"] = {};
+            if (props.color) rPr["w:color"] = { "w:val": props.color.replace("#", "") };
+
+            if (r.content.type === "math") {
+              const math = r.content as MathContent;
+              mathRuns.push({
+                "m:r": {
+                  "m:t": math.text,
+                },
+              });
+            } else {
+              textRuns.push({
+                "w:rPr": Object.keys(rPr).length > 0 ? rPr : undefined,
+                "w:t": (r.content as TextContent).text,
+              });
+            }
+          });
+
           elements.push({
             "w:p": {
               "w:pPr": Object.keys(pPr).length > 0 ? pPr : undefined,
-              "w:r": p.children.map((r) => {
-                const rPr: any = {};
-                const props = r.properties;
-
-                // 处理字体 (优先使用 fonts 集合)
-                if (props.fonts) {
-                  const rFonts: any = {};
-                  if (props.fonts.ascii) rFonts["w:ascii"] = props.fonts.ascii;
-                  if (props.fonts.eastAsia) rFonts["w:eastAsia"] = props.fonts.eastAsia;
-                  if (props.fonts.hAnsi) rFonts["w:hAnsi"] = props.fonts.hAnsi;
-                  if (props.fonts.cs) rFonts["w:cs"] = props.fonts.cs;
-                  if (props.fonts.hint) rFonts["w:hint"] = props.fonts.hint;
-                  rPr["w:rFonts"] = rFonts;
-                } else if (props.fontFamily) {
-                  rPr["w:rFonts"] = {
-                    "w:ascii": props.fontFamily,
-                    "w:hAnsi": props.fontFamily,
-                    "w:eastAsia": props.fontFamily,
-                  };
-                }
-
-                if (props.fontSize) rPr["w:sz"] = { "w:val": props.fontSize };
-                if (props.bold) rPr["w:b"] = {};
-                if (props.italic) rPr["w:i"] = {};
-                if (props.underline) {
-                  const u: any = {
-                    "w:val":
-                      props.underlineType ||
-                      (typeof props.underline === "string" ? props.underline : "single"),
-                  };
-                  if (props.underlineColor) {
-                    u["w:color"] = props.underlineColor.replace("#", "");
-                  }
-                  rPr["w:u"] = u;
-                }
-                if (props.strike) rPr["w:strike"] = {};
-                if (props.doubleStrike) rPr["w:dstrike"] = {};
-                if (props.vertAlign && props.vertAlign !== "baseline") {
-                  rPr["w:vertAlign"] = { "w:val": props.vertAlign };
-                }
-                if (props.caps) rPr["w:caps"] = {};
-                if (props.smallCaps) rPr["w:smallCaps"] = {};
-                if (props.highlight) rPr["w:highlight"] = { "w:val": props.highlight };
-                if (props.shading)
-                  rPr["w:shd"] = {
-                    "w:val": "clear",
-                    "w:color": "auto",
-                    "w:fill": props.shading.replace("#", ""),
-                  };
-                if (props.shadow) rPr["w:shadow"] = {};
-                if (props.outline) rPr["w:outline"] = {};
-                if (props.emboss) rPr["w:emboss"] = {};
-                if (props.imprint) rPr["w:imprint"] = {};
-                if (props.letterSpacing) rPr["w:spacing"] = { "w:val": props.letterSpacing };
-                if (props.vanish) rPr["w:vanish"] = {};
-                if (props.color) rPr["w:color"] = { "w:val": props.color.replace("#", "") };
-
-                const baseRun: any = {
-                  "w:rPr": Object.keys(rPr).length > 0 ? rPr : undefined,
-                };
-
-                if (r.content.type === "math") {
-                  const math = r.content as MathContent;
-                  baseRun["m:oMath"] = {
-                    "m:r": {
-                      "m:t": math.text,
-                    },
-                  };
-                } else {
-                  baseRun["w:t"] = (r.content as TextContent).text;
-                }
-
-                return baseRun;
-              }),
+              ...(textRuns.length > 0 ? { "w:r": textRuns } : {}),
+              ...(mathRuns.length > 0 ? { "m:oMath": mathRuns } : {}),
             },
           });
         } else if ("rows" in element) {
@@ -277,20 +280,17 @@ export class BasicXmlConverter implements XmlConverter {
 
                   cellChildren.push({
                     "w:pPr": Object.keys(pPr).length > 0 ? pPr : undefined,
-                    "w:r": p.children.map((r) => {
-                      if (r.content.type === "math") {
-                        return {
-                          "w:rPr": {},
-                          "m:oMath": {
-                            "m:r": { "m:t": (r.content as MathContent).text },
-                          },
-                        };
-                      }
-                      return {
+                    "w:r": p.children
+                      .filter((r) => r.content.type !== "math")
+                      .map((r) => ({
                         "w:rPr": {}, // 简化处理
                         "w:t": (r.content as TextContent).text,
-                      };
-                    }),
+                      })),
+                    "m:oMath": p.children
+                      .filter((r) => r.content.type === "math")
+                      .map((r) => ({
+                        "m:r": { "m:t": (r.content as MathContent).text },
+                      })),
                   });
                 }
               });
@@ -425,6 +425,16 @@ export class BasicXmlConverter implements XmlConverter {
           : getVal(p, "r")
             ? [getVal(p, "r")]
             : [];
+        const rawMath = Array.isArray(p["m:oMath"] || p.oMath || getVal(p, "oMath"))
+          ? p["m:oMath"] || p.oMath || getVal(p, "oMath")
+          : p["m:oMath"] || p.oMath || getVal(p, "oMath")
+            ? [p["m:oMath"] || p.oMath || getVal(p, "oMath")]
+            : [];
+        const rawMathPara = Array.isArray(p["m:oMathPara"] || p.oMathPara)
+          ? p["m:oMathPara"] || p.oMathPara
+          : p["m:oMathPara"] || p.oMathPara
+            ? [p["m:oMathPara"] || p.oMathPara]
+            : [];
 
         rawRs.forEach((r: any) => {
           const rPr = getVal(r, "rPr") || {};
@@ -512,6 +522,27 @@ export class BasicXmlConverter implements XmlConverter {
               } as TextContent,
             });
           }
+        });
+
+        const appendMathRun = (mathNode: any) => {
+          const mathText = this.extractTextFromMathNode(mathNode);
+          runs.push({
+            properties: { fontSize: 24 },
+            content: {
+              type: "math",
+              text: String(mathText),
+            } as MathContent,
+          });
+        };
+
+        rawMath.forEach((mathNode: any) => appendMathRun(mathNode));
+        rawMathPara.forEach((mathParaNode: any) => {
+          const oMathNodes = Array.isArray(mathParaNode?.["m:oMath"] || mathParaNode?.oMath)
+            ? mathParaNode["m:oMath"] || mathParaNode.oMath
+            : mathParaNode?.["m:oMath"] || mathParaNode?.oMath
+              ? [mathParaNode["m:oMath"] || mathParaNode.oMath]
+              : [];
+          oMathNodes.forEach((mathNode: any) => appendMathRun(mathNode));
         });
 
         elements.push({
