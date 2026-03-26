@@ -1,4 +1,4 @@
-import type { Paragraph, TextContent } from "@eiinu/editor-protocol";
+import type { Paragraph, TextContent, MathContent } from "@eiinu/editor-protocol";
 import { UnicodeRange, TextDirection } from "@eiinu/editor-utils";
 import { DocumentElement, type RenderContext } from "./base.js";
 import { RunElement } from "./run.js";
@@ -76,9 +76,10 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
 
     for (const run of this.runs) {
       const data = run.getData();
-      if (data.content.type !== "text" || data.properties.vanish) continue;
+      if ((data.content.type !== "text" && data.content.type !== "math") || data.properties.vanish)
+        continue;
 
-      let text = (data.content as TextContent).text;
+      let text = (data.content as TextContent | MathContent).text;
       const props = data.properties;
 
       // 处理全部大写转换 (smallCaps 模式下使用原文/小写进行测量，符合排版逻辑)
@@ -239,8 +240,8 @@ export class ParagraphElement extends DocumentElement<Paragraph> {
     let isRTL = false;
     for (const run of this.runs) {
       const data = run.getData();
-      if (data.content.type === "text") {
-        const text = (data.content as TextContent).text;
+      if (data.content.type === "text" || data.content.type === "math") {
+        const text = (data.content as TextContent | MathContent).text;
         if (TextDirection.containsRTL(text)) {
           isRTL = true;
           break;

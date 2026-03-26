@@ -19,6 +19,7 @@ import {
   COLOR_GRADIENT_DOC,
   INTERNATIONAL_DOC,
   TABLE_DOC,
+  MATH_DOC,
 } from "./examples";
 import "./styles.css";
 
@@ -536,6 +537,13 @@ const formatXml = () => {
             Table
           </button>
           <button
+            @click="setExample(MATH_DOC)"
+            style="font-size: 10px; padding: 2px 4px; cursor: pointer"
+            title="Math Formula"
+          >
+            Math
+          </button>
+          <button
             @click="handleWordUpload"
             style="
               font-size: 10px;
@@ -644,6 +652,13 @@ const formatXml = () => {
               title="Table Only"
             >
               Table
+            </button>
+            <button
+              @click="setExample(MATH_DOC)"
+              style="font-size: 10px; padding: 2px 4px; cursor: pointer"
+              title="Math Formula"
+            >
+              Math
             </button>
             <button
               @click="handleWordUpload"

@@ -6,6 +6,7 @@ import type {
   RunProperties,
   ParagraphProperties,
   TextContent,
+  MathContent,
   Table,
   TableRow,
   TableCell,
@@ -85,71 +86,90 @@ export class BasicXmlConverter implements XmlConverter {
             };
           }
 
+          const textRuns: any[] = [];
+          const mathRuns: any[] = [];
+
+          p.children.forEach((r) => {
+            const rPr: any = {};
+            const props = r.properties;
+
+            // 处理字体 (优先使用 fonts 集合)
+            if (props.fonts) {
+              const rFonts: any = {};
+              if (props.fonts.ascii) rFonts["w:ascii"] = props.fonts.ascii;
+              if (props.fonts.eastAsia) rFonts["w:eastAsia"] = props.fonts.eastAsia;
+              if (props.fonts.hAnsi) rFonts["w:hAnsi"] = props.fonts.hAnsi;
+              if (props.fonts.cs) rFonts["w:cs"] = props.fonts.cs;
+              if (props.fonts.hint) rFonts["w:hint"] = props.fonts.hint;
+              rPr["w:rFonts"] = rFonts;
+            } else if (props.fontFamily) {
+              rPr["w:rFonts"] = {
+                "w:ascii": props.fontFamily,
+                "w:hAnsi": props.fontFamily,
+                "w:eastAsia": props.fontFamily,
+              };
+            }
+
+            if (props.fontSize) rPr["w:sz"] = { "w:val": props.fontSize };
+            if (props.bold) rPr["w:b"] = {};
+            if (props.italic) rPr["w:i"] = {};
+            if (props.underline) {
+              const u: any = {
+                "w:val":
+                  props.underlineType ||
+                  (typeof props.underline === "string" ? props.underline : "single"),
+              };
+              if (props.underlineColor) {
+                u["w:color"] = props.underlineColor.replace("#", "");
+              }
+              rPr["w:u"] = u;
+            }
+            if (props.strike) rPr["w:strike"] = {};
+            if (props.doubleStrike) rPr["w:dstrike"] = {};
+            if (props.vertAlign && props.vertAlign !== "baseline") {
+              rPr["w:vertAlign"] = { "w:val": props.vertAlign };
+            }
+            if (props.caps) rPr["w:caps"] = {};
+            if (props.smallCaps) rPr["w:smallCaps"] = {};
+            if (props.highlight) rPr["w:highlight"] = { "w:val": props.highlight };
+            if (props.shading)
+              rPr["w:shd"] = {
+                "w:val": "clear",
+                "w:color": "auto",
+                "w:fill": props.shading.replace("#", ""),
+              };
+            if (props.shadow) rPr["w:shadow"] = {};
+            if (props.outline) rPr["w:outline"] = {};
+            if (props.emboss) rPr["w:emboss"] = {};
+            if (props.imprint) rPr["w:imprint"] = {};
+            if (props.letterSpacing) rPr["w:spacing"] = { "w:val": props.letterSpacing };
+            if (props.vanish) rPr["w:vanish"] = {};
+            if (props.color) rPr["w:color"] = { "w:val": props.color.replace("#", "") };
+
+            if (r.content.type === "math") {
+              const math = r.content as MathContent;
+              mathRuns.push(
+                math.omml
+                  ? this.normalizeOmmlForBuilder(math.omml)
+                  : {
+                      "m:r": {
+                        "m:t": math.text,
+                      },
+                    },
+              );
+            } else {
+              textRuns.push({
+                "w:rPr": Object.keys(rPr).length > 0 ? rPr : undefined,
+                "w:t": (r.content as TextContent).text,
+              });
+            }
+          });
+
           elements.push({
             "w:p": {
               "w:pPr": Object.keys(pPr).length > 0 ? pPr : undefined,
-              "w:r": p.children.map((r) => {
-                const rPr: any = {};
-                const props = r.properties;
-
-                // 处理字体 (优先使用 fonts 集合)
-                if (props.fonts) {
-                  const rFonts: any = {};
-                  if (props.fonts.ascii) rFonts["w:ascii"] = props.fonts.ascii;
-                  if (props.fonts.eastAsia) rFonts["w:eastAsia"] = props.fonts.eastAsia;
-                  if (props.fonts.hAnsi) rFonts["w:hAnsi"] = props.fonts.hAnsi;
-                  if (props.fonts.cs) rFonts["w:cs"] = props.fonts.cs;
-                  if (props.fonts.hint) rFonts["w:hint"] = props.fonts.hint;
-                  rPr["w:rFonts"] = rFonts;
-                } else if (props.fontFamily) {
-                  rPr["w:rFonts"] = {
-                    "w:ascii": props.fontFamily,
-                    "w:hAnsi": props.fontFamily,
-                    "w:eastAsia": props.fontFamily,
-                  };
-                }
-
-                if (props.fontSize) rPr["w:sz"] = { "w:val": props.fontSize };
-                if (props.bold) rPr["w:b"] = {};
-                if (props.italic) rPr["w:i"] = {};
-                if (props.underline) {
-                  const u: any = {
-                    "w:val":
-                      props.underlineType ||
-                      (typeof props.underline === "string" ? props.underline : "single"),
-                  };
-                  if (props.underlineColor) {
-                    u["w:color"] = props.underlineColor.replace("#", "");
-                  }
-                  rPr["w:u"] = u;
-                }
-                if (props.strike) rPr["w:strike"] = {};
-                if (props.doubleStrike) rPr["w:dstrike"] = {};
-                if (props.vertAlign && props.vertAlign !== "baseline") {
-                  rPr["w:vertAlign"] = { "w:val": props.vertAlign };
-                }
-                if (props.caps) rPr["w:caps"] = {};
-                if (props.smallCaps) rPr["w:smallCaps"] = {};
-                if (props.highlight) rPr["w:highlight"] = { "w:val": props.highlight };
-                if (props.shading)
-                  rPr["w:shd"] = {
-                    "w:val": "clear",
-                    "w:color": "auto",
-                    "w:fill": props.shading.replace("#", ""),
-                  };
-                if (props.shadow) rPr["w:shadow"] = {};
-                if (props.outline) rPr["w:outline"] = {};
-                if (props.emboss) rPr["w:emboss"] = {};
-                if (props.imprint) rPr["w:imprint"] = {};
-                if (props.letterSpacing) rPr["w:spacing"] = { "w:val": props.letterSpacing };
-                if (props.vanish) rPr["w:vanish"] = {};
-                if (props.color) rPr["w:color"] = { "w:val": props.color.replace("#", "") };
-
-                return {
-                  "w:rPr": Object.keys(rPr).length > 0 ? rPr : undefined,
-                  "w:t": (r.content as TextContent).text,
-                };
-              }),
+              ...(textRuns.length > 0 ? { "w:r": textRuns } : {}),
+              ...(mathRuns.length > 0 ? { "m:oMath": mathRuns } : {}),
             },
           });
         } else if ("rows" in element) {
@@ -264,10 +284,19 @@ export class BasicXmlConverter implements XmlConverter {
 
                   cellChildren.push({
                     "w:pPr": Object.keys(pPr).length > 0 ? pPr : undefined,
-                    "w:r": p.children.map((r) => ({
-                      "w:rPr": {}, // 简化处理
-                      "w:t": (r.content as TextContent).text,
-                    })),
+                    "w:r": p.children
+                      .filter((r) => r.content.type !== "math")
+                      .map((r) => ({
+                        "w:rPr": {}, // 简化处理
+                        "w:t": (r.content as TextContent).text,
+                      })),
+                    "m:oMath": p.children
+                      .filter((r) => r.content.type === "math")
+                      .map((r) =>
+                        (r.content as MathContent).omml
+                          ? this.normalizeOmmlForBuilder((r.content as MathContent).omml)
+                          : { "m:r": { "m:t": (r.content as MathContent).text } },
+                      ),
                   });
                 }
               });
@@ -307,11 +336,82 @@ export class BasicXmlConverter implements XmlConverter {
     const xmlObj = {
       "w:document": {
         "@xmlns:w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "@xmlns:m": "http://schemas.openxmlformats.org/officeDocument/2006/math",
         "w:body": body,
       },
     };
 
     return this.builder.build(xmlObj);
+  }
+
+  private extractTextFromMathNode(node: any): string {
+    if (node == null) return "";
+    if (typeof node === "string" || typeof node === "number") return String(node);
+    if (Array.isArray(node)) return node.map((item) => this.extractMathElement(item)).join("");
+    return this.extractMathElement(node);
+  }
+
+  private normalizeOmmlForBuilder(node: any): any {
+    if (node == null) return node;
+    if (Array.isArray(node)) return node.map((item) => this.normalizeOmmlForBuilder(item));
+    if (typeof node !== "object") return node;
+
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(node)) {
+      if (
+        (key === "m:t" || key === "t") &&
+        (typeof value === "string" || typeof value === "number")
+      ) {
+        result[key] = { "#text": String(value) };
+      } else {
+        result[key] = this.normalizeOmmlForBuilder(value);
+      }
+    }
+    return result;
+  }
+
+  private extractMathElement(node: any): string {
+    if (node == null) return "";
+    if (typeof node === "string" || typeof node === "number") return String(node);
+    if (Array.isArray(node)) return node.map((item) => this.extractMathElement(item)).join("");
+
+    const directText = node["m:t"] || node.t || node["#text"];
+    if (typeof directText === "string") return directText;
+
+    const first = (value: any) => (Array.isArray(value) ? value[0] : value);
+
+    const sSup = first(node["m:sSup"] || node.sSup);
+    if (sSup) {
+      const base = this.extractMathElement(first(sSup["m:e"] || sSup.e));
+      const sup = this.extractMathElement(first(sSup["m:sup"] || sSup.sup));
+      return `${base}^(${sup})`;
+    }
+
+    const sSub = first(node["m:sSub"] || node.sSub);
+    if (sSub) {
+      const base = this.extractMathElement(first(sSub["m:e"] || sSub.e));
+      const sub = this.extractMathElement(first(sSub["m:sub"] || sSub.sub));
+      return `${base}_(${sub})`;
+    }
+
+    const sSubSup = first(node["m:sSubSup"] || node.sSubSup);
+    if (sSubSup) {
+      const base = this.extractMathElement(first(sSubSup["m:e"] || sSubSup.e));
+      const sub = this.extractMathElement(first(sSubSup["m:sub"] || sSubSup.sub));
+      const sup = this.extractMathElement(first(sSubSup["m:sup"] || sSubSup.sup));
+      return `${base}_(${sub})^(${sup})`;
+    }
+
+    const frac = first(node["m:f"] || node.f);
+    if (frac) {
+      const num = this.extractMathElement(first(frac["m:num"] || frac.num));
+      const den = this.extractMathElement(first(frac["m:den"] || frac.den));
+      return `(${num})/(${den})`;
+    }
+
+    return Object.values(node)
+      .map((value) => this.extractMathElement(value))
+      .join("");
   }
 
   fromXml(xml: string): Document {
@@ -388,6 +488,16 @@ export class BasicXmlConverter implements XmlConverter {
           : getVal(p, "r")
             ? [getVal(p, "r")]
             : [];
+        const rawMath = Array.isArray(p["m:oMath"] || p.oMath || getVal(p, "oMath"))
+          ? p["m:oMath"] || p.oMath || getVal(p, "oMath")
+          : p["m:oMath"] || p.oMath || getVal(p, "oMath")
+            ? [p["m:oMath"] || p.oMath || getVal(p, "oMath")]
+            : [];
+        const rawMathPara = Array.isArray(p["m:oMathPara"] || p.oMathPara)
+          ? p["m:oMathPara"] || p.oMathPara
+          : p["m:oMathPara"] || p.oMathPara
+            ? [p["m:oMathPara"] || p.oMathPara]
+            : [];
 
         rawRs.forEach((r: any) => {
           const rPr = getVal(r, "rPr") || {};
@@ -453,15 +563,50 @@ export class BasicXmlConverter implements XmlConverter {
           };
 
           const t = getVal(r, "t");
-          const text = typeof t === "string" ? t : t?.["#text"] || t?.["w:t"] || "";
+          const oMath = r["m:oMath"] || r.oMath || getVal(r, "oMath");
 
+          if (oMath) {
+            const mathText = this.extractTextFromMathNode(oMath);
+            runs.push({
+              properties: rProps,
+              content: {
+                type: "math",
+                text: String(mathText),
+              } as MathContent,
+            });
+          } else {
+            const text = typeof t === "string" ? t : t?.["#text"] || t?.["w:t"] || "";
+
+            runs.push({
+              properties: rProps,
+              content: {
+                type: "text",
+                text: String(text),
+              } as TextContent,
+            });
+          }
+        });
+
+        const appendMathRun = (mathNode: any) => {
+          const mathText = this.extractTextFromMathNode(mathNode);
           runs.push({
-            properties: rProps,
+            properties: { fontSize: 24 },
             content: {
-              type: "text",
-              text: String(text),
-            } as TextContent,
+              type: "math",
+              text: String(mathText),
+              omml: mathNode,
+            } as MathContent,
           });
+        };
+
+        rawMath.forEach((mathNode: any) => appendMathRun(mathNode));
+        rawMathPara.forEach((mathParaNode: any) => {
+          const oMathNodes = Array.isArray(mathParaNode?.["m:oMath"] || mathParaNode?.oMath)
+            ? mathParaNode["m:oMath"] || mathParaNode.oMath
+            : mathParaNode?.["m:oMath"] || mathParaNode?.oMath
+              ? [mathParaNode["m:oMath"] || mathParaNode.oMath]
+              : [];
+          oMathNodes.forEach((mathNode: any) => appendMathRun(mathNode));
         });
 
         elements.push({

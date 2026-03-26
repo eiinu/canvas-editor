@@ -182,9 +182,9 @@ export interface RunProperties {
 /**
  * 运行块内的内容类型
  */
-export type RunContent = TextContent | ImageContent | FieldContent | DrawingContent;
+export type RunContent = TextContent | MathContent | ImageContent | FieldContent | DrawingContent;
 
-export type ContentType = "text" | "image" | "field" | "drawing";
+export type ContentType = "text" | "math" | "image" | "field" | "drawing";
 
 export interface BaseContent {
   type: ContentType;
@@ -196,6 +196,15 @@ export interface TextContent extends BaseContent {
   text: string;
   /** 是否保留空白字符 - 对应 xml:space="preserve" */
   preserveSpace?: boolean;
+}
+
+/** 数学公式内容 - 对应 <m:oMath> */
+export interface MathContent extends BaseContent {
+  type: "math";
+  /** 公式的线性文本表示（由 OpenXML/OMML 结构化节点提取） */
+  text: string;
+  /** 原始 OMML 结构（可选），用于保留复杂公式结构并支持回写 */
+  omml?: Record<string, unknown>;
 }
 
 /** 图片内容 - 对应 <w:drawing> 中的内联图片 */

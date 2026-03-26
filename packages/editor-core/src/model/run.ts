@@ -1,4 +1,4 @@
-import type { Run, TextContent } from "@eiinu/editor-protocol";
+import type { Run, TextContent, MathContent } from "@eiinu/editor-protocol";
 import { DocumentElement, type RenderContext } from "./base.js";
 import { FontManager } from "../fonts/font-manager.js";
 import { TextDirection } from "@eiinu/editor-utils";
@@ -24,8 +24,11 @@ export class RunElement extends DocumentElement<Run> {
    * 测量文本宽度
    */
   measureWidth(ctx: CanvasRenderingContext2D): number {
-    if (this.data.content.type !== "text") return 0;
-    let text = (this.data.content as TextContent).text;
+    if (this.data.content.type !== "text" && this.data.content.type !== "math") return 0;
+    let text =
+      this.data.content.type === "math"
+        ? (this.data.content as MathContent).text
+        : (this.data.content as TextContent).text;
     const props = this.data.properties;
 
     // 如果是全大写，则按大写测量
@@ -44,15 +47,21 @@ export class RunElement extends DocumentElement<Run> {
     const { ctx, dpr } = context;
     const { properties, content } = this.data;
 
-    if (content.type !== "text") return x;
-    const textContent = content as TextContent;
+    if (content.type !== "text" && content.type !== "math") return x;
+    const textContent =
+      content.type === "math"
+        ? ({ text: (content as MathContent).text } as TextContent)
+        : (content as TextContent);
 
     this.applyStyles(ctx, dpr);
 
     // 异步检查字体加载 (不阻塞当前渲染，但加载后会触发重绘)
-    const rawFontFamily = properties.fontFamily || "Arial";
+    const rawFontFamily =
+      content.type === "math"
+        ? 'Cambria Math, "Times New Roman", serif'
+        : properties.fontFamily || "Arial";
     const fontFamily = this.fontManager.getFontFamily(rawFontFamily);
-    this.fontManager.ensureFontLoaded(fontFamily);
+    void this.fontManager.ensureFontLoaded(fontFamily);
 
     // 处理上下标偏移
     let drawY = y;
@@ -155,7 +164,10 @@ export class RunElement extends DocumentElement<Run> {
     // 上下标缩放
     const fontSize = vertAlign !== "baseline" ? originalFontSize * 0.65 : originalFontSize;
 
-    const rawFontFamily = properties.fontFamily || "Arial";
+    const rawFontFamily =
+      content.type === "math"
+        ? 'Cambria Math, "Times New Roman", serif'
+        : properties.fontFamily || "Arial";
     const fontFamily = this.fontManager.getFontFamily(rawFontFamily);
     const weight = properties.bold ? "bold" : "normal";
     const style = properties.italic ? "italic" : "normal";
@@ -165,8 +177,8 @@ export class RunElement extends DocumentElement<Run> {
     ctx.textBaseline = "alphabetic";
 
     // 设置文本方向
-    if (content.type === "text") {
-      const text = (content as TextContent).text;
+    if (content.type === "text" || content.type === "math") {
+      const text = (content as TextContent | MathContent).text;
       if (text) {
         const direction = TextDirection.detectDirection(text);
         ctx.direction = direction;
